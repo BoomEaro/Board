@@ -14,6 +14,7 @@ import de.Keyle.MyPet.api.entity.MyPet;
 import de.Keyle.MyPet.api.entity.MyPet.PetState;
 import de.Keyle.MyPet.api.util.locale.Translation;
 import ru.boomearo.adveco.AdvEco;
+import ru.boomearo.adveco.exceptions.EcoException;
 import ru.boomearo.adveco.managers.EcoManager;
 import ru.boomearo.adveco.objects.EcoType;
 import ru.boomearo.board.Board;
@@ -30,700 +31,715 @@ import ru.boomearo.nations.objects.PlayerNation;
 
 public class ServerBoard extends AbstractBoard {
 
-	@Override
-	public int updateTime() {
-		return 20;
-	}
+    @Override
+    public int updateTime() {
+        return 20;
+    }
 
-	@Override
-	public List<AbstractPage> getPages(PlayerBoard player) {
-		
-		List<AbstractPage> tmpBoards = new ArrayList<AbstractPage>();
-		tmpBoards.add(new AbstractPage(player) {
-			
-			@Override
-			public int getTimeToChange() {
-				return 20*20;
-			}
+    @Override
+    public List<AbstractPage> getPages(PlayerBoard player) {
 
-			@Override
-			public String getTitle() {
-				return "§lPlugin§a§lWorld";
-			}
-			
-			@Override
-			public List<AbstractHolder> createHolders() {
-				List<AbstractHolder> tmpLines = new ArrayList<AbstractHolder>();
-				
-				tmpLines.add(new AbstractHolder(this) {
+        List<AbstractPage> tmpBoards = new ArrayList<AbstractPage>();
+        tmpBoards.add(new AbstractPage(player) {
 
-					@Override
-					public String getText() {
-						return "§7Добро пожаловать!";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+            @Override
+            public int getTimeToChange() {
+                return 20*20;
+            }
 
-					@Override
-					public String getText() {
-						return this.getPage().getPlayerBoard().getPlayer().getDisplayName();
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+            @Override
+            public String getTitle() {
+                return "§lPlugin§a§lWorld";
+            }
 
-					@Override
-					public String getText() {
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+            @Override
+            public List<AbstractHolder> createHolders() {
+                List<AbstractHolder> tmpLines = new ArrayList<AbstractHolder>();
 
-					@Override
-					public String getText() {
-						PlayerNation pn = Nations.getInstance().getNationsManager().getLoadedPlayerNation(this.getPage().getPlayerBoard().getPlayer().getName());
-						if (pn != null) {
-							NationType type = pn.getNation();
-							return "§7Раса: " + type.getColor() + type.getName();
-						}
-						return "§7Раса: §cОтсутствует.";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        return "§7Добро пожаловать!";
+                    }
 
-					@Override
-					public String getText() {
-						EcoManager eco = AdvEco.getInstance().getEcoManager();
-						Player pl = this.getPage().getPlayerBoard().getPlayer();
-						return "§7Кредиты: §a" + EcoManager.getFormatedEco(eco.getPlayerEco(pl.getName(), pl, EcoType.Credit), EcoType.Credit);
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						EcoManager eco = AdvEco.getInstance().getEcoManager();
-						Player pl = this.getPage().getPlayerBoard().getPlayer();
-						return "§7Медь: §a" + EcoManager.getFormatedEco(eco.getPlayerEco(pl.getName(), pl, EcoType.Copper), EcoType.Copper);
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        return this.getPage().getPlayerBoard().getPlayer().getDisplayName();
+                    }
 
-					@Override
-					public String getText() {
-						EcoManager eco = AdvEco.getInstance().getEcoManager();
-						Player pl = this.getPage().getPlayerBoard().getPlayer();
-						return "§7Кристаллов: §b" + EcoManager.getFormatedEco(eco.getPlayerEco(pl.getName(), pl, EcoType.Crystal), EcoType.Crystal);
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        return " ";
+                    }
 
-					@Override
-					public String getText() {
-						return "§7Статистика убийств:";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						return "§c" + this.getPage().getPlayerBoard().getPlayer().getStatistic(Statistic.PLAYER_KILLS) + " §7игроков";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        PlayerNation pn = Nations.getInstance().getNationsManager().getLoadedPlayerNation(this.getPage().getPlayerBoard().getPlayer().getName());
+                        if (pn != null) {
+                            NationType type = pn.getNation();
+                            return "§7Раса: " + type.getColor() + type.getName();
+                        }
+                        return "§7Раса: §cОтсутствует.";
+                    }
 
-					@Override
-					public String getText() {
-						return "§c" + this.getPage().getPlayerBoard().getPlayer().getStatistic(Statistic.MOB_KILLS) + " §7мобов";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						return "§c" + this.getPage().getPlayerBoard().getPlayer().getStatistic(Statistic.DEATHS) + " §7смертей";
-					}
-					
-				});
-				return tmpLines;
-			}
+                    @Override
+                    public String getText() {
+                        return " ";
+                    }
 
-			@Override
-			public boolean isVisible() {
-				return true;
-			}
-		});
-		tmpBoards.add(new AbstractPage(player) {
-			
-			@Override
-			public int getTimeToChange() {
-				return 20*15;
-			}
-			
-			@Override
-			public String getTitle() {
-				return "§a§lПитомец";
-			}
-			
-			@Override
-			public List<AbstractHolder> createHolders() {
-				List<AbstractHolder> tmpLines = new ArrayList<AbstractHolder>();
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						
-						MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
-						
-						if (mp != null) {
-							return "§7" + mp.getPetName() + (mp.getSkilltree() != null ? " §7[§6" + mp.getSkilltree().getDisplayName() + "§7]" : "");
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        EcoManager eco = AdvEco.getInstance().getEcoManager();
+                        Player pl = this.getPage().getPlayerBoard().getPlayer();
+                        try {
+                            return "§7Кредиты: §a" + EcoManager.getFormatedEco(eco.getPlayerEco(pl.getName(), pl, EcoType.Credit), EcoType.Credit);
+                        } 
+                        catch (EcoException e) {
+                            return "";
+                        }
+                    }
 
-					@Override
-					public String getText() {
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						
-						MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
-						
-						if (mp != null) {
-							int level = mp.getExperience().getLevel();
-							return "§7Уровень: §b" + level;
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        EcoManager eco = AdvEco.getInstance().getEcoManager();
+                        Player pl = this.getPage().getPlayerBoard().getPlayer();
+                        try {
+                            return "§7Медь: §a" + EcoManager.getFormatedEco(eco.getPlayerEco(pl.getName(), pl, EcoType.Copper), EcoType.Copper);
+                        } 
+                        catch (EcoException e) {
+                            return "";
+                        }
+                    }
 
-					@Override
-					public String getText() {
-						
-						MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
-						
-						if (mp != null) {
-							return "§7Сытость: §6" + df.format(mp.getSaturation()) + "§7%";
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						
-						MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
-						
-						if (mp != null) {
-							return "§7Здоровье: §c" + df.format(mp.getHealth()) + "§7/§c" + df.format(mp.getMaxHealth());
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        EcoManager eco = AdvEco.getInstance().getEcoManager();
+                        Player pl = this.getPage().getPlayerBoard().getPlayer();
+                        try {
+                            return "§7Кристаллов: §b" + EcoManager.getFormatedEco(eco.getPlayerEco(pl.getName(), pl, EcoType.Crystal), EcoType.Crystal);
+                        } 
+                        catch (EcoException e) {
+                            return "";
+                        }
+                    }
 
-					@Override
-					public String getText() {
-						
-						MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
-						
-						if (mp != null) {
-							return "§7Сущность: §a" + Translation.getString("Name." + mp.getPetType().name(), mp.getOwner().getLanguage());
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        return " ";
+                    }
 
-					@Override
-					public String getText() {
-						
-						MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
-						
-						if (mp != null) {
-							return "§7Статус: §6" + getPetStatus(mp.getStatus());
-						}
-						return " ";
-					}
-					
-				});
-				return tmpLines;
-			}
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-			@Override
-			public boolean isVisible() {
-				return MyPetApi.getMyPetManager().getMyPet(this.getPlayerBoard().getPlayer()) != null;
-			}
-		});
-		tmpBoards.add(new AbstractPage(player) {
-			
-			@Override
-			public int getTimeToChange() {
-				return 20*15;
-			}
+                    @Override
+                    public String getText() {
+                        return "§7Статистика убийств:";
+                    }
 
-			
-			@Override
-			public String getTitle() {
-				return "§6§lГород";
-			}
-			
-			@Override
-			public List<AbstractHolder> createHolders() {
-				List<AbstractHolder> tmpLines = new ArrayList<AbstractHolder>();
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
-						if (cv != null) {
-							City city = cv.getCity();
-							if (city != null) {
-								return "§7Тег " + city.getValidDisplayName();
-							}
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        return "§c" + this.getPage().getPlayerBoard().getPlayer().getStatistic(Statistic.PLAYER_KILLS) + " §7игроков";
+                    }
 
-					@Override
-					public String getText() {
-						CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
-						if (cv != null) {
-							City city = cv.getCity();
-							if (!(city instanceof AdminCity)) {
-								if (city != null) {
-									NationType type = city.getNation();
-									return "§7Раса: " + type.getColor() + type.getName() + (city.isCapital() ? " §6(Столица расы)" : "");
-								}
-							}
-							else {
-								return "§7Раса: §cОтсутствует";
-							}
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        return "§c" + this.getPage().getPlayerBoard().getPlayer().getStatistic(Statistic.MOB_KILLS) + " §7мобов";
+                    }
 
-					@Override
-					public String getText() {
-						CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
-						if (cv != null) {
-							City city = cv.getCity();
-							if (city != null) {
-								CityVillager mayor = city.getMayor();
-								return "§7Мэр: §c" + (mayor != null ? mayor.getName() : "Отсутствует.");
-							}
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
-						if (cv != null) {
-							City city = cv.getCity();
-							if (city != null) {
-								CityVillager submayor = city.getSubMayor();
-								return "§7Заместитель: §4" + (submayor != null ? submayor.getName() : "Отсутствует.");
-							}
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
+                        return "§c" + this.getPage().getPlayerBoard().getPlayer().getStatistic(Statistic.DEATHS) + " §7смертей";
+                    }
 
-					@Override
-					public String getText() {
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                return tmpLines;
+            }
 
-					@Override
-					public String getText() {
-						CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
-						if (cv != null) {
-							City city = cv.getCity();
-							boolean adminCity = (city instanceof AdminCity);
-							return "§7Население: §6" + city.getAllCityVillager().size() + "§7/§6" + (adminCity ? "∞" : city.getAllowedPlots());
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+            @Override
+            public boolean isVisible() {
+                return true;
+            }
+        });
+        tmpBoards.add(new AbstractPage(player) {
 
-					@Override
-					public String getText() {
-						CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
-						if (cv != null) {
-							City city = cv.getCity();
-							boolean adminCity = (city instanceof AdminCity);
-							return "§7Аренд: §6" + city.getAllRegions().size() + "§7/§c" + (adminCity ? "∞" : city.getAllowedPlots());
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+            @Override
+            public int getTimeToChange() {
+                return 20*15;
+            }
 
-					@Override
-					public String getText() {
-						CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
-						if (cv != null) {
-							City city = cv.getCity();
+            @Override
+            public String getTitle() {
+                return "§a§lПитомец";
+            }
 
-							return "§7Используется: §6" + city.getRentBusyAmount() + "§7/§c" + city.getAllRegions().size();
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+            @Override
+            public List<AbstractHolder> createHolders() {
+                List<AbstractHolder> tmpLines = new ArrayList<AbstractHolder>();
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
-						if (cv != null) {
-							City city = cv.getCity();
+                    @Override
+                    public String getText() {
 
-							return "§7Общее развитие: §6" + city.getCurrentEvolute();
-						}
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                        MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
 
-					@Override
-					public String getText() {
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                        if (mp != null) {
+                            return "§7" + mp.getPetName() + (mp.getSkilltree() != null ? " §7[§6" + mp.getSkilltree().getDisplayName() + "§7]" : "");
+                        }
+                        return " ";
+                    }
 
-					@Override
-					public String getText() {
-						return "§7До выселения:";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public String getText() {
-						
-						CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
-						if (cv != null) {
-							City city = cv.getCity();
-							if (city != null) {
-								RentRegion rr = cv.getRegion();
-								if (rr != null) {
-									if (cv.isIgnoreRent()) {
-										return "§bИммунитет на выселение";
-									}
-									boolean isAdminCity = (city instanceof AdminCity);
-									long maxTime = (isAdminCity ? AdminCity.rentMaxTime : City.rentMaxTime);
-									return "§c" + DateUtil.formatedTime(maxTime - ((System.currentTimeMillis() - rr.getRentTime()) / 1000), false);
-								}
-								else {
-									return "§cОтсутствует аренда";
-								}
-							}
-						}
-						return " ";
-					}
-					
-				});
-				return tmpLines;
-			}
+                    @Override
+                    public String getText() {
+                        return " ";
+                    }
 
-			@Override
-			public boolean isVisible() {
-				return Cities.getInstance().getCityManager().getCityVillager(this.getPlayerBoard().getPlayer().getName()) != null;
-			}
-		});
-		tmpBoards.add(new AbstractPage(player) {
-			
-			@Override
-			public int getTimeToChange() {
-				return 20*60;
-			}
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-			
-			@Override
-			public String getTitle() {
-				return "§c§lСервер";
-			}
-			
-			@Override
-			public List<AbstractHolder> createHolders() {
-				List<AbstractHolder> tmpLines = new ArrayList<AbstractHolder>();
-				tmpLines.add(new AbstractHolder(this) {
+                    @Override
+                    public String getText() {
 
-					@Override
-					public String getText() {
-						return "§6Нагрузка на сервер:";
-					}
-					
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
+                        MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
 
-					@Override
-					public String getText() {
-						double tps = Board.getContext().getTpsRunnable().getTPS();
-						
-						String forTps = getTpsFormat(tps);
-						
-						return "§6TPS: " + forTps;
-						
-					}
-					
-					@Override
-					public long getMaxCacheTime() {
-						return 200;
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
-					
-					@Override
-					public String getText() {
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
-					
-					@Override
-					public String getText() {
-						return "§6Использование памяти:";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
-					
-					@Override
-					public String getText() {
-						
-						return getMemoryPrecentColor();
-					}
-					
-					@Override
-					public long getMaxCacheTime() {
-						return 200;
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
-					
-					@Override
-					public String getText() {
-						return " ";
-					}
-					
-				});
-				tmpLines.add(new AbstractHolder(this) {
-					
-					@Override
-					public String getText() {
-						return "§6Сущностей: §c" + getMobsAlive();
-					}
+                        if (mp != null) {
+                            int level = mp.getExperience().getLevel();
+                            return "§7Уровень: §b" + level;
+                        }
+                        return " ";
+                    }
 
-					@Override
-					public long getMaxCacheTime() {
-						return 200;
-					}
-				});
-				tmpLines.add(new AbstractHolder(this) {
-					
-					@Override
-					public String getText() {
-						return "§6Чанков: §c" + getChunks();
-					}
+                });
+                tmpLines.add(new AbstractHolder(this) {
 
-					@Override
-					public long getMaxCacheTime() {
-						return 200;
-					}
-				});
-				return tmpLines;
-			}
+                    @Override
+                    public String getText() {
 
-			@Override
-			public boolean isVisible() {
-				return this.getPlayerBoard().isDebugMode();
-			}
-		});
-		return tmpBoards;
-	}
-	
-	private int getMobsAlive() {
-		int entites = 0;
-		
-		for (World w : Bukkit.getWorlds()) {
-			entites = entites + w.getEntities().size();
-		}
-		return entites;
-	}
-	
-	private int getChunks() {
-		int chunks = 0;
-		
-		for (World w : Bukkit.getWorlds()) {
-			chunks = chunks + w.getLoadedChunks().length;
-		}
-		return chunks;
-	}
-	
-	private String getFormatMemory(String colorFirst, String colorSecond) {
-		double maxMemory = (Runtime.getRuntime().totalMemory() / 1024d / 1024d);
-		double currentMemory = (maxMemory - (Runtime.getRuntime().freeMemory() / 1024d / 1024d));
-		
-		double i1 = maxMemory / 23.0D;
-		double proc = currentMemory / i1;
-		StringBuffer sb = new StringBuffer("▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎");
-		
-		sb.insert((int)proc, colorFirst + "▎§0");
-		return colorSecond + sb.toString();
-	}
-	
-	private String getMemoryPrecentColor() {
-		double maxMemory = (Runtime.getRuntime().totalMemory() / 1024d / 1024d);
-		double currentMemory = (maxMemory - (Runtime.getRuntime().freeMemory() / 1024d / 1024d));
-		
-		double i1 = maxMemory / 100.0D;
-		double proc = currentMemory / i1;
-		
-		if (proc <= 10) {
-			return getFormatMemory("§f", "§f");
-		}
-		if (proc <= 25) {
-			return getFormatMemory("§7", "§f");
-		}
-		if (proc <= 50) {
-			return getFormatMemory("§2", "§a");
-		}
-		if (proc <= 75) {
-			return getFormatMemory("§e", "§6");
-		}
-		if (proc <= 90) {
-			return getFormatMemory("§e", "§6");
-		}
-		if (proc <= 100) {
-			return getFormatMemory("§4", "§4");
-		}
-		return getFormatMemory("§7", "§f");
-	}
+                        MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
 
-	private String getTpsFormat(double tps) {
-		if (tps > 20) {
-			tps = 20;
-		}
-		if (tps <= 5) {
-			return "§4" + df.format(tps) + " (ужасная)";
-		}
-		if (tps <= 10) {
-			return "§4" + df.format(tps) + " (гиганская)";
-		}
-		if (tps <= 15) {
-			return "§4" + df.format(tps) + " (большая)";
-		}
-		if (tps <= 16) {
-			return "§c" + df.format(tps) + " (высокая)";
-		}
-		if (tps <= 17) {
-			return "§e" + df.format(tps) + " (средняя)";
-		}
-		if (tps <= 18) {
-			return "§6" + df.format(tps) + " (легкая)";
-		}
-		if (tps <= 19) {
-			return "§2" + df.format(tps) + " (небольшая)";
-		}
-		if (tps <= 20) {
-			return "§a" + df.format(tps) + " (отсутствует)";
-		}
-		return "§a*" + df.format(tps);
-	}
-	
-	private String getPetStatus(PetState state) {
-		switch (state) {
-		case Here: return "Здесь";
-		case Dead: return "Мёртв";
-		case Despawned: return "Скрыт";
-		case PetState: return state.name();
-		default: return "unknown " + state.name();
-		}
-	}
-	
-	private static final DecimalFormat df = new DecimalFormat("#.##");
-	
+                        if (mp != null) {
+                            return "§7Сытость: §6" + df.format(mp.getSaturation()) + "§7%";
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+
+                        MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
+
+                        if (mp != null) {
+                            return "§7Здоровье: §c" + df.format(mp.getHealth()) + "§7/§c" + df.format(mp.getMaxHealth());
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+
+                        MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
+
+                        if (mp != null) {
+                            return "§7Сущность: §a" + Translation.getString("Name." + mp.getPetType().name(), mp.getOwner().getLanguage());
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+
+                        MyPet mp = MyPetApi.getMyPetManager().getMyPet(this.getPage().getPlayerBoard().getPlayer());
+
+                        if (mp != null) {
+                            return "§7Статус: §6" + getPetStatus(mp.getStatus());
+                        }
+                        return " ";
+                    }
+
+                });
+                return tmpLines;
+            }
+
+            @Override
+            public boolean isVisible() {
+                return MyPetApi.getMyPetManager().getMyPet(this.getPlayerBoard().getPlayer()) != null;
+            }
+        });
+        tmpBoards.add(new AbstractPage(player) {
+
+            @Override
+            public int getTimeToChange() {
+                return 20*15;
+            }
+
+
+            @Override
+            public String getTitle() {
+                return "§6§lГород";
+            }
+
+            @Override
+            public List<AbstractHolder> createHolders() {
+                List<AbstractHolder> tmpLines = new ArrayList<AbstractHolder>();
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
+                        if (cv != null) {
+                            City city = cv.getCity();
+                            if (city != null) {
+                                return "§7Тег " + city.getValidDisplayName();
+                            }
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
+                        if (cv != null) {
+                            City city = cv.getCity();
+                            if (!(city instanceof AdminCity)) {
+                                if (city != null) {
+                                    NationType type = city.getNation();
+                                    return "§7Раса: " + type.getColor() + type.getName() + (city.isCapital() ? " §6(Столица расы)" : "");
+                                }
+                            }
+                            else {
+                                return "§7Раса: §cОтсутствует";
+                            }
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
+                        if (cv != null) {
+                            City city = cv.getCity();
+                            if (city != null) {
+                                CityVillager mayor = city.getMayor();
+                                return "§7Мэр: §c" + (mayor != null ? mayor.getName() : "Отсутствует.");
+                            }
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
+                        if (cv != null) {
+                            City city = cv.getCity();
+                            if (city != null) {
+                                CityVillager submayor = city.getSubMayor();
+                                return "§7Заместитель: §4" + (submayor != null ? submayor.getName() : "Отсутствует.");
+                            }
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
+                        if (cv != null) {
+                            City city = cv.getCity();
+                            boolean adminCity = (city instanceof AdminCity);
+                            return "§7Население: §6" + city.getAllCityVillager().size() + "§7/§6" + (adminCity ? "∞" : city.getAllowedPlots());
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
+                        if (cv != null) {
+                            City city = cv.getCity();
+                            boolean adminCity = (city instanceof AdminCity);
+                            return "§7Аренд: §6" + city.getAllRegions().size() + "§7/§c" + (adminCity ? "∞" : city.getAllowedPlots());
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
+                        if (cv != null) {
+                            City city = cv.getCity();
+
+                            return "§7Используется: §6" + city.getRentBusyAmount() + "§7/§c" + city.getAllRegions().size();
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
+                        if (cv != null) {
+                            City city = cv.getCity();
+
+                            return "§7Общее развитие: §6" + city.getCurrentEvolute();
+                        }
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return "§7До выселения:";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+
+                        CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
+                        if (cv != null) {
+                            City city = cv.getCity();
+                            if (city != null) {
+                                RentRegion rr = cv.getRegion();
+                                if (rr != null) {
+                                    if (cv.isIgnoreRent()) {
+                                        return "§bИммунитет на выселение";
+                                    }
+                                    boolean isAdminCity = (city instanceof AdminCity);
+                                    long maxTime = (isAdminCity ? AdminCity.rentMaxTime : City.rentMaxTime);
+                                    return "§c" + DateUtil.formatedTime(maxTime - ((System.currentTimeMillis() - rr.getRentTime()) / 1000), false);
+                                }
+                                else {
+                                    return "§cОтсутствует аренда";
+                                }
+                            }
+                        }
+                        return " ";
+                    }
+
+                });
+                return tmpLines;
+            }
+
+            @Override
+            public boolean isVisible() {
+                return Cities.getInstance().getCityManager().getCityVillager(this.getPlayerBoard().getPlayer().getName()) != null;
+            }
+        });
+        tmpBoards.add(new AbstractPage(player) {
+
+            @Override
+            public int getTimeToChange() {
+                return 20*60;
+            }
+
+
+            @Override
+            public String getTitle() {
+                return "§c§lСервер";
+            }
+
+            @Override
+            public List<AbstractHolder> createHolders() {
+                List<AbstractHolder> tmpLines = new ArrayList<AbstractHolder>();
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return "§6Нагрузка на сервер:";
+                    }
+
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        double tps = Board.getContext().getTpsRunnable().getTPS();
+
+                        String forTps = getTpsFormat(tps);
+
+                        return "§6TPS: " + forTps;
+
+                    }
+
+                    @Override
+                    public long getMaxCacheTime() {
+                        return 200;
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return "§6Использование памяти:";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+
+                        return getMemoryPrecentColor();
+                    }
+
+                    @Override
+                    public long getMaxCacheTime() {
+                        return 200;
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return " ";
+                    }
+
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return "§6Сущностей: §c" + getMobsAlive();
+                    }
+
+                    @Override
+                    public long getMaxCacheTime() {
+                        return 200;
+                    }
+                });
+                tmpLines.add(new AbstractHolder(this) {
+
+                    @Override
+                    public String getText() {
+                        return "§6Чанков: §c" + getChunks();
+                    }
+
+                    @Override
+                    public long getMaxCacheTime() {
+                        return 200;
+                    }
+                });
+                return tmpLines;
+            }
+
+            @Override
+            public boolean isVisible() {
+                return this.getPlayerBoard().isDebugMode();
+            }
+        });
+        return tmpBoards;
+    }
+
+    private int getMobsAlive() {
+        int entites = 0;
+
+        for (World w : Bukkit.getWorlds()) {
+            entites = entites + w.getEntities().size();
+        }
+        return entites;
+    }
+
+    private int getChunks() {
+        int chunks = 0;
+
+        for (World w : Bukkit.getWorlds()) {
+            chunks = chunks + w.getLoadedChunks().length;
+        }
+        return chunks;
+    }
+
+    private String getFormatMemory(String colorFirst, String colorSecond) {
+        double maxMemory = (Runtime.getRuntime().totalMemory() / 1024d / 1024d);
+        double currentMemory = (maxMemory - (Runtime.getRuntime().freeMemory() / 1024d / 1024d));
+
+        double i1 = maxMemory / 23.0D;
+        double proc = currentMemory / i1;
+        StringBuffer sb = new StringBuffer("▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎▎");
+
+        sb.insert((int)proc, colorFirst + "▎§0");
+        return colorSecond + sb.toString();
+    }
+
+    private String getMemoryPrecentColor() {
+        double maxMemory = (Runtime.getRuntime().totalMemory() / 1024d / 1024d);
+        double currentMemory = (maxMemory - (Runtime.getRuntime().freeMemory() / 1024d / 1024d));
+
+        double i1 = maxMemory / 100.0D;
+        double proc = currentMemory / i1;
+
+        if (proc <= 10) {
+            return getFormatMemory("§f", "§f");
+        }
+        if (proc <= 25) {
+            return getFormatMemory("§7", "§f");
+        }
+        if (proc <= 50) {
+            return getFormatMemory("§2", "§a");
+        }
+        if (proc <= 75) {
+            return getFormatMemory("§e", "§6");
+        }
+        if (proc <= 90) {
+            return getFormatMemory("§e", "§6");
+        }
+        if (proc <= 100) {
+            return getFormatMemory("§4", "§4");
+        }
+        return getFormatMemory("§7", "§f");
+    }
+
+    private String getTpsFormat(double tps) {
+        if (tps > 20) {
+            tps = 20;
+        }
+        if (tps <= 5) {
+            return "§4" + df.format(tps) + " (ужасная)";
+        }
+        if (tps <= 10) {
+            return "§4" + df.format(tps) + " (гиганская)";
+        }
+        if (tps <= 15) {
+            return "§4" + df.format(tps) + " (большая)";
+        }
+        if (tps <= 16) {
+            return "§c" + df.format(tps) + " (высокая)";
+        }
+        if (tps <= 17) {
+            return "§e" + df.format(tps) + " (средняя)";
+        }
+        if (tps <= 18) {
+            return "§6" + df.format(tps) + " (легкая)";
+        }
+        if (tps <= 19) {
+            return "§2" + df.format(tps) + " (небольшая)";
+        }
+        if (tps <= 20) {
+            return "§a" + df.format(tps) + " (отсутствует)";
+        }
+        return "§a*" + df.format(tps);
+    }
+
+    private String getPetStatus(PetState state) {
+        switch (state) {
+            case Here: return "Здесь";
+            case Dead: return "Мёртв";
+            case Despawned: return "Скрыт";
+            case PetState: return state.name();
+            default: return "unknown " + state.name();
+        }
+    }
+
+    private static final DecimalFormat df = new DecimalFormat("#.##");
+
 }
