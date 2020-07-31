@@ -10,7 +10,6 @@ public class TpsRunnable extends BukkitRunnable {
     private double[] tpsArr = new double[10];
     private int index = 0;
     
-    
 	public TpsRunnable() {
 		runnable();
 	}

@@ -6,9 +6,9 @@ import ru.boomearo.board.objects.PlayerBoard;
 
 public abstract class AbstractPage {
 	
-	private PlayerBoard player;
+	private final PlayerBoard player;
 	
-	private List<AbstractHolder> loadedHolders;
+	private final List<AbstractHolder> loadedHolders;
 	
 	public AbstractPage(PlayerBoard player) {
 		this.player = player;

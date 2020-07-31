@@ -21,7 +21,7 @@ public class PlayerBoard {
 	private Objective objective;
     
     private List<AbstractPage> pages = null;
-    private List<TeamInfo> teams = new ArrayList<TeamInfo>();
+    private final List<TeamInfo> teams = new ArrayList<TeamInfo>();
 	private int pageIndex = 0;
 
     private volatile boolean cd = false;

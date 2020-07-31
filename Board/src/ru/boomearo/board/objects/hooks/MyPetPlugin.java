@@ -2,7 +2,7 @@ package ru.boomearo.board.objects.hooks;
 
 public class MyPetPlugin implements IHookPlugin {
 
-	private de.Keyle.MyPet.MyPetPlugin pet;
+	private final de.Keyle.MyPet.MyPetPlugin pet;
 	
 	public MyPetPlugin(de.Keyle.MyPet.MyPetPlugin pet) {
 		this.pet = pet;

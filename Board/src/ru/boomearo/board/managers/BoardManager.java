@@ -17,9 +17,9 @@ public final class BoardManager {
 
 	public static final String prefix = "§8[§6Board§8]: §f";
 	
-	private Map<String, PlayerBoard> playerBoards = new HashMap<String, PlayerBoard>();
+	private final Map<String, PlayerBoard> playerBoards = new HashMap<String, PlayerBoard>();
 	
-	private Set<String> playersIgnore = new HashSet<String>();
+	private final Set<String> playersIgnore = new HashSet<String>();
 	
 	private AbstractBoard board = null;
 	

@@ -4,7 +4,7 @@ import ru.boomearo.cities.Cities;
 
 public class CitiesPlugin implements IHookPlugin {
 
-	private Cities city;
+	private final Cities city;
 	
 	public CitiesPlugin(Cities city) {
 		this.city = city;

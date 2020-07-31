@@ -21,7 +21,7 @@ public abstract class AbstractHolder {
 	private String[] cache = null;
 	private long cacheTime = System.currentTimeMillis();
 	
-	private AbstractPage page;
+	private final AbstractPage page;
 	
 	public AbstractHolder(AbstractPage page) {
 		this.page = page;

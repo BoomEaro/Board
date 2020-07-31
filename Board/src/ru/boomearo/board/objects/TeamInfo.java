@@ -6,9 +6,8 @@ import ru.boomearo.board.objects.boards.AbstractHolder;
 
 public class TeamInfo {
 
-	private Team team;
-	private AbstractHolder holder;
-	
+	private final Team team;
+	private final AbstractHolder holder;
 	
 	public TeamInfo(Team team, AbstractHolder holder) {
 		this.team = team;

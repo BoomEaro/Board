@@ -4,7 +4,7 @@ import ru.boomearo.adveco.AdvEco;
 
 public class AdvEcoPlugin implements IHookPlugin {
 
-	private AdvEco eco;
+	private final AdvEco eco;
 	
 	public AdvEcoPlugin(AdvEco eco) {
 		this.eco = eco;

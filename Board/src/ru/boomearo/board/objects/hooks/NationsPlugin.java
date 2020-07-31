@@ -2,7 +2,7 @@ package ru.boomearo.board.objects.hooks;
 
 import ru.boomearo.nations.Nations;
 
-public class NationsPlugin implements IHookPlugin {
+public final class NationsPlugin implements IHookPlugin {
 
 	private Nations nation;
 	
