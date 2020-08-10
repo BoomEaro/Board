@@ -356,14 +356,9 @@ public class ServerBoard extends AbstractBoard {
                         CityVillager cv = Cities.getInstance().getCityManager().getCityVillager(this.getPage().getPlayerBoard().getPlayer().getName());
                         if (cv != null) {
                             City city = cv.getCity();
-                            if (!(city instanceof AdminCity)) {
-                                if (city != null) {
-                                    NationType type = city.getNation();
-                                    return "§7Раса: " + type.getColor() + type.getName() + (city.isCapital() ? " §6(Столица расы)" : "");
-                                }
-                            }
-                            else {
-                                return "§7Раса: §cОтсутствует";
+                            if (city != null) {
+                                NationType type = city.getNation();
+                                return "§7Раса: " + type.getColor() + type.getName() + (city.isCapital() ? " §6(Столица расы)" : "");
                             }
                         }
                         return " ";
@@ -504,9 +499,7 @@ public class ServerBoard extends AbstractBoard {
                                     if (cv.isIgnoreRent()) {
                                         return "§bИммунитет на выселение";
                                     }
-                                    boolean isAdminCity = (city instanceof AdminCity);
-                                    long maxTime = (isAdminCity ? AdminCity.rentMaxTime : City.rentMaxTime);
-                                    return "§c" + DateUtil.formatedTime(maxTime - ((System.currentTimeMillis() - rr.getRentTime()) / 1000), false);
+                                    return "§c" + DateUtil.formatedTime(city.getRentMaxTime() - ((System.currentTimeMillis() - rr.getRentTime()) / 1000), false);
                                 }
                                 else {
                                     return "§cОтсутствует аренда";
