@@ -7,10 +7,9 @@ import ru.boomearo.board.objects.PlayerBoard;
 
 public class DefaultBoard extends AbstractBoard {
 
-	@Override
-	public int updateTime() {
-		return 200;
-	}
+	public DefaultBoard() {
+        super(10);
+    }
 
 	@Override
 	public List<AbstractPage> getPages(PlayerBoard player) {
@@ -20,7 +19,7 @@ public class DefaultBoard extends AbstractBoard {
 
 			@Override
 			public int getTimeToChange() {
-				return 20*10;
+				return 10;
 			}
 
 			@Override

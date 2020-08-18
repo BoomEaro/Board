@@ -31,9 +31,8 @@ import ru.boomearo.nations.objects.PlayerNation;
 
 public class ServerBoard extends AbstractBoard {
 
-    @Override
-    public int updateTime() {
-        return 20;
+    public ServerBoard() {
+        super(1);
     }
 
     @Override
@@ -44,7 +43,7 @@ public class ServerBoard extends AbstractBoard {
 
             @Override
             public int getTimeToChange() {
-                return 20*20;
+                return 20;
             }
 
             @Override
@@ -198,7 +197,7 @@ public class ServerBoard extends AbstractBoard {
 
             @Override
             public int getTimeToChange() {
-                return 20*15;
+                return 15;
             }
 
             @Override
@@ -322,7 +321,7 @@ public class ServerBoard extends AbstractBoard {
 
             @Override
             public int getTimeToChange() {
-                return 20*15;
+                return 15;
             }
 
 
@@ -522,7 +521,7 @@ public class ServerBoard extends AbstractBoard {
 
             @Override
             public int getTimeToChange() {
-                return 20*60;
+                return 60;
             }
 
 

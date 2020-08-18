@@ -1,28 +1,24 @@
 package ru.boomearo.board.objects.boards;
 
 import java.util.List;
-
-import org.bukkit.scheduler.BukkitRunnable;
+import java.util.concurrent.TimeUnit;
 
 import ru.boomearo.board.Board;
 import ru.boomearo.board.objects.PlayerBoard;
+import ru.boomearo.board.runnable.AbstractTimer;
 
-public abstract class AbstractBoard extends BukkitRunnable {
-	
+public abstract class AbstractBoard extends AbstractTimer {
+    
 	private final int updateTime;
 	
-	public AbstractBoard() {
-		this.updateTime = updateTime();
+	public AbstractBoard(int time) {
+	    super("AbstractBoard", TimeUnit.SECONDS, time);
+		this.updateTime = time;
 		update();
-		runnable();
-	}
-	
-	private void runnable() {
-		this.runTaskTimer(Board.getContext(), this.updateTime, this.updateTime);
 	}
 	
 	@Override
-	public void run() {
+	public void task() {
 		update();
 	}
 	
@@ -48,7 +44,7 @@ public abstract class AbstractBoard extends BukkitRunnable {
 						continue;
 					}
 					
-					if (pb.getUpdatePageCount() >= (thisPage.getTimeToChange() / this.updateTime)) {
+					if (pb.getUpdatePageCount() >= thisPage.getTimeToChange()) {
 						
 						//Board.getContext().getLogger().info(pb.getPlayer().getDisplayName() + " -> " + nextPageIndex + " " + pb.getUpdatePageCount() + " " + (thisPage.getTimeToChange() / this.updateTime) + " " + (pb.getUpdatePageCount() >= (thisPage.getTimeToChange() / this.updateTime)) + " " + (pb.getPageIndex() != nextPageIndex) + " " + !thisPage.isVisible() + " " + !pb.isPermanentView());
 						if (pb.getPageIndex() != nextPageIndex) {
@@ -75,8 +71,6 @@ public abstract class AbstractBoard extends BukkitRunnable {
 			e.printStackTrace();
 		}
 	}
-	
-	protected abstract int updateTime();
 	
 	public abstract List<AbstractPage> getPages(PlayerBoard player);
 	

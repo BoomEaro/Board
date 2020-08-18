@@ -7,10 +7,9 @@ import ru.boomearo.board.objects.PlayerBoard;
 
 public class ExpBoard extends AbstractBoard {
 
-	@Override
-	protected int updateTime() {
-		return 10;
-	}
+	public ExpBoard() {
+        super(1);
+    }
 
 	@Override
 	public List<AbstractPage> getPages(PlayerBoard player) {
@@ -21,7 +20,7 @@ public class ExpBoard extends AbstractBoard {
 			
 			@Override
 			public int getTimeToChange() {
-				return 20;
+				return 1;
 			}
 
 			@Override

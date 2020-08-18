@@ -12,6 +12,7 @@ import ru.boomearo.board.commands.board.CmdExecutorBoard;
 import ru.boomearo.board.listeners.PlayerListener;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PlayerBoard;
+import ru.boomearo.board.objects.boards.AbstractBoard;
 import ru.boomearo.board.objects.boards.DefaultBoard;
 import ru.boomearo.board.objects.boards.ServerBoard;
 import ru.boomearo.board.objects.boards.TestBoard;
@@ -51,21 +52,42 @@ public class Board extends JavaPlugin {
 		
 		if (this.boardType == 1) {
 			if (this.hookManager.getAdvEco() != null && this.hookManager.getCities() != null && this.hookManager.getMyPet() != null && this.hookManager.getNations() != null) {
-				this.boardManager.setBoard(new ServerBoard());
-				//this.boardManager.setBoard(new ExpBoard());
+			    ServerBoard board = new ServerBoard();
+				this.boardManager.setBoard(board);
+
+				board.setPriority(3);
+				board.start();
+
 				this.getLogger().info("Загружаем аркадное табло.");
 			}
 			else {
-				this.boardManager.setBoard(new DefaultBoard());
+			    DefaultBoard board = new DefaultBoard();
+				this.boardManager.setBoard(board);
+				
+                board.setPriority(3);
+                board.start();
+				
 				this.getLogger().info("Не удалось загрузить аркадное табло. Кажется, отсутствует какой то плагин.");
 			}
 		}
 		else if (this.boardType == 2) {
-			this.boardManager.setBoard(new TestBoard());
+		    TestBoard board = new TestBoard();
+		    
+			this.boardManager.setBoard(board);
+			
+            board.setPriority(3);
+            board.start();
+			
 			this.getLogger().info("Загружаем тестовое табло.");
 		}
 		else {
-			this.boardManager.setBoard(new DefaultBoard());
+            DefaultBoard board = new DefaultBoard();
+            
+			this.boardManager.setBoard(board);
+			
+            board.setPriority(3);
+            board.start();
+			
 			this.getLogger().info("Загружаем табло по умолчанию.");
 		}
 		
@@ -79,6 +101,11 @@ public class Board extends JavaPlugin {
 	}
 	
 	public void onDisable() {
+	    AbstractBoard b = this.boardManager.getBoard();
+	    if (b != null) {
+	        b.interrupt();
+	    }
+	    
 		unloadPlayerBoards();
 		savePlayersConfig();
 		getLogger().info("Плагин успешно выгружен.");

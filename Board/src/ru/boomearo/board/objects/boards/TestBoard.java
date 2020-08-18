@@ -14,10 +14,9 @@ import ru.boomearo.board.utils.DateUtil;
 
 public class TestBoard extends AbstractBoard {
 
-	@Override
-	public int updateTime() {
-		return 10;
-	}
+	public TestBoard() {
+        super(1);
+    }
 
 	@Override
 	public List<AbstractPage> getPages(PlayerBoard player) {
@@ -27,7 +26,7 @@ public class TestBoard extends AbstractBoard {
 			
 			@Override
 			public int getTimeToChange() {
-				return 20*10;
+				return 10;
 			}
 
 			@Override
@@ -136,7 +135,7 @@ public class TestBoard extends AbstractBoard {
 
 			@Override
 			public int getTimeToChange() {
-				return 20*60;
+				return 60;
 			}
 			
 			@Override
