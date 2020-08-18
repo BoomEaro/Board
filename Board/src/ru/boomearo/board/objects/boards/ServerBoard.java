@@ -17,12 +17,12 @@ import ru.boomearo.adveco.managers.EcoManager;
 import ru.boomearo.adveco.objects.EcoType;
 import ru.boomearo.board.Board;
 import ru.boomearo.board.objects.PlayerBoard;
+import ru.boomearo.board.utils.DateUtil;
 import ru.boomearo.cities.Cities;
 import ru.boomearo.cities.objects.AdminCity;
 import ru.boomearo.cities.objects.City;
 import ru.boomearo.cities.objects.CityVillager;
 import ru.boomearo.cities.objects.regions.RentRegion;
-import ru.boomearo.cities.utils.DateUtil;
 import ru.boomearo.nations.Nations;
 import ru.boomearo.nations.objects.NationType;
 import ru.boomearo.nations.objects.PlayerNation;
@@ -496,7 +496,7 @@ public class ServerBoard extends AbstractBoard {
                                     if (cv.isIgnoreRent()) {
                                         return "§bИммунитет на выселение";
                                     }
-                                    return "§c" + DateUtil.formatedTime(city.getRentMaxTime() - ((System.currentTimeMillis() - rr.getRentTime()) / 1000), false);
+                                    return "§c" + DateUtil.formatedTimeSimple(city.getRentMaxTime() - ((System.currentTimeMillis() - rr.getRentTime()) / 1000), false);
                                 }
                                 else {
                                     return "§cОтсутствует аренда";

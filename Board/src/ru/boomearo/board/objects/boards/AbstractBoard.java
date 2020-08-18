@@ -9,6 +9,7 @@ import ru.boomearo.board.runnable.AbstractTimer;
 
 public abstract class AbstractBoard extends AbstractTimer {
 
+    //Если будет работать плохо из-за асинхронного обновления скорборда, то сделаем в основном потоке..
 	public AbstractBoard(String name, int time) {
 	    super(name, TimeUnit.SECONDS, time);
 	}
