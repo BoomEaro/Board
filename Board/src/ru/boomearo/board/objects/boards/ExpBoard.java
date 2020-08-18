@@ -8,7 +8,7 @@ import ru.boomearo.board.objects.PlayerBoard;
 public class ExpBoard extends AbstractBoard {
 
 	public ExpBoard() {
-        super(1);
+        super("ExpBoard", 1);
     }
 
 	@Override

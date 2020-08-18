@@ -11,8 +11,8 @@ public abstract class AbstractBoard extends AbstractTimer {
     
 	private final int updateTime;
 	
-	public AbstractBoard(int time) {
-	    super("AbstractBoard", TimeUnit.SECONDS, time);
+	public AbstractBoard(String name, int time) {
+	    super(name, TimeUnit.SECONDS, time);
 		this.updateTime = time;
 		update();
 	}

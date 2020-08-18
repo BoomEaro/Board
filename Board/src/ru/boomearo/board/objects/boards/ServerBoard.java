@@ -4,9 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Statistic;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import de.Keyle.MyPet.MyPetApi;
@@ -32,7 +30,7 @@ import ru.boomearo.nations.objects.PlayerNation;
 public class ServerBoard extends AbstractBoard {
 
     public ServerBoard() {
-        super(1);
+        super("ServerBoard", 1);
     }
 
     @Override
@@ -546,7 +544,7 @@ public class ServerBoard extends AbstractBoard {
 
                     @Override
                     public String getText() {
-                        double tps = Board.getContext().getTpsRunnable().getTPS();
+                        double tps = Board.getContext().getTpsRunnable().getTps();
 
                         String forTps = getTpsFormat(tps);
 
@@ -602,7 +600,7 @@ public class ServerBoard extends AbstractBoard {
 
                     @Override
                     public String getText() {
-                        return "§6Сущностей: §c" + getMobsAlive();
+                        return "§6Сущностей: §c" + Board.getContext().getTpsRunnable().getEntites();
                     }
 
                     @Override
@@ -614,7 +612,7 @@ public class ServerBoard extends AbstractBoard {
 
                     @Override
                     public String getText() {
-                        return "§6Чанков: §c" + getChunks();
+                        return "§6Чанков: §c" + Board.getContext().getTpsRunnable().getChunks();
                     }
 
                     @Override
@@ -631,24 +629,6 @@ public class ServerBoard extends AbstractBoard {
             }
         });
         return tmpBoards;
-    }
-
-    private int getMobsAlive() {
-        int entites = 0;
-
-        for (World w : Bukkit.getWorlds()) {
-            entites = entites + w.getEntities().size();
-        }
-        return entites;
-    }
-
-    private int getChunks() {
-        int chunks = 0;
-
-        for (World w : Bukkit.getWorlds()) {
-            chunks = chunks + w.getLoadedChunks().length;
-        }
-        return chunks;
     }
 
     private String getFormatMemory(String colorFirst, String colorSecond) {

@@ -8,7 +8,7 @@ import ru.boomearo.board.objects.PlayerBoard;
 public class DefaultBoard extends AbstractBoard {
 
 	public DefaultBoard() {
-        super(10);
+        super("DefaultBoard", 10);
     }
 
 	@Override

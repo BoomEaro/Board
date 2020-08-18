@@ -4,9 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 
 import ru.boomearo.board.Board;
 import ru.boomearo.board.objects.PlayerBoard;
@@ -15,7 +13,7 @@ import ru.boomearo.board.utils.DateUtil;
 public class TestBoard extends AbstractBoard {
 
 	public TestBoard() {
-        super(1);
+        super("TestBoard", 1);
     }
 
 	@Override
@@ -166,7 +164,7 @@ public class TestBoard extends AbstractBoard {
 
 					@Override
 					public String getText() {
-						return "§f" + getTpsFormat(Board.getContext().getTpsRunnable().getTPS());
+						return "§f" + getTpsFormat(Board.getContext().getTpsRunnable().getTps());
 					}
 					
 					@Override 
@@ -302,7 +300,7 @@ public class TestBoard extends AbstractBoard {
 					
 					@Override
 					public String getText() {
-						return "§6Сущностей: §c" + getMobsAlive();
+						return "§6Сущностей: §c" + Board.getContext().getTpsRunnable().getEntites();
 					}
 
 					@Override
@@ -314,7 +312,7 @@ public class TestBoard extends AbstractBoard {
 					
 					@Override
 					public String getText() {
-						return "§6Чанков: §c" + getChunks();
+						return "§6Чанков: §c" + Board.getContext().getTpsRunnable().getChunks();
 					}
 
 					@Override
@@ -331,25 +329,6 @@ public class TestBoard extends AbstractBoard {
 			}
 		});
 		return tmpBoards;
-	}
-
-	
-	private int getMobsAlive() {
-		int entites = 0;
-		
-		for (World w : Bukkit.getWorlds()) {
-			entites = entites + w.getEntities().size();
-		}
-		return entites;
-	}
-	
-	private int getChunks() {
-		int chunks = 0;
-		
-		for (World w : Bukkit.getWorlds()) {
-			chunks = chunks + w.getLoadedChunks().length;
-		}
-		return chunks;
 	}
 	
 	private String getTpsFormat(double tps) {
