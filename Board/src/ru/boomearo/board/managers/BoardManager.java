@@ -75,9 +75,9 @@ public final class BoardManager {
         }
     }
 
-    public Set<String> getAllIgnores() {
+    public List<String> getAllIgnores() {
         synchronized (this.lock) {
-            return new HashSet<String>(this.playersIgnore);
+            return new ArrayList<String>(this.playersIgnore);
         }
     }
 
