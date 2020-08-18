@@ -73,11 +73,11 @@ public class PlayerBoard {
     }
 
     public AbstractPage getPageByIndex(int index) {
+        if (index < 0) {
+            return null;
+        }
+        
         synchronized (this.lock) {
-            if (index < 0) {
-                return null;
-            }
-
             if (index > getMaxPageIndex()) {
                 return null;
             }
@@ -123,7 +123,7 @@ public class PlayerBoard {
         if (!Bukkit.isPrimaryThread()) {
             throw new BoardException("ScoreBoard должен быть создан в основном потоке!");
         }
-        
+
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         this.objective = this.scoreboard.registerNewObjective("Board", "dummy");
         this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -234,15 +234,6 @@ public class PlayerBoard {
         }
 
         this.teams.clear();
-    }
-
-
-    public Scoreboard getBoard() {
-        return this.scoreboard;
-    }
-
-    public Objective getScore() {
-        return this.objective;
     }
 
     public Player getPlayer() {

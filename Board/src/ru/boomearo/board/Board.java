@@ -91,11 +91,11 @@ public class Board extends JavaPlugin {
 			this.getLogger().info("Загружаем табло по умолчанию.");
 		}
 		
+        loadPlayerBoards();
+        
 		getCommand("board").setExecutor(new CmdExecutorBoard());
 		
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		
-		loadPlayerBoards();
 		
 		getLogger().info("Плагин успешно загружен.");
 	}

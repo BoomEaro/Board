@@ -8,13 +8,9 @@ import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.runnable.AbstractTimer;
 
 public abstract class AbstractBoard extends AbstractTimer {
-    
-	private final int updateTime;
-	
+
 	public AbstractBoard(String name, int time) {
 	    super(name, TimeUnit.SECONDS, time);
-		this.updateTime = time;
-		update();
 	}
 	
 	@Override
@@ -73,8 +69,5 @@ public abstract class AbstractBoard extends AbstractTimer {
 	}
 	
 	public abstract List<AbstractPage> getPages(PlayerBoard player);
-	
-	public int getReadyTime() {
-		return this.updateTime;
-	}
+
 }
