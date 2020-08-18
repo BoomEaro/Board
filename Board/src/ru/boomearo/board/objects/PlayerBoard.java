@@ -63,7 +63,7 @@ public class PlayerBoard {
     public void initPages() {
         this.pageIndex = 0;
 
-        this.pages = Board.getContext().getBoardManager().getBoard().getPages(this);
+        this.pages = Board.getInstance().getBoardManager().getBoard().getPages(this);
     }
 
     public AbstractPage getCurrentPage() {
@@ -200,7 +200,7 @@ public class PlayerBoard {
                 this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             }
             else {
-                Bukkit.getScheduler().runTask(Board.getContext(), () -> {
+                Bukkit.getScheduler().runTask(Board.getInstance(), () -> {
                     this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
                 });
             }

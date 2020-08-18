@@ -20,7 +20,7 @@ public class CmdBoard {
 			return false;
 		}
 		Player pl = (Player) cs;
-		BoardManager manager = Board.getContext().getBoardManager();
+		BoardManager manager = Board.getInstance().getBoardManager();
 		if (!manager.isIgnore(pl.getName())) {
 			manager.removePlayerBoard(pl.getName());
 			manager.addIgnore(pl.getName());
@@ -48,7 +48,7 @@ public class CmdBoard {
 			pl.sendMessage(ss);
 			return true;
 		}
-		BoardManager manager = Board.getContext().getBoardManager();
+		BoardManager manager = Board.getInstance().getBoardManager();
 		PlayerBoard pb = manager.getPlayerBoard(pl.getName());
 		if (pb != null) {
 			int maxSize = pb.getMaxPageIndex();
@@ -87,7 +87,7 @@ public class CmdBoard {
 			return false;
 		}
 		Player pl = (Player) cs;
-		BoardManager manager = Board.getContext().getBoardManager();
+		BoardManager manager = Board.getInstance().getBoardManager();
 		PlayerBoard pb = manager.getPlayerBoard(pl.getName());
 		if (pb != null) {
 			pb.setPermanentView(!pb.isPermanentView());
@@ -108,7 +108,7 @@ public class CmdBoard {
 		}
 		Player pl = (Player) cs;
 		
-		BoardManager manager = Board.getContext().getBoardManager();
+		BoardManager manager = Board.getInstance().getBoardManager();
 		PlayerBoard pb = manager.getPlayerBoard(pl.getName());
 		if (pb != null) {
 			pb.setDebugMode(!pb.isDebugMode());

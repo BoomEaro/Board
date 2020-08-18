@@ -58,7 +58,7 @@ public class DateUtil {
             }
         }
         if (!found) {
-            Board.getContext().getLogger().info("Не получилось спарсить время. Кто то что то напортачил.");
+            Board.getInstance().getLogger().info("Не получилось спарсить время. Кто то что то напортачил.");
         }
         Calendar c = new GregorianCalendar();
         if (years > 0) {

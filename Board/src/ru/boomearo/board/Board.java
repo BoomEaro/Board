@@ -112,7 +112,7 @@ public class Board extends JavaPlugin {
 	}
 	
 	private static Board instance = null;
-	public static Board getContext() { 
+	public static Board getInstance() { 
 		if (instance != null) return instance; return null; 
 	}
 	

@@ -16,7 +16,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerJoinEvent(PlayerJoinEvent e) {
 		Player pl = e.getPlayer();
 		
-		BoardManager manager = Board.getContext().getBoardManager();
+		BoardManager manager = Board.getInstance().getBoardManager();
 		if (!manager.isIgnore(pl.getName())) {
 			PlayerBoard pb = manager.getPlayerBoard(pl.getName());
 			if (pb == null) {
@@ -29,7 +29,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerQuitEvent(PlayerQuitEvent e) {
 		Player pl = e.getPlayer();
 		
-		BoardManager manager = Board.getContext().getBoardManager();
+		BoardManager manager = Board.getInstance().getBoardManager();
 		if (!manager.isIgnore(pl.getName())) {
 			PlayerBoard pb = manager.getPlayerBoard(pl.getName());
 			if (pb != null) {

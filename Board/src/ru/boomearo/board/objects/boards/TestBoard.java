@@ -164,7 +164,7 @@ public class TestBoard extends AbstractBoard {
 
 					@Override
 					public String getText() {
-						return "§f" + getTpsFormat(Board.getContext().getTpsRunnable().getTps());
+						return "§f" + getTpsFormat(Board.getInstance().getTpsRunnable().getTps());
 					}
 					
 					@Override 
@@ -300,7 +300,7 @@ public class TestBoard extends AbstractBoard {
 					
 					@Override
 					public String getText() {
-						return "§6Сущностей: §c" + Board.getContext().getTpsRunnable().getEntites();
+						return "§6Сущностей: §c" + Board.getInstance().getTpsRunnable().getEntites();
 					}
 
 					@Override
@@ -312,7 +312,7 @@ public class TestBoard extends AbstractBoard {
 					
 					@Override
 					public String getText() {
-						return "§6Чанков: §c" + Board.getContext().getTpsRunnable().getChunks();
+						return "§6Чанков: §c" + Board.getInstance().getTpsRunnable().getChunks();
 					}
 
 					@Override

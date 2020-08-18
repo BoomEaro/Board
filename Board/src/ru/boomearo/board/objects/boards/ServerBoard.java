@@ -544,7 +544,7 @@ public class ServerBoard extends AbstractBoard {
 
                     @Override
                     public String getText() {
-                        double tps = Board.getContext().getTpsRunnable().getTps();
+                        double tps = Board.getInstance().getTpsRunnable().getTps();
 
                         String forTps = getTpsFormat(tps);
 
@@ -600,7 +600,7 @@ public class ServerBoard extends AbstractBoard {
 
                     @Override
                     public String getText() {
-                        return "§6Сущностей: §c" + Board.getContext().getTpsRunnable().getEntites();
+                        return "§6Сущностей: §c" + Board.getInstance().getTpsRunnable().getEntites();
                     }
 
                     @Override
@@ -612,7 +612,7 @@ public class ServerBoard extends AbstractBoard {
 
                     @Override
                     public String getText() {
-                        return "§6Чанков: §c" + Board.getContext().getTpsRunnable().getChunks();
+                        return "§6Чанков: §c" + Board.getInstance().getTpsRunnable().getChunks();
                     }
 
                     @Override

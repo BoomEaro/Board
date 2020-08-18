@@ -27,7 +27,7 @@ public abstract class AbstractTimer extends Thread {
     @Override
     public void run() {
         if (!this.silent) {
-            Board.getContext().getLogger().info(this.getName() + " успешно запущен!");
+            Board.getInstance().getLogger().info(this.getName() + " успешно запущен!");
         }
         while (!this.cancel) {  
             try {
@@ -37,13 +37,13 @@ public abstract class AbstractTimer extends Thread {
             } 
             catch (Throwable t) {
                 if (!this.silent) {
-                    Board.getContext().getLogger().warning(this.getName() + " успешно был прерван!");
+                    Board.getInstance().getLogger().warning(this.getName() + " успешно был прерван!");
                 }
                 return;
             }
         }
         if (!this.silent) {
-            Board.getContext().getLogger().warning(this.getName() + " успешно завершен!");
+            Board.getInstance().getLogger().warning(this.getName() + " успешно завершен!");
         }
     }
     

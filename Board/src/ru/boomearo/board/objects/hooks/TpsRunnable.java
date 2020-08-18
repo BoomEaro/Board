@@ -23,7 +23,7 @@ public class TpsRunnable extends BukkitRunnable {
     }
 
     public void runnable() {
-        this.runTaskTimer(Board.getContext(), 20, 20);
+        this.runTaskTimer(Board.getInstance(), 20, 20);
     }
 
     public double getTps() {

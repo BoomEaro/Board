@@ -20,7 +20,7 @@ public abstract class AbstractBoard extends AbstractTimer {
 	
 	public void update() {
 		try {
-			for (PlayerBoard pb : Board.getContext().getBoardManager().getAllPlayerBoards()) {
+			for (PlayerBoard pb : Board.getInstance().getBoardManager().getAllPlayerBoards()) {
 				int maxPage = pb.getMaxPageIndex();
 				if (pb.getPageIndex() <= maxPage) {
 					AbstractPage thisPage = pb.getCurrentPage();
