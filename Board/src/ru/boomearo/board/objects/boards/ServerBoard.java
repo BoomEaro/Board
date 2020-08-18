@@ -358,7 +358,7 @@ public class ServerBoard extends AbstractBoard {
                             City city = cv.getCity();
                             if (city != null) {
                                 NationType type = city.getNation();
-                                return "§7Раса: " + type.getColor() + type.getName() + (city.isCapital() ? " §6(Столица расы)" : "");
+                                return "§7Раса: " + type.getColor() + type.getName() + (city.isCapital() ? " §8(" + City.capitalSymbol + "§8)" : "");
                             }
                         }
                         return " ";
