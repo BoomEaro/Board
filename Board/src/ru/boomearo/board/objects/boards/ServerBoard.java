@@ -552,11 +552,6 @@ public class ServerBoard extends AbstractBoard {
 
                     }
 
-                    @Override
-                    public long getMaxCacheTime() {
-                        return 200;
-                    }
-
                 });
                 tmpLines.add(new AbstractHolder(this) {
 
@@ -602,11 +597,6 @@ public class ServerBoard extends AbstractBoard {
                     public String getText() {
                         return "§6Сущностей: §c" + Board.getInstance().getTpsRunnable().getEntites();
                     }
-
-                    @Override
-                    public long getMaxCacheTime() {
-                        return 200;
-                    }
                 });
                 tmpLines.add(new AbstractHolder(this) {
 
@@ -615,10 +605,6 @@ public class ServerBoard extends AbstractBoard {
                         return "§6Чанков: §c" + Board.getInstance().getTpsRunnable().getChunks();
                     }
 
-                    @Override
-                    public long getMaxCacheTime() {
-                        return 200;
-                    }
                 });
                 return tmpLines;
             }
