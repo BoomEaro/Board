@@ -26,13 +26,6 @@ import ru.boomearo.cities.objects.regions.RentRegion;
 import ru.boomearo.nations.Nations;
 import ru.boomearo.nations.objects.NationType;
 import ru.boomearo.nations.objects.PlayerNation;
-import ru.boomearo.quests.Quests;
-import ru.boomearo.quests.managers.QuestsManager;
-import ru.boomearo.quests.objects.NpcQuests;
-import ru.boomearo.quests.objects.PlayerData;
-import ru.boomearo.quests.objects.PlayerData.TrackedQuest;
-import ru.boomearo.quests.objects.quests.Quest;
-import ru.boomearo.quests.objects.quests.jobs.AbstractJob;
 
 public class ServerBoard extends AbstractBoard {
 
@@ -589,6 +582,11 @@ public class ServerBoard extends AbstractBoard {
                         return getMemoryPrecentColor();
                     }
 
+                    @Override
+                    public long getMaxCacheTime() {
+                        return 200;
+                    }
+
                 });
                 tmpLines.add(new AbstractHolder(this) {
 
@@ -605,12 +603,21 @@ public class ServerBoard extends AbstractBoard {
                         return "§6Сущностей: §c" + Board.getInstance().getTpsRunnable().getEntites();
                     }
 
+                    @Override
+                    public long getMaxCacheTime() {
+                        return 200;
+                    }
                 });
                 tmpLines.add(new AbstractHolder(this) {
 
                     @Override
                     public String getText() {
                         return "§6Чанков: §c" + Board.getInstance().getTpsRunnable().getChunks();
+                    }
+
+                    @Override
+                    public long getMaxCacheTime() {
+                        return 200;
                     }
                 });
                 return tmpLines;
@@ -621,272 +628,7 @@ public class ServerBoard extends AbstractBoard {
                 return this.getPlayerBoard().isDebugMode();
             }
         });
-        tmpBoards.add(new AbstractPage(player) {
-
-            @Override
-            public int getTimeToChange() {
-                return 60;
-            }
-
-
-            @Override
-            public String getTitle() {
-                return "§6§lОтслеживание квеста";
-            }
-
-            @Override
-            public List<AbstractHolder> createHolders() {
-                List<AbstractHolder> tmpLines = new ArrayList<AbstractHolder>();
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            return "Квест: " + quest.getName();
-                        }
-                        return "";
-                    }
-
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(0);
-                            if (job != null) {
-                                return "Задание: " + job.getName();
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(0);
-                            if (job != null) {
-                                return QuestsManager.createProgressBarMini(quest.getDifficult().getColor(), job.getCount(), job.getMaxCount());
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(1);
-                            if (job != null) {
-                                return "Задание: " + job.getName();
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(1);
-                            if (job != null) {
-                                return QuestsManager.createProgressBarMini(quest.getDifficult().getColor(), job.getCount(), job.getMaxCount());
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(2);
-                            if (job != null) {
-                                return "Задание: " + job.getName();
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(2);
-                            if (job != null) {
-                                return QuestsManager.createProgressBarMini(quest.getDifficult().getColor(), job.getCount(), job.getMaxCount());
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(3);
-                            if (job != null) {
-                                return "Задание: " + job.getName();
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(3);
-                            if (job != null) {
-                                return QuestsManager.createProgressBarMini(quest.getDifficult().getColor(), job.getCount(), job.getMaxCount());
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(4);
-                            if (job != null) {
-                                return "Задание: " + job.getName();
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(4);
-                            if (job != null) {
-                                return QuestsManager.createProgressBarMini(quest.getDifficult().getColor(), job.getCount(), job.getMaxCount());
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(5);
-                            if (job != null) {
-                                return "Задание: " + job.getName();
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(5);
-                            if (job != null) {
-                                return QuestsManager.createProgressBarMini(quest.getDifficult().getColor(), job.getCount(), job.getMaxCount());
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(6);
-                            if (job != null) {
-                                return "Задание: " + job.getName();
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                tmpLines.add(new AbstractHolder(this) {
-
-                    @Override
-                    public String getText() {
-                        Quest quest = getTrackedQuest(this.getPage().getPlayerBoard().getPlayer().getName());
-                        if (quest != null) {
-                            AbstractJob job = quest.getJobByIndex(6);
-                            if (job != null) {
-                                return QuestsManager.createProgressBarMini(quest.getDifficult().getColor(), job.getCount(), job.getMaxCount());
-                            }
-                        }
-                        return "";
-                    }
-
-                });
-                return tmpLines;
-            }
-
-            @Override
-            public boolean isVisible() {
-                Quest quest = getTrackedQuest(this.getPlayerBoard().getPlayer().getName());
-                return quest != null;
-            }
-        });
         return tmpBoards;
-    }
-    
-    private Quest getTrackedQuest(String name) {
-        PlayerData pd = Quests.getInstance().getQuestsManager().getPlayerData(name);
-        if (pd != null) {
-            TrackedQuest tq = pd.getTrackedQuest();
-            if (tq != null) {
-                NpcQuests nq = pd.getNpcQuests(tq.getNpcType());
-                if (nq != null) {
-                    Quest quest = nq.getActive(tq.getQuestDifficult());
-                    if (quest != null) {
-                        return quest;
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     private String getFormatMemory(String colorFirst, String colorSecond) {

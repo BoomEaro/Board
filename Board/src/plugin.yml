@@ -3,7 +3,7 @@ main: ru.boomearo.board.Board
 version: 0.5.1
 author: BoomEaro
 description: advanced board
-softdepend: [MyPet, Cities, Nations, AdvEco, Quests]
+softdepend: [MyPet, Cities, Nations, AdvEco]
 commands:
   board:
     usage: /board
