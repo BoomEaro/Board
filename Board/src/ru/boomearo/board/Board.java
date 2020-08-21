@@ -51,7 +51,9 @@ public class Board extends JavaPlugin {
 		loadConfig();
 		
 		if (this.boardType == 1) {
-			if (this.hookManager.getAdvEco() != null && this.hookManager.getCities() != null && this.hookManager.getMyPet() != null && this.hookManager.getNations() != null) {
+			if (this.hookManager.getAdvEco() != null && this.hookManager.getCities() != null && 
+			        this.hookManager.getMyPet() != null && this.hookManager.getNations() != null && 
+			        this.hookManager.getQuests() != null) {
 			    ServerBoard board = new ServerBoard();
 				this.boardManager.setBoard(board);
 

@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="C:/Users/Valik2016/workspace/MyPet-3.10.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Valik2016/workspace/Cities.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Valik2016/workspace/Nations.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Valik2016/workspace/Quests.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
