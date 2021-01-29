@@ -496,7 +496,7 @@ public class ServerBoard extends AbstractBoard {
                                     if (cv.isIgnoreRent()) {
                                         return "§bИммунитет на выселение";
                                     }
-                                    return "§c" + DateUtil.formatedTimeSimple(city.getRentMaxTime() - ((System.currentTimeMillis() - rr.getRentTime()) / 1000), false);
+                                    return "§c" + DateUtil.formatedTimeSimple(((rr.getRentTime() - System.currentTimeMillis()) / 1000), false);
                                 }
                                 else {
                                     return "§cОтсутствует аренда";
