@@ -64,7 +64,15 @@ public class CmdBoard {
 			}
 			
 			AbstractPage pageTo = pb.getPageByIndex(fixedPage);
-			if (pageTo.isVisible()) {
+			boolean isVisible = false;
+			try {
+			    isVisible = pageTo.isVisible();
+			}
+			catch (Exception e) {
+			    e.printStackTrace();
+			}
+			
+			if (isVisible) {
 				pb.toPage(fixedPage, pageTo);
 				pl.sendMessage(BoardManager.prefix + "Страница §6" + page + " §fуспешно отображена.");
 			}

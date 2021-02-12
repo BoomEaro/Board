@@ -29,7 +29,13 @@ public abstract class AbstractBoard extends AbstractTimer {
 					int nextPageIndex = pb.getNextPageNumber();
 					AbstractPage nextPage = pb.getPageByIndex(nextPageIndex);
 					
-					boolean isVisible = thisPage.isVisible();
+					boolean isVisible = false;
+					try {
+					    isVisible = thisPage.isVisible();
+					}
+					catch (Exception e) {
+					    e.printStackTrace();
+					}
 					
 					
 					if (!isVisible) {

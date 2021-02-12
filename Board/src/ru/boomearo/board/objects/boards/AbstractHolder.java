@@ -49,7 +49,14 @@ public abstract class AbstractHolder {
 	}
 	
 	private String getValidText() {
-		return getText().replace("&", "§");
+	    try {
+	        return getText().replace("&", "§");
+	    }
+	    catch (Exception e) {
+	        e.printStackTrace();
+	        
+	        return "§cОшибка! Сообщите Администрации!";
+	    }
 	}
 	
 	protected abstract String getText();
