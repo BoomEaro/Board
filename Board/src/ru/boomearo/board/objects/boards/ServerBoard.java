@@ -57,9 +57,7 @@ public class ServerBoard extends AbstractBoard {
 
                     @Override
                     public String getText() {
-                        throw new RuntimeException("testEx");
-                        //TODO
-                        //return "§7Добро пожаловать!";
+                        return "§7Добро пожаловать!";
                     }
 
                 });
