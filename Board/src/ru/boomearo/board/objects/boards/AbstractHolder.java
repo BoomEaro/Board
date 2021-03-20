@@ -2,6 +2,8 @@ package ru.boomearo.board.objects.boards;
 
 import org.bukkit.ChatColor;
 
+import ru.boomearo.board.Board;
+
 public abstract class AbstractHolder {
 
 	//private static final int maxLen = 32;
@@ -189,15 +191,17 @@ public abstract class AbstractHolder {
 	}*/
 	
     private String[] getSplitMsgs(String text) {
-        StringBuilder prefix = new StringBuilder(text.substring(0, text.length() >= 16 ? 16 : text.length()));
-        StringBuilder suffix = new StringBuilder(text.length() > 16 ? text.substring(16) : "");
+        int maxLenght = Board.getInstance().getMaxLenght();
+        
+        StringBuilder prefix = new StringBuilder(text.substring(0, text.length() >= maxLenght ? maxLenght : text.length()));
+        StringBuilder suffix = new StringBuilder(text.length() > maxLenght ? text.substring(maxLenght) : "");
         
         if (prefix.length() > 1 && prefix.charAt(prefix.length() - 1) == '§') {
         	
             prefix.deleteCharAt(prefix.length() - 1);
             suffix.insert(0, '§');
         }
-        if (text.length() > 16) {
+        if (text.length() > maxLenght) {
         	suffix.insert(0, ChatColor.getLastColors(prefix.toString()));
         }
         
@@ -205,12 +209,12 @@ public abstract class AbstractHolder {
         
     	//Board.getContext().getLogger().info("testcc '" + prefix.toString() + suf + "' " + suf.length());
     	
-        if (suf.length() > 16) {
-        	suf = suf.substring(0,  16);
+        if (suf.length() > maxLenght) {
+        	suf = suf.substring(0,  maxLenght);
         	//Board.getContext().getLogger().info("testff2 '" + suf + "' " + suf.length());
         }
         
-        return new String[]{prefix.length() > 16 ? prefix.toString().substring(0, 16) : prefix.toString(), suf};
+        return new String[]{prefix.length() > maxLenght ? prefix.toString().substring(0, maxLenght) : prefix.toString(), suf};
         
     }
 	

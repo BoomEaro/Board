@@ -21,174 +21,192 @@ import ru.boomearo.board.objects.hooks.TpsRunnable;
 
 public class Board extends JavaPlugin {
 
-	public static final long uptime = System.currentTimeMillis();
-	
-	private int boardType = 1;
-	
-	private BoardManager boardManager = null;
-	private HookManager hookManager = null;
-	
-	private TpsRunnable tps = null;
-	
-	public void onEnable() {
-		instance = this;
-		
-	    File configFile = new File(getDataFolder() + File.separator + "config.yml");
-	    if (!configFile.exists()) {
-		    getLogger().info("Конфиг не найден, создаю новый...");
-		    saveDefaultConfig();
-		}
-		
-		if (this.hookManager == null) {
-			this.hookManager = new HookManager();
-		}
-		
-		if (this.boardManager == null) {
-			this.boardManager = new BoardManager();
-		}
-		
-		loadPlayersConfig(); 
-		loadConfig();
-		
-		if (this.boardType == 1) {
-			if (this.hookManager.getAdvEco() != null && this.hookManager.getCities() != null && this.hookManager.getMyPet() != null && this.hookManager.getNations() != null) {
-			    ServerBoard board = new ServerBoard();
-				this.boardManager.setBoard(board);
+    public static final long uptime = System.currentTimeMillis();
 
-				board.setPriority(3);
-				board.start();
+    private int boardType = 1;
 
-				this.getLogger().info("Загружаем аркадное табло.");
-			}
-			else {
-			    DefaultBoard board = new DefaultBoard();
-				this.boardManager.setBoard(board);
-				
+    private BoardManager boardManager = null;
+    private HookManager hookManager = null;
+
+    private final String serverVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
+
+    private int maxLenght = 16;
+
+    private TpsRunnable tps = null;
+    
+    private static Board instance = null;
+
+    public void onEnable() {
+        instance = this;
+
+        if (this.serverVersion.equalsIgnoreCase("1_12_R1")) {
+            this.maxLenght = 16;
+            getLogger().info("Старая версия сервера. Используем максимальную длину 16 символов.");
+        }
+        else {
+            this.maxLenght = 64;
+            getLogger().info("Новая версия сервера. Используем максимальную возможную длину.");
+        }
+
+        File configFile = new File(getDataFolder() + File.separator + "config.yml");
+        if (!configFile.exists()) {
+            getLogger().info("Конфиг не найден, создаю новый...");
+            saveDefaultConfig();
+        }
+
+        if (this.hookManager == null) {
+            this.hookManager = new HookManager();
+        }
+
+        if (this.boardManager == null) {
+            this.boardManager = new BoardManager();
+        }
+
+        loadPlayersConfig(); 
+        loadConfig();
+
+        if (this.boardType == 1) {
+            if (this.hookManager.getAdvEco() != null && this.hookManager.getCities() != null && this.hookManager.getMyPet() != null && this.hookManager.getNations() != null) {
+                ServerBoard board = new ServerBoard();
+                this.boardManager.setBoard(board);
+
                 board.setPriority(3);
                 board.start();
-				
-				this.getLogger().info("Не удалось загрузить аркадное табло. Кажется, отсутствует какой то плагин.");
-			}
-		}
-		else if (this.boardType == 2) {
-		    TestBoard board = new TestBoard();
-		    
-			this.boardManager.setBoard(board);
-			
-            board.setPriority(3);
-            board.start();
-			
-			this.getLogger().info("Загружаем тестовое табло.");
-		}
-		else {
-            DefaultBoard board = new DefaultBoard();
-            
-			this.boardManager.setBoard(board);
-			
-            board.setPriority(3);
-            board.start();
-			
-			this.getLogger().info("Загружаем табло по умолчанию.");
-		}
-		
-        loadPlayerBoards();
-        
-		getCommand("board").setExecutor(new CmdExecutorBoard());
-		
-		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		
-		getLogger().info("Плагин успешно загружен.");
-	}
-	
-	public void onDisable() {
-	    AbstractBoard b = this.boardManager.getBoard();
-	    if (b != null) {
-	        b.interrupt();
-	    }
-	    
-		unloadPlayerBoards();
-		savePlayersConfig();
-		getLogger().info("Плагин успешно выгружен.");
-	}
-	
-	private static Board instance = null;
-	public static Board getInstance() { 
-		if (instance != null) return instance; return null; 
-	}
-	
-	public HookManager getHookManager() {
-		return this.hookManager;
-	}
-	
-	public BoardManager getBoardManager() {
-		return this.boardManager;
-	}
-	
-	public TpsRunnable getTpsRunnable() {
-		
-		if (this.tps == null) {
-			this.tps = new TpsRunnable();
-		}
-		
-		return this.tps;
-	}
-	
-	public void loadPlayerBoards() {
-		for (Player pl : Bukkit.getOnlinePlayers()) {
-			if (!this.boardManager.isIgnore(pl.getName())) {
-				this.boardManager.addPlayerBoard(new PlayerBoard(pl));
-			}
-		}
-	}
-	public void unloadPlayerBoards() {
-        for (PlayerBoard pb : this.boardManager.getAllPlayerBoards()) {
-        	pb.remove();
+
+                this.getLogger().info("Загружаем аркадное табло.");
+            }
+            else {
+                DefaultBoard board = new DefaultBoard();
+                this.boardManager.setBoard(board);
+
+                board.setPriority(3);
+                board.start();
+
+                this.getLogger().info("Не удалось загрузить аркадное табло. Кажется, отсутствует какой то плагин.");
+            }
         }
-	}
-	
-	private void loadConfig() {
-	    
-	    this.boardType = this.getConfig().getInt("mode");
-	    
-	}
-	
-	
+        else if (this.boardType == 2) {
+            TestBoard board = new TestBoard();
+
+            this.boardManager.setBoard(board);
+
+            board.setPriority(3);
+            board.start();
+
+            this.getLogger().info("Загружаем тестовое табло.");
+        }
+        else {
+            DefaultBoard board = new DefaultBoard();
+
+            this.boardManager.setBoard(board);
+
+            board.setPriority(3);
+            board.start();
+
+            this.getLogger().info("Загружаем табло по умолчанию.");
+        }
+
+        loadPlayerBoards();
+
+        getCommand("board").setExecutor(new CmdExecutorBoard());
+
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+
+        getLogger().info("Плагин успешно загружен.");
+    }
+
+    public void onDisable() {
+        AbstractBoard b = this.boardManager.getBoard();
+        if (b != null) {
+            b.interrupt();
+        }
+
+        unloadPlayerBoards();
+        savePlayersConfig();
+        getLogger().info("Плагин успешно выгружен.");
+    }
+
+    public static Board getInstance() { 
+        return instance;
+    }
+
+    public HookManager getHookManager() {
+        return this.hookManager;
+    }
+
+    public BoardManager getBoardManager() {
+        return this.boardManager;
+    }
+
+    public int getMaxLenght() {
+        return this.maxLenght;
+    }
+
+    public TpsRunnable getTpsRunnable() {
+
+        if (this.tps == null) {
+            this.tps = new TpsRunnable();
+        }
+
+        return this.tps;
+    }
+
+    public void loadPlayerBoards() {
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            if (!this.boardManager.isIgnore(pl.getName())) {
+                this.boardManager.addPlayerBoard(new PlayerBoard(pl));
+            }
+        }
+    }
+    public void unloadPlayerBoards() {
+        for (PlayerBoard pb : this.boardManager.getAllPlayerBoards()) {
+            pb.remove();
+        }
+    }
+
+    private void loadConfig() {
+
+        this.boardType = this.getConfig().getInt("mode");
+
+    }
+
+
     private void loadPlayersConfig() {
         File playersConfigFile;
         FileConfiguration playersConfig;
         playersConfigFile = new File(getDataFolder(), "players.yml");
         if (!playersConfigFile.exists()) {
             this.getLogger().info("Конфигурация игроков не найдена, создаем новую..");
-        	playersConfigFile.getParentFile().mkdirs();
+            playersConfigFile.getParentFile().mkdirs();
             saveResource("players.yml", false);
-         }
+        }
 
         playersConfig = new YamlConfiguration();
         try {
-        	playersConfig.load(playersConfigFile);
-        	
-        	for (String pl : playersConfig.getStringList("ignores")) {
-        		this.boardManager.addIgnore(pl);
-        	}
+            playersConfig.load(playersConfigFile);
+
+            for (String pl : playersConfig.getStringList("ignores")) {
+                this.boardManager.addIgnore(pl);
+            }
             this.getLogger().info("Конфигурация игроков успешно загружена!");
-        	
+
         } catch (Exception e) {
             e.printStackTrace();
         }  
     }
-    
+
     private void savePlayersConfig() {
         File playersConfigFile = new File(getDataFolder(), "players.yml");
         FileConfiguration playersConfig = new YamlConfiguration();
 
         playersConfig = new YamlConfiguration();
-        
+
         playersConfig.set("ignores", this.boardManager.getAllIgnores());
-        
+
         try {
-        	playersConfig.save(playersConfigFile);
+            playersConfig.save(playersConfigFile);
             this.getLogger().info("Конфигурация игроков успешно сохранена!");
-        	
+
         } catch (Exception e) {
             e.printStackTrace();
         }  
