@@ -56,6 +56,11 @@ public class ArcadeTechPage extends AbstractPage {
                 return "§6TPS: " + forTps;
 
             }
+            
+            @Override
+            public long getMaxCacheTime() {
+                return 1000;
+            }
 
         });
         tmpLines.add(new AbstractHolder(this) {

@@ -61,7 +61,7 @@ public class PlayerBoard {
         }
     }
 
-    public void initPages() {
+    private void initPages() {
         this.pageIndex = 0;
 
         //Создает список страниц согласно текущей настройки
@@ -70,6 +70,21 @@ public class PlayerBoard {
         this.pagesList.loadPages();
     }
 
+    public void setNewPageList(AbstractPageList pageList) throws BoardException {      
+        synchronized (this.lock) {
+            removeBoardIfExists();
+            buildScoreboard();
+            
+            this.pageIndex = 0;
+            
+            this.pagesList = pageList;
+            
+            this.pagesList.loadPages();
+            
+            setUpPage(getCurrentPage());
+        }
+    }
+    
     public AbstractPage getCurrentPage() {
         synchronized (this.lock) {
             return this.pagesList.getPages().get(this.pageIndex);
@@ -136,23 +151,21 @@ public class PlayerBoard {
     }
 
     private void setUpPage(AbstractPage page) {
-        synchronized (this.lock) {
-            //Устанавливаем страницу и заполняем лист тимами с плейсхолдерами
-            int index = 15;
+        //Устанавливаем страницу и заполняем лист тимами с плейсхолдерами
+        int index = 15;
 
-            this.objective.setDisplayName(page.getTitle());
+        this.objective.setDisplayName(page.getTitle());
 
-            for (AbstractHolder holder : page.getReadyHolders()) {
-                Team team = this.scoreboard.registerNewTeam("Team:" + index);
-                String sc = BoardManager.getColor(index);
-                team.addEntry(sc);
-                String[] text = holder.getResult();
-                setPrefix(team, text[0]);
-                setSuffix(team, text[1]);
-                this.objective.getScore(sc).setScore(index);
-                this.teams.add(new TeamInfo(team, holder));
-                index--;
-            }
+        for (AbstractHolder holder : page.getReadyHolders()) {
+            Team team = this.scoreboard.registerNewTeam("Team:" + index);
+            String sc = BoardManager.getColor(index);
+            team.addEntry(sc);
+            String[] text = holder.getResult();
+            setPrefix(team, text[0]);
+            setSuffix(team, text[1]);
+            this.objective.getScore(sc).setScore(index);
+            this.teams.add(new TeamInfo(team, holder));
+            index--;
         }
     }
 
