@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import ru.boomearo.board.objects.PageType;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.boards.AbstractPageList;
+import ru.boomearo.board.objects.boards.arcade.ArcadePageList;
 import ru.boomearo.board.objects.boards.defaults.DefaultPageList;
 import ru.boomearo.board.objects.boards.test.TestPageList;
 
@@ -61,11 +62,10 @@ public final class BoardManager {
         return this.playerBoards.values();
     }
 
-    //TODO
     public static AbstractPageList createDefaultPageList(PageType dpl, PlayerBoard player) {
         switch (dpl) {
             case ArcadePage: {
-                return null;
+                return new ArcadePageList(player);
             }
             case DefaultPage: {
                  return new DefaultPageList(player);
