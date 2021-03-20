@@ -45,7 +45,7 @@ public class Board extends JavaPlugin {
         }
         else {
             this.maxLenght = 64;
-            getLogger().info("Новая версия сервера. Используем максимальную возможную длину.");
+            getLogger().info("Новая версия сервера. Используем максимальную возможную длину символов.");
         }
 
         File configFile = new File(getDataFolder() + File.separator + "config.yml");
