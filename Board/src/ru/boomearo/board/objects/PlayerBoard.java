@@ -12,6 +12,7 @@ import ru.boomearo.board.Board;
 import ru.boomearo.board.exceptions.BoardException;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.boards.AbstractPage;
+import ru.boomearo.board.objects.boards.AbstractPageList;
 import ru.boomearo.board.objects.boards.AbstractHolder;
 
 public class PlayerBoard {
@@ -21,7 +22,7 @@ public class PlayerBoard {
     private Scoreboard scoreboard;
     private Objective objective;
 
-    private List<AbstractPage> pages = null;
+    private AbstractPageList pagesList = null;
     private final List<TeamInfo> teams = new ArrayList<TeamInfo>();
     private volatile int pageIndex = 0;
 
@@ -63,12 +64,15 @@ public class PlayerBoard {
     public void initPages() {
         this.pageIndex = 0;
 
-        this.pages = Board.getInstance().getBoardManager().getBoard().getPages(this);
+        //Создает список страниц согласно текущей настройки
+        this.pagesList = BoardManager.createDefaultPageList(Board.getInstance().getBoardManager().getDefaultPageList(), this);
+        //Загружаем в список страниц все страницы которые были там реализованы
+        this.pagesList.loadPages();
     }
 
     public AbstractPage getCurrentPage() {
         synchronized (this.lock) {
-            return this.pages.get(this.pageIndex);
+            return this.pagesList.getPages().get(this.pageIndex);
         }
     }
 
@@ -82,13 +86,13 @@ public class PlayerBoard {
                 return null;
             }
 
-            return this.pages.get(index);
+            return this.pagesList.getPages().get(index);
         }
     }
 
     public int getMaxPageIndex() {
         synchronized (this.lock) {
-            return this.pages.size() - 1;
+            return this.pagesList.getPages().size() - 1;
         }
     }
 
@@ -100,7 +104,7 @@ public class PlayerBoard {
                 if (next > maxPage) {
                     return 0;
                 }
-                AbstractPage nextPage = this.pages.get(next);
+                AbstractPage nextPage = this.pagesList.getPages().get(next);
                 if (nextPage.isVisible()) {
                     return next;
                 }
@@ -121,7 +125,7 @@ public class PlayerBoard {
 
     private void buildScoreboard() throws BoardException {
         if (!Bukkit.isPrimaryThread()) {
-            throw new BoardException("ScoreBoard должен быть создан в основном потоке!");
+            throw new BoardException("Scoreboard должен быть создан в основном потоке!");
         }
 
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();

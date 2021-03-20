@@ -54,7 +54,7 @@ public abstract class AbstractHolder {
 	    try {
 	        return getText().replace("&", "§");
 	    }
-	    catch (Exception e) {
+	    catch (Throwable e) {
 	        e.printStackTrace();
 	        
 	        return "§cОшибка! Сообщите Администрации!";

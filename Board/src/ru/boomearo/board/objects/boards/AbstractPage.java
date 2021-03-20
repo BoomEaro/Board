@@ -2,22 +2,19 @@ package ru.boomearo.board.objects.boards;
 
 import java.util.List;
 
-import ru.boomearo.board.objects.PlayerBoard;
-
 public abstract class AbstractPage {
-	
-	private final PlayerBoard player;
-	
+    
+    private final AbstractPageList pageList;
+    
 	private final List<AbstractHolder> loadedHolders;
 	
-	public AbstractPage(PlayerBoard player) {
-		this.player = player;
-		
+	public AbstractPage(AbstractPageList pageList) {
+	    this.pageList = pageList;
 		this.loadedHolders = createHolders();
 	}
 	
-	public PlayerBoard getPlayerBoard() {
-		return this.player;
+	public AbstractPageList getPageList() {
+	    return this.pageList;
 	}
 	
 	public List<AbstractHolder> getReadyHolders() {

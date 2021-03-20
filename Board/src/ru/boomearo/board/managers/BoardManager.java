@@ -10,8 +10,11 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.ChatColor;
 
+import ru.boomearo.board.objects.PageType;
 import ru.boomearo.board.objects.PlayerBoard;
-import ru.boomearo.board.objects.boards.AbstractBoard;
+import ru.boomearo.board.objects.boards.AbstractPageList;
+import ru.boomearo.board.objects.boards.defaults.DefaultPageList;
+import ru.boomearo.board.objects.boards.test.TestPageList;
 
 public final class BoardManager {
 
@@ -21,8 +24,8 @@ public final class BoardManager {
 
     private final Set<String> playersIgnore = new HashSet<String>();
 
-    private AbstractBoard board = null;
-
+    private PageType dpl = PageType.DefaultPage;
+    
     private final Object lock = new Object();
 
     private static List<String> entryNames = new ArrayList<String>();
@@ -32,7 +35,15 @@ public final class BoardManager {
             entryNames.add("" + color + ChatColor.RESET);
         }
     }
-
+    
+    public PageType getDefaultPageList() {
+        return this.dpl;
+    }
+    
+    public void setDefaultPageList(PageType dpl) {
+        this.dpl = dpl;
+    }
+    
     public PlayerBoard getPlayerBoard(String player) {
         return this.playerBoards.get(player);
     }
@@ -50,14 +61,24 @@ public final class BoardManager {
         return this.playerBoards.values();
     }
 
-    public AbstractBoard getBoard() {
-        return this.board;
+    //TODO
+    public static AbstractPageList createDefaultPageList(PageType dpl, PlayerBoard player) {
+        switch (dpl) {
+            case ArcadePage: {
+                return null;
+            }
+            case DefaultPage: {
+                 return new DefaultPageList(player);
+            }
+            case TestPage: {
+                return new TestPageList(player);
+            }
+            default: {
+                return new DefaultPageList(player);
+            }
+        }
     }
-
-    public void setBoard(AbstractBoard board) {
-        this.board = board;
-    }
-
+    
     public boolean isIgnore(String player) {
         synchronized (this.lock) {
             return this.playersIgnore.contains(player);

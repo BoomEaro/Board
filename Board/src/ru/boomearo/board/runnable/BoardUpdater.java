@@ -1,17 +1,16 @@
-package ru.boomearo.board.objects.boards;
+package ru.boomearo.board.runnable;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ru.boomearo.board.Board;
 import ru.boomearo.board.objects.PlayerBoard;
-import ru.boomearo.board.runnable.AbstractTimer;
+import ru.boomearo.board.objects.boards.AbstractPage;
 
-public abstract class AbstractBoard extends AbstractTimer {
+public class BoardUpdater extends AbstractTimer {
 
     //Если будет работать плохо из-за асинхронного обновления скорборда, то сделаем в основном потоке..
-	public AbstractBoard(String name, int time) {
-	    super(name, TimeUnit.SECONDS, time);
+	public BoardUpdater() {
+	    super("BoardUpdater", TimeUnit.SECONDS, 1);
 	}
 	
 	@Override
@@ -49,7 +48,7 @@ public abstract class AbstractBoard extends AbstractTimer {
 					
 					if (pb.getUpdatePageCount() >= thisPage.getTimeToChange()) {
 						
-						//Board.getContext().getLogger().info(pb.getPlayer().getDisplayName() + " -> " + nextPageIndex + " " + pb.getUpdatePageCount() + " " + (thisPage.getTimeToChange() / this.updateTime) + " " + (pb.getUpdatePageCount() >= (thisPage.getTimeToChange() / this.updateTime)) + " " + (pb.getPageIndex() != nextPageIndex) + " " + !thisPage.isVisible() + " " + !pb.isPermanentView());
+						//Board.getInstance().getLogger().info(pb.getPlayer().getDisplayName() + " -> " + nextPageIndex + " " + pb.getUpdatePageCount() + " " + (thisPage.getTimeToChange() / this.updateTime) + " " + (pb.getUpdatePageCount() >= (thisPage.getTimeToChange() / this.updateTime)) + " " + (pb.getPageIndex() != nextPageIndex) + " " + !thisPage.isVisible() + " " + !pb.isPermanentView());
 						if (pb.getPageIndex() != nextPageIndex) {
 							if (isVisible) {
 								if (pb.isPermanentView()) {
@@ -74,7 +73,4 @@ public abstract class AbstractBoard extends AbstractTimer {
 			e.printStackTrace();
 		}
 	}
-	
-	public abstract List<AbstractPage> getPages(PlayerBoard player);
-
 }

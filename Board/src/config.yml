@@ -1,2 +1,2 @@
-#Аркадный = 1; Тестовый = 2; Поумолчанию = 0;
-mode: 1
+#Аркадный = ArcadePage; Тестовый = TestPage; Поумолчанию = DefaultPage;
+mode: 'DefaultPage'

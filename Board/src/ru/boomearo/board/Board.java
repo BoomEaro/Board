@@ -11,23 +11,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.boomearo.board.commands.board.CmdExecutorBoard;
 import ru.boomearo.board.listeners.PlayerListener;
 import ru.boomearo.board.managers.BoardManager;
+import ru.boomearo.board.objects.PageType;
 import ru.boomearo.board.objects.PlayerBoard;
-import ru.boomearo.board.objects.boards.AbstractBoard;
-import ru.boomearo.board.objects.boards.DefaultBoard;
-import ru.boomearo.board.objects.boards.ServerBoard;
-import ru.boomearo.board.objects.boards.TestBoard;
 import ru.boomearo.board.objects.hooks.HookManager;
 import ru.boomearo.board.objects.hooks.TpsRunnable;
+import ru.boomearo.board.runnable.BoardUpdater;
 
 public class Board extends JavaPlugin {
 
     public static final long uptime = System.currentTimeMillis();
 
-    private int boardType = 1;
-
     private BoardManager boardManager = null;
     private HookManager hookManager = null;
-
+    
+    private BoardUpdater board = null;
+    
     private final String serverVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
 
     private int maxLenght = 16;
@@ -62,50 +60,14 @@ public class Board extends JavaPlugin {
             this.boardManager = new BoardManager();
         }
 
+        if (this.board == null) {
+            this.board = new BoardUpdater();
+            this.board.setPriority(3);
+            this.board.start();
+        }
+
+        loadDefaultPageList();      
         loadPlayersConfig(); 
-        loadConfig();
-
-        if (this.boardType == 1) {
-            if (this.hookManager.getAdvEco() != null && this.hookManager.getCities() != null && this.hookManager.getMyPet() != null && this.hookManager.getNations() != null) {
-                ServerBoard board = new ServerBoard();
-                this.boardManager.setBoard(board);
-
-                board.setPriority(3);
-                board.start();
-
-                this.getLogger().info("Загружаем аркадное табло.");
-            }
-            else {
-                DefaultBoard board = new DefaultBoard();
-                this.boardManager.setBoard(board);
-
-                board.setPriority(3);
-                board.start();
-
-                this.getLogger().info("Не удалось загрузить аркадное табло. Кажется, отсутствует какой то плагин.");
-            }
-        }
-        else if (this.boardType == 2) {
-            TestBoard board = new TestBoard();
-
-            this.boardManager.setBoard(board);
-
-            board.setPriority(3);
-            board.start();
-
-            this.getLogger().info("Загружаем тестовое табло.");
-        }
-        else {
-            DefaultBoard board = new DefaultBoard();
-
-            this.boardManager.setBoard(board);
-
-            board.setPriority(3);
-            board.start();
-
-            this.getLogger().info("Загружаем табло по умолчанию.");
-        }
-
         loadPlayerBoards();
 
         getCommand("board").setExecutor(new CmdExecutorBoard());
@@ -116,16 +78,60 @@ public class Board extends JavaPlugin {
     }
 
     public void onDisable() {
-        AbstractBoard b = this.boardManager.getBoard();
-        if (b != null) {
-            b.interrupt();
-        }
+        this.board.interrupt();
 
         unloadPlayerBoards();
         savePlayersConfig();
+        
         getLogger().info("Плагин успешно выгружен.");
     }
 
+
+    public void loadDefaultPageList() {
+        String m = getConfig().getString("mode");
+        PageType tmpDpl = null;
+        try {
+            tmpDpl = PageType.valueOf(m);
+        }
+        catch (Exception e) {}
+        if (tmpDpl == null) {
+            tmpDpl = PageType.DefaultPage;
+        }
+        
+        switch (tmpDpl) {
+            case ArcadePage: {
+                if (this.hookManager.getAdvEco() != null && this.hookManager.getCities() != null && this.hookManager.getMyPet() != null && this.hookManager.getNations() != null) {
+                    
+                    this.boardManager.setDefaultPageList(tmpDpl);
+                    
+                    this.getLogger().info("Используем по умолчанию табло Аркадного сервера.");
+                }
+                else {
+                    this.boardManager.setDefaultPageList(PageType.DefaultPage);
+                    
+                    this.getLogger().info("Не хватает некоторых плагинов для использования табла Аркадного сервера. Используем пустое табло по умолчанию.");
+                }
+                break;
+            }
+            case DefaultPage: {
+                this.boardManager.setDefaultPageList(tmpDpl);
+                
+                this.getLogger().info("Используем пустое табло по умолчанию.");
+                break;
+            }
+            case TestPage: {
+                this.boardManager.setDefaultPageList(tmpDpl);
+                
+                this.getLogger().info("Используем тестовое табло по умолчанию.");
+                break;
+            }
+            default: {
+                this.boardManager.setDefaultPageList(tmpDpl);
+                break;
+            }
+        }
+    }
+    
     public static Board getInstance() { 
         return instance;
     }
@@ -163,13 +169,6 @@ public class Board extends JavaPlugin {
             pb.remove();
         }
     }
-
-    private void loadConfig() {
-
-        this.boardType = this.getConfig().getInt("mode");
-
-    }
-
 
     private void loadPlayersConfig() {
         File playersConfigFile;
