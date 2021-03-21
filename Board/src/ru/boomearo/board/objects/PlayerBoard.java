@@ -62,6 +62,8 @@ public class PlayerBoard {
 
     public void setNewPageList(AbstractPageList pageList) throws BoardException {      
         synchronized (this.lock) {  
+            this.pageIndex = 0;
+            
             this.pagesList = pageList;
             
             this.pagesList.loadPages();
