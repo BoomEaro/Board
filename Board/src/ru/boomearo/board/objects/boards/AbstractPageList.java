@@ -27,6 +27,11 @@ public abstract class AbstractPageList {
     //Инициализирует страницы, то какие страницы были созданы, зависит от реализации этого класса
     public void loadPages() {
         this.pages = createPages();
+        
+        //После инициализации, инициализируем холдеры
+        for (AbstractPage ap : this.pages) {
+            ap.loadHolders();
+        }
     }
     
     protected abstract List<AbstractPage> createPages();

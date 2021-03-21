@@ -25,27 +25,26 @@ public class PlayerBoard {
     private AbstractPageList pagesList = null;
     private final List<TeamInfo> teams = new ArrayList<TeamInfo>();
     private volatile int pageIndex = 0;
-
-    private volatile boolean cd = false;
-
+    
     private volatile int updatePageCount = 0;
     private boolean permanentView = false;
     private boolean debugMode = false;
 
     private final Object lock = new Object();
 
+    private static final String teamPrefix = "BoardT_";
+    
     public PlayerBoard(Player player) {
         this.player = player;
-        
-        removeBoardIfExists();
-        
         //Инициализируем панель
         try {
+            //Удаляем панель если была
+            removeBoardIfExists();
+            //Строим ее заново
             buildScoreboard();
-            //Получаем новые экземплярпы страниц для игрока
-            initPages();
-            //Устанавливаем страницу
-            setUpPage(getCurrentPage());
+            
+            //Устанавливаем список страниц по умолчанию
+            setNewPageList(BoardManager.createDefaultPageList(Board.getInstance().getBoardManager().getDefaultPageList(), this));
         } 
         catch (Exception e) {
             e.printStackTrace();
@@ -61,28 +60,18 @@ public class PlayerBoard {
         }
     }
 
-    private void initPages() {
-        this.pageIndex = 0;
-
-        //Создает список страниц согласно текущей настройки
-        this.pagesList = BoardManager.createDefaultPageList(Board.getInstance().getBoardManager().getDefaultPageList(), this);
-        //Загружаем в список страниц все страницы которые были там реализованы
-        this.pagesList.loadPages();
-    }
-
     public void setNewPageList(AbstractPageList pageList) throws BoardException {      
-        synchronized (this.lock) {
-            removeBoardIfExists();
-            buildScoreboard();
-            
-            this.pageIndex = 0;
-            
+        synchronized (this.lock) {  
             this.pagesList = pageList;
             
             this.pagesList.loadPages();
             
-            setUpPage(getCurrentPage());
+            toPage(0, getCurrentPage());
         }
+    }
+    
+    public AbstractPageList getPageList() {
+        return this.pagesList;
     }
     
     public AbstractPage getCurrentPage() {
@@ -157,7 +146,7 @@ public class PlayerBoard {
         this.objective.setDisplayName(page.getTitle());
 
         for (AbstractHolder holder : page.getReadyHolders()) {
-            Team team = this.scoreboard.registerNewTeam("Team:" + index);
+            Team team = this.scoreboard.registerNewTeam(teamPrefix + index);
             String sc = BoardManager.getColor(index);
             team.addEntry(sc);
             String[] text = holder.getResult();
@@ -183,9 +172,6 @@ public class PlayerBoard {
 
     public void update() {
         synchronized (this.lock) {
-            if (this.cd) {
-                return;
-            }
             //Обновляем инфу согласно кастомным холдерам
             for (TeamInfo team : this.teams) {
                 //long start = System.nanoTime();
@@ -225,21 +211,18 @@ public class PlayerBoard {
     }
 
     private void loadPage(AbstractPage page) {
-        synchronized (this.lock) {
-            this.cd = true;
-            removeAll();
-
-            setUpPage(page);
-
-            this.cd = false;
-        }
+        removeAll();
+        setUpPage(page);
     }
 
     private void removeAll() {
         Set<Team> teams = this.scoreboard.getTeams();
         if (teams != null) {
             for (Team t : teams) {
-                t.unregister();
+                //Очищаем только те тимы которые мы создали.
+                if (t.getName().contains(teamPrefix)) {
+                    t.unregister();
+                }
             }
         }
 
