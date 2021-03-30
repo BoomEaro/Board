@@ -13,6 +13,9 @@ import ru.boomearo.board.listeners.PlayerListener;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PageType;
 import ru.boomearo.board.objects.PlayerBoard;
+import ru.boomearo.board.objects.boards.arcade.ArcadePageList;
+import ru.boomearo.board.objects.boards.defaults.DefaultPageList;
+import ru.boomearo.board.objects.boards.test.TestPageList;
 import ru.boomearo.board.objects.hooks.HookManager;
 import ru.boomearo.board.objects.hooks.TpsRunnable;
 import ru.boomearo.board.runnable.BoardUpdater;
@@ -102,31 +105,41 @@ public class Board extends JavaPlugin {
             case ArcadePage: {
                 if (this.hookManager.getAdvEco() != null && this.hookManager.getCities() != null && this.hookManager.getMyPet() != null && this.hookManager.getNations() != null) {
                     
-                    this.boardManager.setDefaultPageList(tmpDpl);
+                    this.boardManager.setPageListFactory((PlayerBoard player) -> {
+                        return new ArcadePageList(player);
+                    });
                     
                     this.getLogger().info("Используем по умолчанию табло Аркадного сервера.");
                 }
                 else {
-                    this.boardManager.setDefaultPageList(PageType.DefaultPage);
+                    this.boardManager.setPageListFactory((PlayerBoard player) -> {
+                        return new DefaultPageList(player);
+                    });
                     
                     this.getLogger().info("Не хватает некоторых плагинов для использования табла Аркадного сервера. Используем пустое табло по умолчанию.");
                 }
                 break;
             }
             case DefaultPage: {
-                this.boardManager.setDefaultPageList(tmpDpl);
+                this.boardManager.setPageListFactory((PlayerBoard player) -> {
+                    return new DefaultPageList(player);
+                });
                 
                 this.getLogger().info("Используем пустое табло по умолчанию.");
                 break;
             }
             case TestPage: {
-                this.boardManager.setDefaultPageList(tmpDpl);
+                this.boardManager.setPageListFactory((PlayerBoard player) -> {
+                    return new TestPageList(player);
+                });
                 
                 this.getLogger().info("Используем тестовое табло по умолчанию.");
                 break;
             }
             default: {
-                this.boardManager.setDefaultPageList(tmpDpl);
+                this.boardManager.setPageListFactory((PlayerBoard player) -> {
+                    return new DefaultPageList(player);
+                });
                 break;
             }
         }

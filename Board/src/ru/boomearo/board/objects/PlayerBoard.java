@@ -44,7 +44,7 @@ public class PlayerBoard {
             buildScoreboard();
             
             //Устанавливаем список страниц по умолчанию
-            setNewPageList(BoardManager.createDefaultPageList(Board.getInstance().getBoardManager().getDefaultPageList(), this));
+            setNewPageList(Board.getInstance().getBoardManager().getPageListFactory().createPageList(this));
         } 
         catch (Exception e) {
             e.printStackTrace();

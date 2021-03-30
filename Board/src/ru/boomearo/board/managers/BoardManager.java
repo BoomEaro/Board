@@ -10,12 +10,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.ChatColor;
 
-import ru.boomearo.board.objects.PageType;
+import ru.boomearo.board.objects.IPageListFactory;
 import ru.boomearo.board.objects.PlayerBoard;
-import ru.boomearo.board.objects.boards.AbstractPageList;
-import ru.boomearo.board.objects.boards.arcade.ArcadePageList;
-import ru.boomearo.board.objects.boards.defaults.DefaultPageList;
-import ru.boomearo.board.objects.boards.test.TestPageList;
 
 public final class BoardManager {
 
@@ -25,7 +21,7 @@ public final class BoardManager {
 
     private final Set<String> playersIgnore = new HashSet<String>();
 
-    private PageType dpl = PageType.DefaultPage;
+    private IPageListFactory factory = null;
     
     private final Object lock = new Object();
 
@@ -37,12 +33,12 @@ public final class BoardManager {
         }
     }
     
-    public PageType getDefaultPageList() {
-        return this.dpl;
+    public IPageListFactory getPageListFactory() {
+        return this.factory;
     }
     
-    public void setDefaultPageList(PageType dpl) {
-        this.dpl = dpl;
+    public void setPageListFactory(IPageListFactory factory) {
+        this.factory = factory;
     }
     
     public PlayerBoard getPlayerBoard(String player) {
@@ -60,23 +56,6 @@ public final class BoardManager {
     }
     public Collection<PlayerBoard> getAllPlayerBoards() {
         return this.playerBoards.values();
-    }
-
-    public static AbstractPageList createDefaultPageList(PageType dpl, PlayerBoard player) {
-        switch (dpl) {
-            case ArcadePage: {
-                return new ArcadePageList(player);
-            }
-            case DefaultPage: {
-                 return new DefaultPageList(player);
-            }
-            case TestPage: {
-                return new TestPageList(player);
-            }
-            default: {
-                return new DefaultPageList(player);
-            }
-        }
     }
     
     public boolean isIgnore(String player) {
