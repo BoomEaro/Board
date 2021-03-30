@@ -4,7 +4,6 @@ public enum PageType {
 
     ArcadePage,
     TestPage,
-    MinigamesPage,
     DefaultPage;
     
 }
