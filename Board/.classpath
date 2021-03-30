@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="C:/Users/Valik2016/workspace/Cities.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Valik2016/workspace/Nations.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Valik2016/workspace/paper-1.12.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Valik2016/workspace/GameControl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
