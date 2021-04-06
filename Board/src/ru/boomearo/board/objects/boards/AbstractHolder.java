@@ -190,44 +190,34 @@ public abstract class AbstractHolder {
 		return msg.substring((msg.length() - maxLen) - index, msg.length() - index);
 	}*/
 	
-	//Взял новую логику с одного плагина
-    private String[] getSplitMsgs(String line) {
+    private String[] getSplitMsgs(String text) {
         int maxLenght = Board.getInstance().getMaxLenght();
         
-        if (line.length() < maxLenght) {
-            return new String[]{line, ""};
+        StringBuilder prefix = new StringBuilder(text.substring(0, text.length() >= maxLenght ? maxLenght : text.length()));
+        StringBuilder suffix = new StringBuilder(text.length() > maxLenght ? text.substring(maxLenght) : "");
+        
+        if (prefix.length() > 1 && prefix.charAt(prefix.length() - 1) == '§') {
+        	
+            prefix.deleteCharAt(prefix.length() - 1);
+            suffix.insert(0, '§');
         }
-
-        String prefix = line.substring(0, maxLenght);
-        String suffix = line.substring(maxLenght);
-
-        if (prefix.endsWith("§")) { // Check if we accidentally cut off a color
-            prefix = removeLastCharacter(prefix);
-            suffix = "§" + suffix;
-        } 
-        else if (prefix.contains("§")) { // Are there any colors we need to continue?
-            suffix = ChatColor.getLastColors(prefix) + suffix;
-        } 
-        else { // Just make sure the team color doesn't mess up anything
-            suffix = "§f" + suffix;
+        if (text.length() > maxLenght) {
+        	suffix.insert(0, ChatColor.getLastColors(prefix.toString()));
         }
-
-        if (suffix.length() > maxLenght) {
-            suffix = suffix.substring(0, maxLenght);
+        
+        String suf = suffix.toString();
+        
+    	//Board.getContext().getLogger().info("testcc '" + prefix.toString() + suf + "' " + suf.length());
+    	
+        if (suf.length() > maxLenght) {
+        	suf = suf.substring(0,  maxLenght);
+        	//Board.getContext().getLogger().info("testff2 '" + suf + "' " + suf.length());
         }
-
-        return new String[]{prefix, suffix};
+        
+        return new String[]{prefix.length() > maxLenght ? prefix.toString().substring(0, maxLenght) : prefix.toString(), suf};
         
     }
 	
-    private static String removeLastCharacter(String str) {
-        String result = null;
-        if ((str != null) && (str.length() > 0)) {
-            result = str.substring(0, str.length() - 1);
-        }
-        return result;
-    }
-    
 	/*private String fixColor(String msg) {
         StringBuilder sb = new StringBuilder(msg);
         if (sb.charAt(sb.length() - 1) == COLOUR_CHAR) {
