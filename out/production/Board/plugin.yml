@@ -1,0 +1,11 @@
+name: Board
+main: ru.boomearo.board.Board
+version: 0.5.1
+author: BoomEaro
+description: advanced board
+api-version: 1.13
+softdepend: [MyPet, Cities, Nations, AdvEco]
+commands:
+  board:
+    usage: /board
+    description: advanced board
