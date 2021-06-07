@@ -12,6 +12,8 @@ import org.bukkit.ChatColor;
 
 import ru.boomearo.board.objects.IPageListFactory;
 import ru.boomearo.board.objects.PlayerBoard;
+import ru.boomearo.board.objects.boards.AbstractPageList;
+import ru.boomearo.board.objects.boards.defaults.DefaultPageList;
 
 public final class BoardManager {
 
@@ -21,11 +23,18 @@ public final class BoardManager {
 
     private final Set<String> playersIgnore = new HashSet<String>();
 
-    private IPageListFactory factory = null;
-    
+    private IPageListFactory factory = new IPageListFactory() {
+
+        @Override
+        public AbstractPageList createPageList(PlayerBoard player) {
+            return new DefaultPageList(player);
+        }
+    };
+
     private final Object lock = new Object();
 
-    private static List<String> entryNames = new ArrayList<String>();
+    private static final List<String> entryNames = new ArrayList<String>();
+
     static {
         //Инициализируем сразу же при создании класса названия
         for (ChatColor color : ChatColor.values()) {

@@ -11,21 +11,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.boomearo.board.commands.board.CmdExecutorBoard;
 import ru.boomearo.board.listeners.PlayerListener;
 import ru.boomearo.board.managers.BoardManager;
-import ru.boomearo.board.objects.PageType;
 import ru.boomearo.board.objects.PlayerBoard;
-import ru.boomearo.board.objects.boards.arcade.ArcadePageList;
-import ru.boomearo.board.objects.boards.defaults.DefaultPageList;
-import ru.boomearo.board.objects.boards.test.TestPageList;
-import ru.boomearo.board.objects.hooks.HookManager;
-import ru.boomearo.board.objects.hooks.TpsRunnable;
+import ru.boomearo.board.runnable.TpsRunnable;
 import ru.boomearo.board.runnable.BoardUpdater;
 
 public class Board extends JavaPlugin {
 
-    public static final long uptime = System.currentTimeMillis();
-
     private BoardManager boardManager = null;
-    private HookManager hookManager = null;
     
     private BoardUpdater board = null;
     
@@ -49,16 +41,6 @@ public class Board extends JavaPlugin {
             getLogger().info("Новая версия сервера. Используем максимальную возможную длину символов.");
         }
 
-        File configFile = new File(getDataFolder() + File.separator + "config.yml");
-        if (!configFile.exists()) {
-            getLogger().info("Конфиг не найден, создаю новый...");
-            saveDefaultConfig();
-        }
-
-        if (this.hookManager == null) {
-            this.hookManager = new HookManager();
-        }
-
         if (this.boardManager == null) {
             this.boardManager = new BoardManager();
         }
@@ -69,7 +51,6 @@ public class Board extends JavaPlugin {
             this.board.start();
         }
 
-        loadDefaultPageList();      
         loadPlayersConfig(); 
         loadPlayerBoards();
 
@@ -89,68 +70,9 @@ public class Board extends JavaPlugin {
         getLogger().info("Плагин успешно выгружен.");
     }
 
-
-    public void loadDefaultPageList() {
-        String m = getConfig().getString("mode");
-        PageType tmpDpl = null;
-        try {
-            tmpDpl = PageType.valueOf(m);
-        }
-        catch (Exception e) {}
-        if (tmpDpl == null) {
-            tmpDpl = PageType.DefaultPage;
-        }
-        
-        switch (tmpDpl) {
-            case ArcadePage: {
-                if (this.hookManager.getAdvEco() != null && this.hookManager.getCities() != null && this.hookManager.getMyPet() != null && this.hookManager.getNations() != null) {
-                    
-                    this.boardManager.setPageListFactory((PlayerBoard player) -> {
-                        return new ArcadePageList(player);
-                    });
-                    
-                    this.getLogger().info("Используем по умолчанию табло Аркадного сервера.");
-                }
-                else {
-                    this.boardManager.setPageListFactory((PlayerBoard player) -> {
-                        return new DefaultPageList(player);
-                    });
-                    
-                    this.getLogger().info("Не хватает некоторых плагинов для использования табла Аркадного сервера. Используем пустое табло по умолчанию.");
-                }
-                break;
-            }
-            case DefaultPage: {
-                this.boardManager.setPageListFactory((PlayerBoard player) -> {
-                    return new DefaultPageList(player);
-                });
-                
-                this.getLogger().info("Используем пустое табло по умолчанию.");
-                break;
-            }
-            case TestPage: {
-                this.boardManager.setPageListFactory((PlayerBoard player) -> {
-                    return new TestPageList(player);
-                });
-                
-                this.getLogger().info("Используем тестовое табло по умолчанию.");
-                break;
-            }
-            default: {
-                this.boardManager.setPageListFactory((PlayerBoard player) -> {
-                    return new DefaultPageList(player);
-                });
-                break;
-            }
-        }
-    }
     
     public static Board getInstance() { 
         return instance;
-    }
-
-    public HookManager getHookManager() {
-        return this.hookManager;
     }
 
     public BoardManager getBoardManager() {

@@ -1,4 +1,4 @@
-package ru.boomearo.board.objects.hooks;
+package ru.boomearo.board.runnable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
