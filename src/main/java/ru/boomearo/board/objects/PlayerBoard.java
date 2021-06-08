@@ -111,7 +111,7 @@ public class PlayerBoard {
                     return 0;
                 }
                 AbstractPage nextPage = this.pagesList.getPages().get(next);
-                if (nextPage.isVisible()) {
+                if (nextPage.isVisibleToPlayer()) {
                     return next;
                 }
             }
@@ -143,9 +143,9 @@ public class PlayerBoard {
 
     private void setUpPage(AbstractPage page) {
         //Устанавливаем страницу и заполняем лист тимами с плейсхолдерами
-        int index = 15;
+        int index = BoardManager.maxEntrySize;
 
-        this.objective.setDisplayName(page.getTitle());
+        this.objective.setDisplayName(page.getBoardTitle());
 
         for (AbstractHolder holder : page.getReadyHolders()) {
             Team team = this.scoreboard.registerNewTeam(teamPrefix + index);

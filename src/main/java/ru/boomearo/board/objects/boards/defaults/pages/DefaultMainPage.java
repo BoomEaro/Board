@@ -14,24 +14,23 @@ public class DefaultMainPage extends AbstractPage {
     }
 
     @Override
-    public int getTimeToChange() {
+    protected int getTimeToChange() {
         return 10;
     }
 
-
     @Override
-    public boolean isVisible() {
+    protected boolean isVisible() {
         return true;
     }
 
     @Override
-    public String getTitle() {
+    protected String getTitle() {
         return "§cПустой борд";
     }
 
     @Override
     protected List<AbstractHolder> createHolders() {
-        List<AbstractHolder> tmpLines = new ArrayList<AbstractHolder>();
+        List<AbstractHolder> tmpLines = new ArrayList<>();
         tmpLines.add(new AbstractHolder(this) {
 
             @Override

@@ -52,12 +52,16 @@ public abstract class AbstractHolder {
 	
 	private String getValidText() {
 	    try {
-	        return getText().replace("&", "§");
+	    	String text = getText();
+	    	if (text != null) {
+	    		return text;
+			}
+
+	        return "null";
 	    }
-	    catch (Throwable e) {
+	    catch (Exception e) {
 	        e.printStackTrace();
-	        
-	        return "§cОшибка! Сообщите Администрации!";
+	        return "error";
 	    }
 	}
 	
@@ -191,7 +195,7 @@ public abstract class AbstractHolder {
 	}*/
 	
     private String[] getSplitMsgs(String text) {
-        int maxLenght = Board.getInstance().getMaxLenght();
+        int maxLenght = Board.getInstance().getMaxLength();
         
         StringBuilder prefix = new StringBuilder(text.substring(0, text.length() >= maxLenght ? maxLenght : text.length()));
         StringBuilder suffix = new StringBuilder(text.length() > maxLenght ? text.substring(maxLenght) : "");

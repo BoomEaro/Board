@@ -28,14 +28,7 @@ public class BoardUpdater extends AbstractTimer {
 					int nextPageIndex = pb.getNextPageNumber();
 					AbstractPage nextPage = pb.getPageByIndex(nextPageIndex);
 					
-					boolean isVisible = false;
-					try {
-					    isVisible = thisPage.isVisible();
-					}
-					catch (Exception e) {
-					    e.printStackTrace();
-					}
-					
+					boolean isVisible = thisPage.isVisibleToPlayer();
 					
 					if (!isVisible) {
 						
@@ -46,7 +39,7 @@ public class BoardUpdater extends AbstractTimer {
 						continue;
 					}
 					
-					if (pb.getUpdatePageCount() >= thisPage.getTimeToChange()) {
+					if (pb.getUpdatePageCount() >= thisPage.getTimeToChangePage()) {
 						
 						//Board.getInstance().getLogger().info(pb.getPlayer().getDisplayName() + " -> " + nextPageIndex + " " + pb.getUpdatePageCount() + " " + (thisPage.getTimeToChange() / this.updateTime) + " " + (pb.getUpdatePageCount() >= (thisPage.getTimeToChange() / this.updateTime)) + " " + (pb.getPageIndex() != nextPageIndex) + " " + !thisPage.isVisible() + " " + !pb.isPermanentView());
 						if (pb.getPageIndex() != nextPageIndex) {

@@ -29,9 +29,12 @@ public final class BoardManager {
         public AbstractPageList createPageList(PlayerBoard player) {
             return new DefaultPageList(player);
         }
+
     };
 
     private final Object lock = new Object();
+
+    public static final int maxEntrySize = 15;
 
     private static final List<String> entryNames = new ArrayList<String>();
 
