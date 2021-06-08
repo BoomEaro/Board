@@ -59,8 +59,8 @@ public class DefaultMainPage extends AbstractPage {
                     return "";
                 }
             }
-            
         });
+
         return tmpLines;
     }
 
