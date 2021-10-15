@@ -16,10 +16,10 @@ public class DefaultPageList extends AbstractPageList {
 
     @Override
     protected List<AbstractPage> createPages() {
-        List<AbstractPage> pages = new ArrayList<AbstractPage>();
-        
+        List<AbstractPage> pages = new ArrayList<>();
+
         pages.add(new DefaultMainPage(this));
-        
+
         return pages;
     }
 

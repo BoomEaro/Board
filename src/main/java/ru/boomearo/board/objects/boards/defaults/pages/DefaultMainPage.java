@@ -37,7 +37,7 @@ public class DefaultMainPage extends AbstractPage {
             public String getText() {
                 return "§cЗдесь что то должно быть";
             }
-            
+
         });
         tmpLines.add(new AbstractHolder(this) {
 
@@ -45,7 +45,7 @@ public class DefaultMainPage extends AbstractPage {
             public String getText() {
                 return "§cНо почему то этого нет.";
             }
-            
+
         });
         tmpLines.add(new AbstractHolder(this) {
 

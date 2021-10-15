@@ -16,7 +16,7 @@ public class CmdBoard {
         if (!(cs instanceof Player)) {
             return true;
         }
-        if (args.length < 0 || args.length > 0) {
+        if (args.length != 0) {
             return false;
         }
         Player pl = (Player) cs;
@@ -25,7 +25,7 @@ public class CmdBoard {
             manager.removePlayerBoard(pl.getName());
             manager.addIgnore(pl.getName());
             pl.sendMessage(BoardManager.prefix + "Вы успешно §cвыключили §fотображение.");
-        } 
+        }
         else {
             manager.addPlayerBoard(new PlayerBoard(pl));
             manager.removeIgnore(pl.getName());
@@ -39,7 +39,7 @@ public class CmdBoard {
         if (!(cs instanceof Player)) {
             return true;
         }
-        if (args.length < 1 || args.length > 1) {
+        if (args.length != 1) {
             return false;
         }
         Player pl = (Player) cs;
@@ -47,12 +47,13 @@ public class CmdBoard {
         try {
             page = Integer.parseInt(args[0]);
         }
-        catch (Exception e) {}
+        catch (Exception ignored) {
+        }
         if (page == null) {
             pl.sendMessage(BoardManager.prefix + "Аргумент должен содержать цифры!");
             return true;
         }
-        
+
         BoardManager manager = Board.getInstance().getBoardManager();
         PlayerBoard pb = manager.getPlayerBoard(pl.getName());
         if (pb != null) {
@@ -88,7 +89,7 @@ public class CmdBoard {
         if (!(cs instanceof Player)) {
             return true;
         }
-        if (args.length < 0 || args.length > 0) {
+        if (args.length != 0) {
             return false;
         }
         Player pl = (Player) cs;
@@ -103,12 +104,13 @@ public class CmdBoard {
         }
         return true;
     }
+
     @CmdInfo(name = "debug", description = "Переключить дебаг режим.", usage = "/board debug", permission = "")
     public boolean debug(CommandSender cs, String[] args) {
         if (!(cs instanceof Player)) {
             return true;
         }
-        if (args.length < 0 || args.length > 0) {
+        if (args.length != 0) {
             return false;
         }
         Player pl = (Player) cs;

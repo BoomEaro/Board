@@ -17,7 +17,7 @@ public class TpsRunnable extends BukkitRunnable {
     private volatile double tps = 0;
     private volatile int entites = 0;
     private volatile int chunks = 0;
-    
+
     public TpsRunnable() {
         runnable();
     }
@@ -29,11 +29,11 @@ public class TpsRunnable extends BukkitRunnable {
     public double getTps() {
         return this.tps;
     }
-    
+
     public int getEntites() {
         return this.entites;
     }
-    
+
     public int getChunks() {
         return this.chunks;
     }
@@ -54,10 +54,10 @@ public class TpsRunnable extends BukkitRunnable {
             }
             if (diff == 0.0D) {
                 tps = 20.0D;
-            } 
+            }
             else {
                 tps = 20.0D - diff / 50.0D;
-            } 
+            }
 
             if (tps < 0.0D) {
                 tps = 0.0D;
@@ -66,10 +66,10 @@ public class TpsRunnable extends BukkitRunnable {
 
             if (this.index >= this.tpsArr.length) {
                 this.index = 0;
-            } 
-        } 
+            }
+        }
         this.mills = System.currentTimeMillis();
-        
+
         //Присвоение значиние
         double tpsSum = 0.0D;
 
@@ -79,12 +79,12 @@ public class TpsRunnable extends BukkitRunnable {
 
         this.tps = Math.round(tpsSum / 10.0D * 100.0D) / 100.0D;
     }
-    
+
     private void handleOther() {
         this.entites = getAllEntites();
         this.chunks = getAllChunks();
     }
-    
+
     private int getAllEntites() {
         int entites = 0;
 

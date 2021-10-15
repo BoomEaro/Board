@@ -94,7 +94,10 @@ public abstract class AbstractPage {
 
     //Абстракции
     protected abstract int getTimeToChange();
+
     protected abstract boolean isVisible();
+
     protected abstract String getTitle();
+
     protected abstract List<AbstractHolder> createHolders();
 }

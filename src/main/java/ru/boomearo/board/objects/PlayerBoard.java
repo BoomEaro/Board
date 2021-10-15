@@ -23,9 +23,9 @@ public class PlayerBoard {
     private Objective objective;
 
     private AbstractPageList pagesList = null;
-    private final List<TeamInfo> teams = new ArrayList<TeamInfo>();
+    private final List<TeamInfo> teams = new ArrayList<>();
     private volatile int pageIndex = 0;
-    
+
     private volatile int updatePageCount = 0;
     private boolean permanentView = false;
     private boolean debugMode = false;
@@ -33,7 +33,7 @@ public class PlayerBoard {
     private final Object lock = new Object();
 
     private static final String teamPrefix = "BoardT_";
-    
+
     public PlayerBoard(Player player) {
         this.player = player;
         //Инициализируем панель
@@ -42,16 +42,16 @@ public class PlayerBoard {
             removeBoardIfExists();
             //Строим ее заново
             buildScoreboard();
-            
+
             //Устанавливаем список страниц по умолчанию
             setNewPageList(Board.getInstance().getBoardManager().getPageListFactory().createPageList(this));
-        } 
+        }
         catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    
+
     private void removeBoardIfExists() {
         Objective ob = this.player.getScoreboard().getObjective(DisplaySlot.SIDEBAR);
         if (ob != null) {
@@ -60,22 +60,22 @@ public class PlayerBoard {
         }
     }
 
-    public void setNewPageList(AbstractPageList pageList) throws BoardException {      
-        synchronized (this.lock) {  
+    public void setNewPageList(AbstractPageList pageList) throws BoardException {
+        synchronized (this.lock) {
             this.pageIndex = 0;
-            
+
             this.pagesList = pageList;
-            
+
             this.pagesList.loadPages();
-            
+
             toPage(0, getCurrentPage());
         }
     }
-    
+
     public AbstractPageList getPageList() {
         return this.pagesList;
     }
-    
+
     public AbstractPage getCurrentPage() {
         synchronized (this.lock) {
             return this.pagesList.getPages().get(this.pageIndex);
@@ -86,7 +86,7 @@ public class PlayerBoard {
         if (index < 0) {
             return null;
         }
-        
+
         synchronized (this.lock) {
             if (index > getMaxPageIndex()) {
                 return null;
@@ -116,15 +116,17 @@ public class PlayerBoard {
                 }
             }
             return 0;
-        }	
+        }
     }
 
     public int getUpdatePageCount() {
         return this.updatePageCount;
     }
+
     public void addUpdatePageCount(int time) {
         this.updatePageCount = this.updatePageCount + time;
     }
+
     public void setUpdatePageCount(int time) {
         this.updatePageCount = time;
     }
@@ -187,8 +189,8 @@ public class PlayerBoard {
                 setSuffix(team.getTeam(), text[1]);
 
                 //Board.getContext().getLogger().info("test " + test[0] + " " + test[1]);
-            }   
-        } 
+            }
+        }
     }
 
     private void setPrefix(Team team, String text) {
@@ -246,18 +248,23 @@ public class PlayerBoard {
     public int getPageIndex() {
         return this.pageIndex;
     }
+
     public void setPageIndex(int index) {
         this.pageIndex = index;
     }
+
     public void setPermanentView(boolean view) {
         this.permanentView = view;
     }
+
     public boolean isPermanentView() {
         return this.permanentView;
     }
+
     public void setDebugMode(boolean mode) {
         this.debugMode = mode;
     }
+
     public boolean isDebugMode() {
         return this.debugMode;
     }

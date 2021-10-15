@@ -6,72 +6,72 @@ import ru.boomearo.board.Board;
 
 public abstract class AbstractHolder {
 
-	//private static final int maxLen = 32;
-	
-	//private final int maxCd = 5;
-	
-	//private static final char COLOUR_CHAR = '§';
+    //private static final int maxLen = 32;
+
+    //private final int maxCd = 5;
+
+    //private static final char COLOUR_CHAR = '§';
     //private ChatColor colorReset = ChatColor.RESET;
-	
-	//private int index = 0;
-	//private int cd = 1;
-	//private boolean isCd = false;
-	
-	//private boolean revert = false;
-	
-	//private List<String[]> cache = null;
-	private String[] cache = null;
-	private long cacheTime = System.currentTimeMillis();
-	
-	private final AbstractPage page;
-	
-	public AbstractHolder(AbstractPage page) {
-		this.page = page;
-	}
-	
-	public AbstractPage getPage() {
-		return this.page;
-	}
-	
-	public String[] getResult() {
-		
-		//Если кеша нет, создаем его делая запрос. Потом возвращаем кеш
-		if (this.cache == null) {
-			createCacheAnimation(getValidText());
-			return this.cache;
-		}
-		//Если время кеша вышло, обновляем кеш делая запрос. Если время еще не вышло, возвращает кешированное значение
-		if ((System.currentTimeMillis() - this.cacheTime) > getMaxCacheTime()) {
-			createCacheAnimation(getValidText());
-			this.cacheTime = System.currentTimeMillis();
-		}
-		
-		return this.cache;
 
-	}
-	
-	private String getValidText() {
-	    try {
-	    	String text = getText();
-	    	if (text != null) {
-	    		return text;
-			}
+    //private int index = 0;
+    //private int cd = 1;
+    //private boolean isCd = false;
 
-	        return "null";
-	    }
-	    catch (Exception e) {
-	        e.printStackTrace();
-	        return "error";
-	    }
-	}
-	
-	protected abstract String getText();
-	
-	//По умолчанию размер кеша = 5 секунд. Хотя допустимо указывать еще милисекунды.
-	//Этот метод может переопределить наследник что бы иметь другое время.
-	public long getMaxCacheTime() {
-		return 1000*5;
-	}
+    //private boolean revert = false;
+
+    //private List<String[]> cache = null;
+    private String[] cache = null;
+    private long cacheTime = System.currentTimeMillis();
+
+    private final AbstractPage page;
+
+    public AbstractHolder(AbstractPage page) {
+        this.page = page;
+    }
+
+    public AbstractPage getPage() {
+        return this.page;
+    }
+
+    public String[] getResult() {
+
+        //Если кеша нет, создаем его делая запрос. Потом возвращаем кеш
+        if (this.cache == null) {
+            createCacheAnimation(getValidText());
+            return this.cache;
+        }
+        //Если время кеша вышло, обновляем кеш делая запрос. Если время еще не вышло, возвращает кешированное значение
+        if ((System.currentTimeMillis() - this.cacheTime) > getMaxCacheTime()) {
+            createCacheAnimation(getValidText());
+            this.cacheTime = System.currentTimeMillis();
+        }
+
+        return this.cache;
+
+    }
+
+    private String getValidText() {
+        try {
+            String text = getText();
+            if (text != null) {
+                return text;
+            }
+
+            return "null";
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
+    protected abstract String getText();
+
+    //По умолчанию размер кеша = 5 секунд. Хотя допустимо указывать еще милисекунды.
+    //Этот метод может переопределить наследник, что бы иметь другое время.
+    public long getMaxCacheTime() {
+        return 1000 * 5;
+    }
 	
 	/*private String[] getCurrentCache() {
 		
@@ -83,12 +83,12 @@ public abstract class AbstractHolder {
 		this.index++;
 		return cache;
 	}*/
-	
-	private void createCacheAnimation(String text) {
-		//List<String[]> tmp = new ArrayList<String[]>();
-		
-		this.cache = getSplitMsgs(text);
-		return;
+
+    private void createCacheAnimation(String text) {
+        //List<String[]> tmp = new ArrayList<String[]>();
+
+        this.cache = getSplitMsgs(text);
+        return;
 		
 		/*if (text.length() <= 32) {
 			tmp.add(getSplitMsgs(text));
@@ -109,7 +109,7 @@ public abstract class AbstractHolder {
 		}
 		
 		this.cache = tmp;*/
-	}
+    }
 	
 	/*private String getCut(String text) {
 		
@@ -193,33 +193,33 @@ public abstract class AbstractHolder {
 	/*private String back(int index, String msg) {
 		return msg.substring((msg.length() - maxLen) - index, msg.length() - index);
 	}*/
-	
+
     private String[] getSplitMsgs(String text) {
         int maxLenght = Board.getInstance().getMaxLength();
-        
+
         StringBuilder prefix = new StringBuilder(text.substring(0, text.length() >= maxLenght ? maxLenght : text.length()));
         StringBuilder suffix = new StringBuilder(text.length() > maxLenght ? text.substring(maxLenght) : "");
-        
+
         if (prefix.length() > 1 && prefix.charAt(prefix.length() - 1) == '§') {
-        	
+
             prefix.deleteCharAt(prefix.length() - 1);
             suffix.insert(0, '§');
         }
         if (text.length() > maxLenght) {
-        	suffix.insert(0, ChatColor.getLastColors(prefix.toString()));
+            suffix.insert(0, ChatColor.getLastColors(prefix.toString()));
         }
-        
+
         String suf = suffix.toString();
-        
-    	//Board.getContext().getLogger().info("testcc '" + prefix.toString() + suf + "' " + suf.length());
-    	
+
+        //Board.getContext().getLogger().info("testcc '" + prefix.toString() + suf + "' " + suf.length());
+
         if (suf.length() > maxLenght) {
-        	suf = suf.substring(0,  maxLenght);
-        	//Board.getContext().getLogger().info("testff2 '" + suf + "' " + suf.length());
+            suf = suf.substring(0, maxLenght);
+            //Board.getContext().getLogger().info("testff2 '" + suf + "' " + suf.length());
         }
-        
+
         return new String[]{prefix.length() > maxLenght ? prefix.toString().substring(0, maxLenght) : prefix.toString(), suf};
-        
+
     }
 	
 	/*private String fixColor(String msg) {
@@ -241,6 +241,6 @@ public abstract class AbstractHolder {
         
         return this.colorReset + sb.toString();
 	}*/
-	
+
 
 }
