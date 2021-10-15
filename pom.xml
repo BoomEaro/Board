@@ -18,7 +18,7 @@
     </properties>
 
     <build>
-        <finalName>${project.finalNameBase}</finalName>
+        <finalName>${project.name}</finalName>
     </build>
 
     <repositories>
