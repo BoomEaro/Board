@@ -35,5 +35,12 @@
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>ServerUtils</groupId>
+            <artifactId>ServerUtils</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>C:/Users/mm123/git/ServerUtils/target/ServerUtils.jar</systemPath>
+        </dependency>
     </dependencies>
 </project>

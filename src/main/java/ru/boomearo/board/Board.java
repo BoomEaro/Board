@@ -21,9 +21,10 @@ public class Board extends JavaPlugin {
 
     private BoardUpdater board = null;
 
-    private final String serverVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
+    //private final String serverVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
 
-    private int maxLength = 16;
+    //TODO Сделать иначе или убрать
+    public static final int maxLength = 64;
 
     private TpsRunnable tps = null;
 
@@ -32,15 +33,6 @@ public class Board extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
-        if (this.serverVersion.equalsIgnoreCase("1_12_R1")) {
-            this.maxLength = 16;
-        }
-        else {
-            this.maxLength = 64;
-        }
-
-        getLogger().info("Используем максимальную длину ячейки в " + this.maxLength + " символов.");
 
         if (this.boardManager == null) {
             this.boardManager = new BoardManager();
@@ -79,10 +71,6 @@ public class Board extends JavaPlugin {
 
     public BoardManager getBoardManager() {
         return this.boardManager;
-    }
-
-    public int getMaxLength() {
-        return this.maxLength;
     }
 
     public TpsRunnable getTpsRunnable() {

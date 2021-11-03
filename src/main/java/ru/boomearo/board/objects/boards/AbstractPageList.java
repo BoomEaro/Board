@@ -27,7 +27,7 @@ public abstract class AbstractPageList {
 
     //Инициализирует страницы, то какие страницы были созданы, зависит от реализации этого класса
     public void loadPages() throws BoardException {
-        List<AbstractPage> tmp = null;
+        List<AbstractPage> tmp;
         try {
             tmp = createPages();
         }

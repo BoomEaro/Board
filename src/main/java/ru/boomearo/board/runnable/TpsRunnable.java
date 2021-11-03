@@ -10,12 +10,12 @@ public class TpsRunnable extends BukkitRunnable {
 
     //only main thread
     private long mills = 0;
-    private double[] tpsArr = new double[10];
+    private final double[] tpsArr = new double[10];
     private int index = 0;
 
     //caches info
     private volatile double tps = 0;
-    private volatile int entites = 0;
+    private volatile int entities = 0;
     private volatile int chunks = 0;
 
     public TpsRunnable() {
@@ -30,8 +30,8 @@ public class TpsRunnable extends BukkitRunnable {
         return this.tps;
     }
 
-    public int getEntites() {
-        return this.entites;
+    public int getEntities() {
+        return this.entities;
     }
 
     public int getChunks() {
@@ -70,7 +70,7 @@ public class TpsRunnable extends BukkitRunnable {
         }
         this.mills = System.currentTimeMillis();
 
-        //Присвоение значиние
+        //Присвоение значение
         double tpsSum = 0.0D;
 
         for (double d : this.tpsArr) {
@@ -81,11 +81,11 @@ public class TpsRunnable extends BukkitRunnable {
     }
 
     private void handleOther() {
-        this.entites = getAllEntites();
+        this.entities = getAllEntities();
         this.chunks = getAllChunks();
     }
 
-    private int getAllEntites() {
+    private int getAllEntities() {
         int entites = 0;
 
         for (World w : Bukkit.getWorlds()) {

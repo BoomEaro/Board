@@ -10,10 +10,9 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.ChatColor;
 
+import ru.boomearo.board.objects.DefaultPageListFactory;
 import ru.boomearo.board.objects.IPageListFactory;
 import ru.boomearo.board.objects.PlayerBoard;
-import ru.boomearo.board.objects.boards.AbstractPageList;
-import ru.boomearo.board.objects.boards.defaults.DefaultPageList;
 
 public final class BoardManager {
 
@@ -23,14 +22,7 @@ public final class BoardManager {
 
     private final Set<String> playersIgnore = new HashSet<>();
 
-    private IPageListFactory factory = new IPageListFactory() {
-
-        @Override
-        public AbstractPageList createPageList(PlayerBoard player) {
-            return new DefaultPageList(player);
-        }
-
-    };
+    private IPageListFactory factory = new DefaultPageListFactory();
 
     private final Object lock = new Object();
 

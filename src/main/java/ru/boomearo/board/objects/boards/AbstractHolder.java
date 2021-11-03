@@ -88,7 +88,6 @@ public abstract class AbstractHolder {
         //List<String[]> tmp = new ArrayList<String[]>();
 
         this.cache = getSplitMsgs(text);
-        return;
 		
 		/*if (text.length() <= 32) {
 			tmp.add(getSplitMsgs(text));
@@ -195,7 +194,7 @@ public abstract class AbstractHolder {
 	}*/
 
     private String[] getSplitMsgs(String text) {
-        int maxLenght = Board.getInstance().getMaxLength();
+        int maxLenght = Board.maxLength;
 
         StringBuilder prefix = new StringBuilder(text.substring(0, text.length() >= maxLenght ? maxLenght : text.length()));
         StringBuilder suffix = new StringBuilder(text.length() > maxLenght ? text.substring(maxLenght) : "");

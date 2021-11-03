@@ -4,22 +4,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import ru.boomearo.board.Board;
-import ru.boomearo.board.commands.CmdInfo;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.boards.AbstractPage;
+import ru.boomearo.serverutils.utils.other.commands.CmdInfo;
+import ru.boomearo.serverutils.utils.other.commands.Commands;
 
-public class CmdBoard {
+public class CmdBoard implements Commands {
 
     @CmdInfo(name = "toggle", description = "Переключить отображение.", usage = "/board toggle", permission = "")
     public boolean toggle(CommandSender cs, String[] args) {
-        if (!(cs instanceof Player)) {
+        if (!(cs instanceof Player pl)) {
             return true;
         }
         if (args.length != 0) {
             return false;
         }
-        Player pl = (Player) cs;
         BoardManager manager = Board.getInstance().getBoardManager();
         if (!manager.isIgnore(pl.getName())) {
             manager.removePlayerBoard(pl.getName());
@@ -36,13 +36,12 @@ public class CmdBoard {
 
     @CmdInfo(name = "page", description = "Показать указанную страницу.", usage = "/board page <страница>", permission = "")
     public boolean page(CommandSender cs, String[] args) {
-        if (!(cs instanceof Player)) {
+        if (!(cs instanceof Player pl)) {
             return true;
         }
         if (args.length != 1) {
             return false;
         }
-        Player pl = (Player) cs;
         Integer page = null;
         try {
             page = Integer.parseInt(args[0]);
@@ -86,13 +85,12 @@ public class CmdBoard {
 
     @CmdInfo(name = "scroll", description = "Переключить автоматические прокрутывание страниц. ", usage = "/board scroll", permission = "")
     public boolean permanent(CommandSender cs, String[] args) {
-        if (!(cs instanceof Player)) {
+        if (!(cs instanceof Player pl)) {
             return true;
         }
         if (args.length != 0) {
             return false;
         }
-        Player pl = (Player) cs;
         BoardManager manager = Board.getInstance().getBoardManager();
         PlayerBoard pb = manager.getPlayerBoard(pl.getName());
         if (pb != null) {
@@ -107,13 +105,12 @@ public class CmdBoard {
 
     @CmdInfo(name = "debug", description = "Переключить дебаг режим.", usage = "/board debug", permission = "")
     public boolean debug(CommandSender cs, String[] args) {
-        if (!(cs instanceof Player)) {
+        if (!(cs instanceof Player pl)) {
             return true;
         }
         if (args.length != 0) {
             return false;
         }
-        Player pl = (Player) cs;
 
         BoardManager manager = Board.getInstance().getBoardManager();
         PlayerBoard pb = manager.getPlayerBoard(pl.getName());

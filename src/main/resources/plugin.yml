@@ -4,6 +4,7 @@ version: 0.5.1
 author: BoomEaro
 description: advanced board
 api-version: 1.16
+depend: [ServerUtils]
 commands:
   board:
     usage: /board

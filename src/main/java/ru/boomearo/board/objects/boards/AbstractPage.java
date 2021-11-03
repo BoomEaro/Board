@@ -64,7 +64,7 @@ public abstract class AbstractPage {
         return visible;
     }
 
-    //Учитываем возможные ошибки а так же проверяем на null
+    //Учитываем возможные ошибки, а так же проверяем на null
     public String getBoardTitle() {
         String title = "NoTitle";
         try {
