@@ -3,7 +3,7 @@ main: ru.boomearo.board.Board
 version: 0.5.1
 author: BoomEaro
 description: advanced board
-api-version: 1.13
+api-version: 1.16
 commands:
   board:
     usage: /board
