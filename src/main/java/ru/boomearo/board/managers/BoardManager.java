@@ -44,6 +44,8 @@ public final class BoardManager {
 
     public void setPageListFactory(IPageListFactory factory) {
         this.factory = factory;
+
+        forceApplyPageListToPlayers();
     }
 
     public void forceApplyPageListToPlayers() {
