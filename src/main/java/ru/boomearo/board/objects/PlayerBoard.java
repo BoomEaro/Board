@@ -144,7 +144,7 @@ public class PlayerBoard {
     }
 
     private void setUpPage(AbstractPage page) {
-        //Устанавливаем страницу и заполняем лист тимами с плейсхолдерами
+        //Устанавливаем страницу и заполняем лист тимами плейсхолдерами
         int index = BoardManager.maxEntrySize;
 
         this.objective.setDisplayName(page.getBoardTitle());
@@ -207,9 +207,7 @@ public class PlayerBoard {
                 this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             }
             else {
-                Bukkit.getScheduler().runTask(Board.getInstance(), () -> {
-                    this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-                });
+                Bukkit.getScheduler().runTask(Board.getInstance(), () -> this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard()));
             }
         }
     }
@@ -240,10 +238,57 @@ public class PlayerBoard {
         this.teams.clear();
     }
 
+    public void handleBoard() {
+        try {
+            int maxPage = getMaxPageIndex();
+            if (getPageIndex() <= maxPage) {
+                AbstractPage thisPage = getCurrentPage();
+
+                int nextPageIndex = getNextPageNumber();
+                AbstractPage nextPage = getPageByIndex(nextPageIndex);
+
+                //Если текущая страница не видна игроку
+                if (!thisPage.isVisibleToPlayer()) {
+
+                    //Убеждаемся что текущая страница не является следующей страницей (в противном случае ничего не делаем)
+                    if (getPageIndex() != nextPageIndex) {
+                        toPage(nextPageIndex, nextPage);
+                    }
+
+                    return;
+                }
+
+                //Сменяем страницу только если прошло время, иначе просто обновляем ее
+                if (getUpdatePageCount() >= thisPage.getTimeToChangePage()) {
+
+                    //Убеждаемся что текущая страница не является следующей
+                    //Board.getInstance().getLogger().info(pb.getPlayer().getDisplayName() + " -> " + nextPageIndex + " " + pb.getUpdatePageCount() + " " + (thisPage.getTimeToChange() / this.updateTime) + " " + (pb.getUpdatePageCount() >= (thisPage.getTimeToChange() / this.updateTime)) + " " + (pb.getPageIndex() != nextPageIndex) + " " + !thisPage.isVisible() + " " + !pb.isPermanentView());
+                    if (getPageIndex() != nextPageIndex) {
+                        //Если оказывается что в настройках игрока отключен авто скролл, то просто обновляем страницу.
+                        //Иначе пытаемся открыть следующую страницу.
+                        if (isPermanentView()) {
+                            update();
+                            return;
+                        }
+
+                        toPage(nextPageIndex, nextPage);
+
+                        update();
+                        return;
+                    }
+                }
+                update();
+            }
+            addUpdatePageCount(1);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public Player getPlayer() {
         return this.player;
     }
-
 
     public int getPageIndex() {
         return this.pageIndex;
