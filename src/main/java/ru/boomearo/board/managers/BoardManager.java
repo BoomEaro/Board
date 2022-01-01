@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.bukkit.ChatColor;
 
+import ru.boomearo.board.exceptions.BoardException;
 import ru.boomearo.board.objects.DefaultPageListFactory;
 import ru.boomearo.board.objects.IPageListFactory;
 import ru.boomearo.board.objects.PlayerBoard;
@@ -43,6 +44,17 @@ public final class BoardManager {
 
     public void setPageListFactory(IPageListFactory factory) {
         this.factory = factory;
+    }
+
+    public void forceApplyPageListToPlayers() {
+        for (PlayerBoard pb : this.playerBoards.values()) {
+            try {
+                pb.setNewPageList(this.factory.createPageList(pb));
+            }
+            catch (BoardException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public PlayerBoard getPlayerBoard(String player) {
