@@ -3,7 +3,7 @@ package ru.boomearo.board.objects;
 public class PlayerToggle {
 
     private final String name;
-    private boolean toggle = true;
+    private boolean toggle;
 
     public PlayerToggle(String name, boolean toggle) {
         this.name = name;
