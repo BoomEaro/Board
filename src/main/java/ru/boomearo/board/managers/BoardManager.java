@@ -48,6 +48,12 @@ public final class BoardManager {
         forceApplyPageListToPlayers();
     }
 
+    public void resetPageListFactory() {
+        this.factory = new DefaultPageListFactory();
+
+        forceApplyPageListToPlayers();
+    }
+
     public void forceApplyPageListToPlayers() {
         for (PlayerBoard pb : this.playerBoards.values()) {
             try {
