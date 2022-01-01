@@ -30,7 +30,12 @@ public class CmdExecutorBoard extends AbstractExecutor implements TabCompleter {
         if (args.length == 1) {
             List<String> matches = new ArrayList<>();
             String search = args[0].toLowerCase();
-            for (String se : Arrays.asList("scroll", "toggle", "page", "debug")) {
+            List<String> tmp = new ArrayList<>(Arrays.asList("scroll", "toggle", "page", "debug"));
+            if (sender.hasPermission("board.admin")) {
+                tmp.add("reload");
+                tmp.add("saveplayers");
+            }
+            for (String se : tmp) {
                 if (se.toLowerCase().startsWith(search)) {
                     matches.add(se);
                 }

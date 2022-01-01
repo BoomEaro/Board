@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import ru.boomearo.board.Board;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PlayerBoard;
+import ru.boomearo.board.objects.PlayerToggle;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.serverutils.utils.other.commands.CmdInfo;
 import ru.boomearo.serverutils.utils.other.commands.Commands;
@@ -21,16 +22,18 @@ public class CmdBoard implements Commands {
             return false;
         }
         BoardManager manager = Board.getInstance().getBoardManager();
-        if (!manager.isIgnore(pl.getName())) {
+        PlayerBoard pb = manager.getPlayerBoard(pl.getName());
+        PlayerToggle pt = manager.getOrCreatePlayerToggle(pl.getName());
+        if (pb != null) {
             manager.removePlayerBoard(pl.getName());
-            manager.addIgnore(pl.getName());
+            pt.setToggle(false);
             pl.sendMessage(BoardManager.prefix + "Вы успешно §cвыключили §fотображение.");
+            return true;
         }
-        else {
-            manager.addPlayerBoard(new PlayerBoard(pl));
-            manager.removeIgnore(pl.getName());
-            pl.sendMessage(BoardManager.prefix + "Вы успешно §aвключили §fотображение.");
-        }
+
+        manager.addPlayerBoard(new PlayerBoard(pl));
+        pt.setToggle(true);
+        pl.sendMessage(BoardManager.prefix + "Вы успешно §aвключили §fотображение.");
         return true;
     }
 
@@ -78,7 +81,7 @@ public class CmdBoard implements Commands {
             }
         }
         else {
-            pl.sendMessage(BoardManager.prefix + "У вас выключен скорборд. Включите его командой §6/board toggle");
+            pl.sendMessage(BoardManager.prefix + "У вас выключено табло. Включите его командой §6/board toggle");
         }
         return true;
     }
@@ -98,7 +101,7 @@ public class CmdBoard implements Commands {
             pl.sendMessage(BoardManager.prefix + "Автоматическая прокрутка успешно " + (!pb.isPermanentView() ? "§aвключена" : "§cвыключена"));
         }
         else {
-            pl.sendMessage(BoardManager.prefix + "Кажется, у вас выключен board.");
+            pl.sendMessage(BoardManager.prefix + "У вас выключено табло. Включите его командой §6/board toggle");
         }
         return true;
     }
@@ -119,10 +122,33 @@ public class CmdBoard implements Commands {
             pl.sendMessage(BoardManager.prefix + "Дебаг режим " + (pb.isDebugMode() ? "§aвключен" : "§cвыключен"));
         }
         else {
-            pl.sendMessage(BoardManager.prefix + "Кажется, у вас выключен board.");
+            pl.sendMessage(BoardManager.prefix + "У вас выключено табло. Включите его командой §6/board toggle");
         }
         return true;
     }
 
+    @CmdInfo(name = "reload", description = "Перезагрузить конфигурацию плагина.", usage = "/board reload", permission = "board.admin")
+    public boolean reload(CommandSender cs, String[] args) {
+        if (args.length != 0) {
+            return false;
+        }
+
+        Board.getInstance().getBoardManager().loadConfig();
+
+        cs.sendMessage(BoardManager.prefix + "Конфигурация успешно перезагружена!");
+        return true;
+    }
+
+    @CmdInfo(name = "saveplayers", description = "Сохранить принудительно конфигурацию игроков.", usage = "/board saveplayers", permission = "board.admin")
+    public boolean saveplayers(CommandSender cs, String[] args) {
+        if (args.length != 0) {
+            return false;
+        }
+
+        Board.getInstance().getBoardManager().savePlayersConfig();
+
+        cs.sendMessage(BoardManager.prefix + "Конфигурация игроков успешно сохранена!");
+        return true;
+    }
 
 }

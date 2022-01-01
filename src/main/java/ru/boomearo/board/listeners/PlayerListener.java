@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import ru.boomearo.board.Board;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PlayerBoard;
+import ru.boomearo.board.objects.PlayerToggle;
 
 public class PlayerListener implements Listener {
 
@@ -17,7 +18,8 @@ public class PlayerListener implements Listener {
         Player pl = e.getPlayer();
 
         BoardManager manager = Board.getInstance().getBoardManager();
-        if (!manager.isIgnore(pl.getName())) {
+        PlayerToggle pt = manager.getOrCreatePlayerToggle(pl.getName());
+        if (pt.isToggle()) {
             PlayerBoard pb = manager.getPlayerBoard(pl.getName());
             if (pb == null) {
                 manager.addPlayerBoard(new PlayerBoard(pl));
@@ -30,11 +32,9 @@ public class PlayerListener implements Listener {
         Player pl = e.getPlayer();
 
         BoardManager manager = Board.getInstance().getBoardManager();
-        if (!manager.isIgnore(pl.getName())) {
-            PlayerBoard pb = manager.getPlayerBoard(pl.getName());
-            if (pb != null) {
-                manager.removePlayerBoard(pl.getName());
-            }
+        PlayerBoard pb = manager.getPlayerBoard(pl.getName());
+        if (pb != null) {
+            manager.removePlayerBoard(pl.getName());
         }
     }
 

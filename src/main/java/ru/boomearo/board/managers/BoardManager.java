@@ -1,32 +1,35 @@
 package ru.boomearo.board.managers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
+import ru.boomearo.board.Board;
 import ru.boomearo.board.exceptions.BoardException;
 import ru.boomearo.board.objects.DefaultPageListFactory;
 import ru.boomearo.board.objects.IPageListFactory;
 import ru.boomearo.board.objects.PlayerBoard;
+import ru.boomearo.board.objects.PlayerToggle;
 
 public final class BoardManager {
 
-    public static final String prefix = "§8[§6Board§8]: §f";
-
     private final ConcurrentMap<String, PlayerBoard> playerBoards = new ConcurrentHashMap<>();
-
-    private final Set<String> playersIgnore = new HashSet<>();
+    private ConcurrentMap<String, PlayerToggle> playersToggle = new ConcurrentHashMap<>();
 
     private IPageListFactory factory = new DefaultPageListFactory();
+    private boolean defaultToggle = true;
 
-    private final Object lock = new Object();
-
+    public static final String prefix = "§8[§6Board§8]: §f";
     public static final int maxEntrySize = 15;
 
     private static final List<String> entryNames = new ArrayList<>();
@@ -85,32 +88,93 @@ public final class BoardManager {
         return this.playerBoards.values();
     }
 
-    public boolean isIgnore(String player) {
-        synchronized (this.lock) {
-            return this.playersIgnore.contains(player);
+
+    public PlayerToggle getOrCreatePlayerToggle(String name) {
+        return this.playersToggle.computeIfAbsent(name, (value) -> new PlayerToggle(value, this.defaultToggle));
+    }
+
+    public void loadPlayersConfig() {
+        File playersConfigFile;
+        FileConfiguration playersConfig;
+        playersConfigFile = new File( Board.getInstance().getDataFolder(), "players.yml");
+        if (!playersConfigFile.exists()) {
+            Board.getInstance().getLogger().info("Конфигурация игроков не найдена, создаем новую..");
+            playersConfigFile.getParentFile().mkdirs();
+            Board.getInstance().saveResource("players.yml", false);
+        }
+
+        playersConfig = new YamlConfiguration();
+
+        try {
+            playersConfig.load(playersConfigFile);
+
+            ConcurrentMap<String, PlayerToggle> tmp = new ConcurrentHashMap<>();
+
+            ConfigurationSection cs = playersConfig.getConfigurationSection("players");
+            if (cs != null) {
+                for (String name : cs.getKeys(false)) {
+                    boolean toggle = playersConfig.getBoolean("players." + name + ".toggle");
+                    tmp.put(name, new PlayerToggle(name, toggle));
+                }
+            }
+
+            this.playersToggle = tmp;
+
+            Board.getInstance().getLogger().info("Конфигурация игроков успешно загружена!");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public void addIgnore(String player) {
-        synchronized (this.lock) {
-            this.playersIgnore.add(player);
+    public void savePlayersConfig() {
+        File playersConfigFile = new File( Board.getInstance().getDataFolder(), "players.yml");
+        FileConfiguration playersConfig = new YamlConfiguration();
+
+        for (PlayerToggle pt : this.playersToggle.values()) {
+            playersConfig.set("players." + pt.getName() + ".toggle", pt.isToggle());
+        }
+
+        try {
+            playersConfig.save(playersConfigFile);
+            Board.getInstance().getLogger().info("Конфигурация игроков успешно сохранена!");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public void removeIgnore(String player) {
-        synchronized (this.lock) {
-            this.playersIgnore.remove(player);
+    public void loadPlayerBoards() {
+        if (!this.defaultToggle) {
+            return;
+        }
+        for (Player pl : Bukkit.getOnlinePlayers()) {
+            PlayerToggle pt = getOrCreatePlayerToggle(pl.getName());
+            if (pt.isToggle()) {
+                addPlayerBoard(new PlayerBoard(pl));
+            }
         }
     }
 
-    public List<String> getAllIgnores() {
-        synchronized (this.lock) {
-            return new ArrayList<>(this.playersIgnore);
+    public void unloadPlayerBoards() {
+        for (PlayerBoard pb : this.playerBoards.values()) {
+            pb.remove();
         }
+    }
+
+    public void loadConfig() {
+        Board.getInstance().reloadConfig();
+        FileConfiguration fc = Board.getInstance().getConfig();
+        this.defaultToggle = fc.getBoolean("defaultToggle");
+    }
+
+    public boolean isDefaultToggle() {
+        return this.defaultToggle;
     }
 
     public static String getColor(int index) {
         return entryNames.get(index);
     }
+
 
 }
