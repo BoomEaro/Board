@@ -119,8 +119,6 @@ public final class BoardManager {
             }
 
             this.playersToggle = tmp;
-
-            Board.getInstance().getLogger().info("Конфигурация игроков успешно загружена!");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -137,7 +135,6 @@ public final class BoardManager {
 
         try {
             playersConfig.save(playersConfigFile);
-            Board.getInstance().getLogger().info("Конфигурация игроков успешно сохранена!");
         }
         catch (Exception e) {
             e.printStackTrace();
