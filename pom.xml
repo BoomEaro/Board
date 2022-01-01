@@ -40,7 +40,7 @@
             <artifactId>ServerUtils</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>C:/Users/mm123/git/ServerUtils/target/ServerUtils.jar</systemPath>
+            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/ServerUtils/target/ServerUtils.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

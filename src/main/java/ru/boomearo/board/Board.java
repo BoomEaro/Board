@@ -21,11 +21,6 @@ public class Board extends JavaPlugin {
 
     private BoardUpdater board = null;
 
-    //private final String serverVersion = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
-
-    //TODO Сделать иначе или убрать
-    public static final int maxLength = 64;
-
     private TpsRunnable tps = null;
 
     private static Board instance = null;
@@ -43,6 +38,7 @@ public class Board extends JavaPlugin {
             this.board.setPriority(3);
             this.board.start();
         }
+
 
         loadPlayersConfig();
         loadPlayerBoards();
