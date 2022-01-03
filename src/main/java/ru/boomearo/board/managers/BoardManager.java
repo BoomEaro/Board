@@ -28,6 +28,7 @@ public final class BoardManager {
 
     private IPageListFactory factory = new DefaultPageListFactory();
     private boolean defaultToggle = true;
+    private boolean enabledToggle = true;
 
     public static final String prefix = "§8[§6Board§8]: §f";
     public static final int maxEntrySize = 15;
@@ -163,10 +164,15 @@ public final class BoardManager {
         Board.getInstance().reloadConfig();
         FileConfiguration fc = Board.getInstance().getConfig();
         this.defaultToggle = fc.getBoolean("defaultToggle");
+        this.enabledToggle = fc.getBoolean("enabledToggle");
     }
 
     public boolean isDefaultToggle() {
         return this.defaultToggle;
+    }
+
+    public boolean isEnabledToggle() {
+        return this.enabledToggle;
     }
 
     public static String getColor(int index) {

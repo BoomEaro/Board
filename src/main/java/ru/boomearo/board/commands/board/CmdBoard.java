@@ -22,6 +22,11 @@ public class CmdBoard implements Commands {
             return false;
         }
         BoardManager manager = Board.getInstance().getBoardManager();
+        if (!manager.isEnabledToggle()) {
+            pl.sendMessage(BoardManager.prefix + "Вы не можете переключить отображение.");
+            return true;
+        }
+
         PlayerBoard pb = manager.getPlayerBoard(pl.getName());
         PlayerToggle pt = manager.getOrCreatePlayerToggle(pl.getName());
         if (pb != null) {

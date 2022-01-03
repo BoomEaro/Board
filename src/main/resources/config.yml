@@ -1,1 +1,4 @@
+#Отображается ли по умолчанию табло для новых игроков
 defaultToggle: true
+#Можно ли переключать табло командой /board toggle
+enabledToggle: true
