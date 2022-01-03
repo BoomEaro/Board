@@ -81,25 +81,15 @@ public class TpsRunnable extends BukkitRunnable {
     }
 
     private void handleOther() {
-        this.entities = getAllEntities();
-        this.chunks = getAllChunks();
-    }
-
-    private int getAllEntities() {
-        int entites = 0;
-
-        for (World w : Bukkit.getWorlds()) {
-            entites = entites + w.getEntities().size();
-        }
-        return entites;
-    }
-
-    private int getAllChunks() {
+        int entities = 0;
         int chunks = 0;
 
         for (World w : Bukkit.getWorlds()) {
+            entities = entities + w.getEntities().size();
             chunks = chunks + w.getLoadedChunks().length;
         }
-        return chunks;
+
+        this.entities = entities;
+        this.chunks = chunks;
     }
 }
