@@ -127,6 +127,10 @@ public final class BoardManager {
     }
 
     public void savePlayersConfig() {
+        //Если переключение выключено значит не сохраняем конфиг
+        if (!this.isEnabledToggle()) {
+            return;
+        }
         File playersConfigFile = new File( Board.getInstance().getDataFolder(), "players.yml");
         FileConfiguration playersConfig = new YamlConfiguration();
 
