@@ -21,7 +21,7 @@ public final class StringUtils {
             case "1_17_R1": {
                 return 64;
             }
-            case "1_18_R1": {
+            case "1_18_R2": {
                 return Integer.MAX_VALUE;
             }
             default: {
