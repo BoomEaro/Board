@@ -1,6 +1,6 @@
 name: Board
 main: ru.boomearo.board.Board
-version: 0.5.1
+version: ${project.version}
 author: BoomEaro
 description: advanced board
 api-version: 1.16
