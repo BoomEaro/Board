@@ -15,8 +15,8 @@ public class CmdExecutorBoard extends AbstractExecutor implements TabCompleter {
 
     private static final List<String> empty = new ArrayList<>();
 
-    public CmdExecutorBoard() {
-        super(new CmdBoard());
+    public CmdExecutorBoard(BoardManager boardManager) {
+        super(new CmdBoard(boardManager));
     }
 
     @Override

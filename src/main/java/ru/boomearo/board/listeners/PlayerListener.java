@@ -6,23 +6,27 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import ru.boomearo.board.Board;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.PlayerToggle;
 
 public class PlayerListener implements Listener {
 
+    private final BoardManager boardManager;
+
+    public PlayerListener(BoardManager boardManager) {
+        this.boardManager = boardManager;
+    }
+
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent e) {
         Player pl = e.getPlayer();
 
-        BoardManager manager = Board.getInstance().getBoardManager();
-        PlayerToggle pt = manager.getOrCreatePlayerToggle(pl.getName());
+        PlayerToggle pt = this.boardManager.getOrCreatePlayerToggle(pl.getName());
         if (pt.isToggle()) {
-            PlayerBoard pb = manager.getPlayerBoard(pl.getName());
+            PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
             if (pb == null) {
-                manager.addPlayerBoard(new PlayerBoard(pl));
+                this.boardManager.addPlayerBoard(new PlayerBoard(pl));
             }
         }
     }
@@ -31,10 +35,9 @@ public class PlayerListener implements Listener {
     public void onPlayerQuitEvent(PlayerQuitEvent e) {
         Player pl = e.getPlayer();
 
-        BoardManager manager = Board.getInstance().getBoardManager();
-        PlayerBoard pb = manager.getPlayerBoard(pl.getName());
+        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
         if (pb != null) {
-            manager.removePlayerBoard(pl.getName());
+            this.boardManager.removePlayerBoard(pl.getName());
         }
     }
 

@@ -3,7 +3,6 @@ package ru.boomearo.board.commands.board;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import ru.boomearo.board.Board;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.PlayerToggle;
@@ -13,6 +12,12 @@ import ru.boomearo.serverutils.utils.other.commands.Commands;
 
 public class CmdBoard implements Commands {
 
+    private final BoardManager boardManager;
+
+    public CmdBoard(BoardManager boardManager) {
+        this.boardManager = boardManager;
+    }
+
     @CmdInfo(name = "toggle", description = "Переключить отображение.", usage = "/board toggle", permission = "")
     public boolean toggle(CommandSender cs, String[] args) {
         if (!(cs instanceof Player pl)) {
@@ -21,22 +26,21 @@ public class CmdBoard implements Commands {
         if (args.length != 0) {
             return false;
         }
-        BoardManager manager = Board.getInstance().getBoardManager();
-        if (!manager.isEnabledToggle()) {
+        if (!this.boardManager.isEnabledToggle()) {
             pl.sendMessage(BoardManager.prefix + "Вы не можете переключить отображение.");
             return true;
         }
 
-        PlayerBoard pb = manager.getPlayerBoard(pl.getName());
-        PlayerToggle pt = manager.getOrCreatePlayerToggle(pl.getName());
+        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
+        PlayerToggle pt = this.boardManager.getOrCreatePlayerToggle(pl.getName());
         if (pb != null) {
-            manager.removePlayerBoard(pl.getName());
+            this.boardManager.removePlayerBoard(pl.getName());
             pt.setToggle(false);
             pl.sendMessage(BoardManager.prefix + "Вы успешно §cвыключили §fотображение.");
             return true;
         }
 
-        manager.addPlayerBoard(new PlayerBoard(pl));
+        this.boardManager.addPlayerBoard(new PlayerBoard(pl));
         pt.setToggle(true);
         pl.sendMessage(BoardManager.prefix + "Вы успешно §aвключили §fотображение.");
         return true;
@@ -61,8 +65,7 @@ public class CmdBoard implements Commands {
             return true;
         }
 
-        BoardManager manager = Board.getInstance().getBoardManager();
-        PlayerBoard pb = manager.getPlayerBoard(pl.getName());
+        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
         if (pb == null) {
             pl.sendMessage(BoardManager.prefix + "Сперва включите отображение командой §6/board toggle");
             return true;
@@ -98,8 +101,7 @@ public class CmdBoard implements Commands {
         if (args.length != 0) {
             return false;
         }
-        BoardManager manager = Board.getInstance().getBoardManager();
-        PlayerBoard pb = manager.getPlayerBoard(pl.getName());
+        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
         if (pb == null) {
             pl.sendMessage(BoardManager.prefix + "Сперва включите отображение командой §6/board toggle");
             return true;
@@ -119,8 +121,7 @@ public class CmdBoard implements Commands {
             return false;
         }
 
-        BoardManager manager = Board.getInstance().getBoardManager();
-        PlayerBoard pb = manager.getPlayerBoard(pl.getName());
+        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
         if (pb == null) {
             pl.sendMessage(BoardManager.prefix + "Сперва включите отображение командой §6/board toggle");
             return true;
@@ -137,7 +138,7 @@ public class CmdBoard implements Commands {
             return false;
         }
 
-        Board.getInstance().getBoardManager().loadConfig();
+        this.boardManager.loadConfig();
 
         cs.sendMessage(BoardManager.prefix + "Конфигурация успешно перезагружена!");
         return true;
@@ -149,7 +150,7 @@ public class CmdBoard implements Commands {
             return false;
         }
 
-        Board.getInstance().getBoardManager().savePlayersConfig();
+        this.boardManager.savePlayersConfig();
 
         cs.sendMessage(BoardManager.prefix + "Конфигурация игроков успешно сохранена!");
         return true;

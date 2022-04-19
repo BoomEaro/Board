@@ -14,9 +14,9 @@ public class Board extends JavaPlugin {
 
     private BoardManager boardManager = null;
 
-    private BoardUpdater board = null;
+    private BoardUpdater boardUpdater = null;
 
-    private TpsRunnable tps = null;
+    private TpsRunnable tpsRunnable = null;
 
     private static Board instance = null;
 
@@ -39,22 +39,22 @@ public class Board extends JavaPlugin {
             this.boardManager.loadPlayerBoards();
         }
 
-        if (this.board == null) {
-            this.board = new BoardUpdater();
-            this.board.setPriority(3);
-            this.board.start();
+        if (this.boardUpdater == null) {
+            this.boardUpdater = new BoardUpdater(this.boardManager);
+            this.boardUpdater.setPriority(3);
+            this.boardUpdater.start();
         }
 
-        getCommand("board").setExecutor(new CmdExecutorBoard());
+        getCommand("board").setExecutor(new CmdExecutorBoard(this.boardManager));
 
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(this.boardManager), this);
 
         getLogger().info("Плагин успешно загружен.");
     }
 
     @Override
     public void onDisable() {
-        this.board.interrupt();
+        this.boardUpdater.interrupt();
 
         if (this.boardManager != null) {
             this.boardManager.unloadPlayerBoards();
@@ -73,13 +73,16 @@ public class Board extends JavaPlugin {
         return this.boardManager;
     }
 
-    public TpsRunnable getTpsRunnable() {
+    public BoardUpdater getBoardUpdater() {
+        return this.boardUpdater;
+    }
 
-        if (this.tps == null) {
-            this.tps = new TpsRunnable();
+    public TpsRunnable getTpsRunnable() {
+        if (this.tpsRunnable == null) {
+            this.tpsRunnable = new TpsRunnable();
         }
 
-        return this.tps;
+        return this.tpsRunnable;
     }
 
 }

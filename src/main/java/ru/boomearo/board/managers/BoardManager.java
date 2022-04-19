@@ -97,7 +97,7 @@ public final class BoardManager {
     public void loadPlayersConfig() {
         File playersConfigFile;
         FileConfiguration playersConfig;
-        playersConfigFile = new File( Board.getInstance().getDataFolder(), "players.yml");
+        playersConfigFile = new File(Board.getInstance().getDataFolder(), "players.yml");
         if (!playersConfigFile.exists()) {
             Board.getInstance().getLogger().info("Конфигурация игроков не найдена, создаем новую..");
             playersConfigFile.getParentFile().mkdirs();
@@ -131,7 +131,7 @@ public final class BoardManager {
         if (!this.isEnabledToggle()) {
             return;
         }
-        File playersConfigFile = new File( Board.getInstance().getDataFolder(), "players.yml");
+        File playersConfigFile = new File(Board.getInstance().getDataFolder(), "players.yml");
         FileConfiguration playersConfig = new YamlConfiguration();
 
         for (PlayerToggle pt : this.playersToggle.values()) {
