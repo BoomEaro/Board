@@ -63,35 +63,34 @@ public class CmdBoard implements Commands {
 
         BoardManager manager = Board.getInstance().getBoardManager();
         PlayerBoard pb = manager.getPlayerBoard(pl.getName());
-        if (pb != null) {
-            int maxSize = pb.getMaxPageIndex();
-            int fixedPage = page - 1;
-            if (fixedPage > maxSize) {
-                pl.sendMessage(BoardManager.prefix + "Страница §6" + page + " §fне найдена.");
-                return true;
-            }
-            if (fixedPage < 0) {
-                pl.sendMessage(BoardManager.prefix + "Страница §6" + page + " §fне может быть нулем или меньше нуля.");
-                return true;
-            }
-
-            AbstractPage pageTo = pb.getPageByIndex(fixedPage);
-
-            if (pageTo.isVisibleToPlayer()) {
-                pb.toPage(fixedPage, pageTo);
-                pl.sendMessage(BoardManager.prefix + "Страница §6" + page + " §fуспешно отображена.");
-            }
-            else {
-                pl.sendMessage(BoardManager.prefix + "Данная страница либо пуста либо у вас нет прав на ее отображение.");
-            }
+        if (pb == null) {
+            pl.sendMessage(BoardManager.prefix + "Сперва включите отображение командой §6/board toggle");
+            return true;
         }
-        else {
-            pl.sendMessage(BoardManager.prefix + "У вас выключено табло. Включите его командой §6/board toggle");
+
+        int maxSize = pb.getMaxPageIndex();
+        int fixedPage = page - 1;
+        if (fixedPage > maxSize) {
+            pl.sendMessage(BoardManager.prefix + "Страница §6" + page + " §fне найдена.");
+            return true;
         }
+        if (fixedPage < 0) {
+            pl.sendMessage(BoardManager.prefix + "Страница §6" + page + " §fне может быть нулем или меньше нуля.");
+            return true;
+        }
+
+        AbstractPage pageTo = pb.getPageByIndex(fixedPage);
+        if (!pageTo.isVisibleToPlayer()) {
+            pl.sendMessage(BoardManager.prefix + "Данная страница либо пуста либо у вас нет прав на ее отображение.");
+            return true;
+        }
+
+        pb.toPage(fixedPage, pageTo);
+        pl.sendMessage(BoardManager.prefix + "Страница §6" + page + " §fуспешно отображена.");
         return true;
     }
 
-    @CmdInfo(name = "scroll", description = "Переключить автоматические прокрутывание страниц. ", usage = "/board scroll", permission = "")
+    @CmdInfo(name = "scroll", description = "Переключить автоматические прокручивание страниц. ", usage = "/board scroll", permission = "")
     public boolean permanent(CommandSender cs, String[] args) {
         if (!(cs instanceof Player pl)) {
             return true;
@@ -101,13 +100,13 @@ public class CmdBoard implements Commands {
         }
         BoardManager manager = Board.getInstance().getBoardManager();
         PlayerBoard pb = manager.getPlayerBoard(pl.getName());
-        if (pb != null) {
-            pb.setPermanentView(!pb.isPermanentView());
-            pl.sendMessage(BoardManager.prefix + "Автоматическая прокрутка успешно " + (!pb.isPermanentView() ? "§aвключена" : "§cвыключена"));
+        if (pb == null) {
+            pl.sendMessage(BoardManager.prefix + "Сперва включите отображение командой §6/board toggle");
+            return true;
         }
-        else {
-            pl.sendMessage(BoardManager.prefix + "У вас выключено табло. Включите его командой §6/board toggle");
-        }
+
+        pb.setPermanentView(!pb.isPermanentView());
+        pl.sendMessage(BoardManager.prefix + "Автоматическая прокрутка успешно " + (!pb.isPermanentView() ? "§aвключена" : "§cвыключена"));
         return true;
     }
 
@@ -122,13 +121,13 @@ public class CmdBoard implements Commands {
 
         BoardManager manager = Board.getInstance().getBoardManager();
         PlayerBoard pb = manager.getPlayerBoard(pl.getName());
-        if (pb != null) {
-            pb.setDebugMode(!pb.isDebugMode());
-            pl.sendMessage(BoardManager.prefix + "Дебаг режим " + (pb.isDebugMode() ? "§aвключен" : "§cвыключен"));
+        if (pb == null) {
+            pl.sendMessage(BoardManager.prefix + "Сперва включите отображение командой §6/board toggle");
+            return true;
         }
-        else {
-            pl.sendMessage(BoardManager.prefix + "У вас выключено табло. Включите его командой §6/board toggle");
-        }
+
+        pb.setDebugMode(!pb.isDebugMode());
+        pl.sendMessage(BoardManager.prefix + "Дебаг режим " + (pb.isDebugMode() ? "§aвключен" : "§cвыключен"));
         return true;
     }
 
