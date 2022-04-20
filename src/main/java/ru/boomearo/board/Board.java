@@ -7,7 +7,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.boomearo.board.commands.board.CmdExecutorBoard;
 import ru.boomearo.board.listeners.PlayerListener;
 import ru.boomearo.board.managers.BoardManager;
-import ru.boomearo.board.runnable.TpsRunnable;
 import ru.boomearo.board.runnable.BoardUpdater;
 
 public class Board extends JavaPlugin {
@@ -15,8 +14,6 @@ public class Board extends JavaPlugin {
     private BoardManager boardManager = null;
 
     private BoardUpdater boardUpdater = null;
-
-    private TpsRunnable tpsRunnable = null;
 
     private static Board instance = null;
 
@@ -75,14 +72,6 @@ public class Board extends JavaPlugin {
 
     public BoardUpdater getBoardUpdater() {
         return this.boardUpdater;
-    }
-
-    public TpsRunnable getTpsRunnable() {
-        if (this.tpsRunnable == null) {
-            this.tpsRunnable = new TpsRunnable();
-        }
-
-        return this.tpsRunnable;
     }
 
 }
