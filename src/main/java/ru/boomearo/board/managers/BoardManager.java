@@ -164,6 +164,29 @@ public final class BoardManager {
         }
     }
 
+    /**
+     * Устанавливает скорборд указанному игроку с указанной фабрикой страниц.
+     * Если указанный игрок не был онлайн или скорборд был выключен, ничего не произойдет.
+     * @param name Ник игрока
+     * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
+     */
+    public void sendBoardToPlayer(String name, IPageListFactory factory) {
+        PlayerBoard pb = getPlayerBoard(name);
+        if (pb == null) {
+            return;
+        }
+        try {
+            if (factory == null) {
+                factory = getPageListFactory();
+            }
+
+            pb.setNewPageList(factory.createPageList(pb));
+        }
+        catch (BoardException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void loadConfig() {
         Board.getInstance().reloadConfig();
         FileConfiguration fc = Board.getInstance().getConfig();
@@ -182,6 +205,5 @@ public final class BoardManager {
     public static String getColor(int index) {
         return entryNames.get(index);
     }
-
 
 }
