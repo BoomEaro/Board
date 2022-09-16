@@ -32,6 +32,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -42,11 +46,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>ServerUtils</groupId>
+            <groupId>com.github.BoomEaro</groupId>
             <artifactId>ServerUtils</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>C:/Users/mm123/git/minecraft/BoomEaro/ServerUtils/target/ServerUtils.jar</systemPath>
+            <version>v0.2.2</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
