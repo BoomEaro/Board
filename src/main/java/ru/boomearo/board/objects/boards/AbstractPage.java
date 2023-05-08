@@ -45,8 +45,8 @@ public abstract class AbstractPage {
         }
 
         //TODO может быть обрезать их и не вызывать исключение?
-        if (size > BoardManager.maxEntrySize) {
-            throw new BoardException("Количество холдеров превышает максимальное количество в " + BoardManager.maxEntrySize + " (" + holders.size() + ")");
+        if (size > BoardManager.MAX_ENTRY_SIZE) {
+            throw new BoardException("Количество холдеров превышает максимальное количество в " + BoardManager.MAX_ENTRY_SIZE + " (" + holders.size() + ")");
         }
 
         this.loadedHolders = Collections.unmodifiableList(holders);

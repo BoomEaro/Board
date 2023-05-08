@@ -2,8 +2,7 @@ package ru.boomearo.board.objects.boards;
 
 import org.bukkit.ChatColor;
 
-import ru.boomearo.board.Board;
-import ru.boomearo.board.utils.StringUtils;
+import ru.boomearo.board.utils.StringLength;
 
 public abstract class AbstractHolder {
 
@@ -195,7 +194,7 @@ public abstract class AbstractHolder {
 	}*/
 
     private String[] getSplitMsgs(String text) {
-        int maxLength = StringUtils.getMaxSupportedStringLength();
+        int maxLength = StringLength.getMaxSupportedStringLength();
 
         StringBuilder prefix = new StringBuilder(text.substring(0, text.length() >= maxLength ? maxLength : text.length()));
         StringBuilder suffix = new StringBuilder(text.length() > maxLength ? text.substring(maxLength) : "");

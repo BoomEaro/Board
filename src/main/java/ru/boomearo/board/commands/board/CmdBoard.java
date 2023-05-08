@@ -27,7 +27,7 @@ public class CmdBoard implements Commands {
             return false;
         }
         if (!this.boardManager.isEnabledToggle()) {
-            pl.sendMessage(BoardManager.prefix + "Вы не можете переключить отображение.");
+            pl.sendMessage(BoardManager.PREFIX + "Вы не можете переключить отображение.");
             return true;
         }
 
@@ -36,13 +36,13 @@ public class CmdBoard implements Commands {
         if (pb != null) {
             this.boardManager.removePlayerBoard(pl.getName());
             pt.setToggle(false);
-            pl.sendMessage(BoardManager.prefix + "Вы успешно §cвыключили §fотображение.");
+            pl.sendMessage(BoardManager.PREFIX + "Вы успешно §cвыключили §fотображение.");
             return true;
         }
 
         this.boardManager.addPlayerBoard(new PlayerBoard(pl));
         pt.setToggle(true);
-        pl.sendMessage(BoardManager.prefix + "Вы успешно §aвключили §fотображение.");
+        pl.sendMessage(BoardManager.PREFIX + "Вы успешно §aвключили §fотображение.");
         return true;
     }
 
@@ -61,35 +61,35 @@ public class CmdBoard implements Commands {
         catch (Exception ignored) {
         }
         if (page == null) {
-            pl.sendMessage(BoardManager.prefix + "Аргумент должен содержать цифры!");
+            pl.sendMessage(BoardManager.PREFIX + "Аргумент должен содержать цифры!");
             return true;
         }
 
         PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
         if (pb == null) {
-            pl.sendMessage(BoardManager.prefix + "Сперва включите отображение командой §6/board toggle");
+            pl.sendMessage(BoardManager.PREFIX + "Сперва включите отображение командой §6/board toggle");
             return true;
         }
 
         int maxSize = pb.getMaxPageIndex();
         int fixedPage = page - 1;
         if (fixedPage > maxSize) {
-            pl.sendMessage(BoardManager.prefix + "Страница §6" + page + " §fне найдена.");
+            pl.sendMessage(BoardManager.PREFIX + "Страница §6" + page + " §fне найдена.");
             return true;
         }
         if (fixedPage < 0) {
-            pl.sendMessage(BoardManager.prefix + "Страница §6" + page + " §fне может быть нулем или меньше нуля.");
+            pl.sendMessage(BoardManager.PREFIX + "Страница §6" + page + " §fне может быть нулем или меньше нуля.");
             return true;
         }
 
         AbstractPage pageTo = pb.getPageByIndex(fixedPage);
         if (!pageTo.isVisibleToPlayer()) {
-            pl.sendMessage(BoardManager.prefix + "Данная страница либо пуста либо у вас нет прав на ее отображение.");
+            pl.sendMessage(BoardManager.PREFIX + "Данная страница либо пуста либо у вас нет прав на ее отображение.");
             return true;
         }
 
         pb.toPage(fixedPage, pageTo);
-        pl.sendMessage(BoardManager.prefix + "Страница §6" + page + " §fуспешно отображена.");
+        pl.sendMessage(BoardManager.PREFIX + "Страница §6" + page + " §fуспешно отображена.");
         return true;
     }
 
@@ -103,12 +103,12 @@ public class CmdBoard implements Commands {
         }
         PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
         if (pb == null) {
-            pl.sendMessage(BoardManager.prefix + "Сперва включите отображение командой §6/board toggle");
+            pl.sendMessage(BoardManager.PREFIX + "Сперва включите отображение командой §6/board toggle");
             return true;
         }
 
         pb.setPermanentView(!pb.isPermanentView());
-        pl.sendMessage(BoardManager.prefix + "Автоматическая прокрутка успешно " + (!pb.isPermanentView() ? "§aвключена" : "§cвыключена"));
+        pl.sendMessage(BoardManager.PREFIX + "Автоматическая прокрутка успешно " + (!pb.isPermanentView() ? "§aвключена" : "§cвыключена"));
         return true;
     }
 
@@ -123,12 +123,12 @@ public class CmdBoard implements Commands {
 
         PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
         if (pb == null) {
-            pl.sendMessage(BoardManager.prefix + "Сперва включите отображение командой §6/board toggle");
+            pl.sendMessage(BoardManager.PREFIX + "Сперва включите отображение командой §6/board toggle");
             return true;
         }
 
         pb.setDebugMode(!pb.isDebugMode());
-        pl.sendMessage(BoardManager.prefix + "Дебаг режим " + (pb.isDebugMode() ? "§aвключен" : "§cвыключен"));
+        pl.sendMessage(BoardManager.PREFIX + "Дебаг режим " + (pb.isDebugMode() ? "§aвключен" : "§cвыключен"));
         return true;
     }
 
@@ -140,7 +140,7 @@ public class CmdBoard implements Commands {
 
         this.boardManager.loadConfig();
 
-        cs.sendMessage(BoardManager.prefix + "Конфигурация успешно перезагружена!");
+        cs.sendMessage(BoardManager.PREFIX + "Конфигурация успешно перезагружена!");
         return true;
     }
 
@@ -152,7 +152,7 @@ public class CmdBoard implements Commands {
 
         this.boardManager.savePlayersConfig();
 
-        cs.sendMessage(BoardManager.prefix + "Конфигурация игроков успешно сохранена!");
+        cs.sendMessage(BoardManager.PREFIX + "Конфигурация игроков успешно сохранена!");
         return true;
     }
 

@@ -145,7 +145,7 @@ public class PlayerBoard {
 
     private void setUpPage(AbstractPage page) {
         //Устанавливаем страницу и заполняем лист тимами плейсхолдерами
-        int index = BoardManager.maxEntrySize;
+        int index = BoardManager.MAX_ENTRY_SIZE;
 
         this.objective.setDisplayName(page.getBoardTitle());
 

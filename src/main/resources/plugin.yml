@@ -3,7 +3,7 @@ main: ru.boomearo.board.Board
 version: ${project.version}
 author: BoomEaro
 description: advanced board
-api-version: 1.16
+api-version: 1.13
 depend: [ServerUtils]
 commands:
   board:

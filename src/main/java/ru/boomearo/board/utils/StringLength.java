@@ -3,16 +3,16 @@ package ru.boomearo.board.utils;
 import org.bukkit.Bukkit;
 import ru.boomearo.board.Board;
 
-public final class StringUtils {
+public final class StringLength {
 
-    private static final int maxStringLength;
+    private static int MAX_STRING_LENGTH = 16;
 
-    static {
+    public static void init(Board board) {
         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
 
-        maxStringLength = calculateLength(version);
+        MAX_STRING_LENGTH = calculateLength(version);
 
-        Board.getInstance().getLogger().info("Используем максимальную длину строки в " + maxStringLength + " символа. Определена версия: " + version);
+        board.getLogger().info("Используем максимальную длину строки в " + MAX_STRING_LENGTH + " символа. Определена версия: " + version);
     }
 
     private static int calculateLength(String version) {
@@ -30,8 +30,7 @@ public final class StringUtils {
         }
     }
 
-
     public static int getMaxSupportedStringLength() {
-        return maxStringLength;
+        return MAX_STRING_LENGTH;
     }
 }

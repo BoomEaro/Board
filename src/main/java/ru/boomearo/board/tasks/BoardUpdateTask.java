@@ -1,22 +1,18 @@
-package ru.boomearo.board.runnable;
-
-import java.util.concurrent.TimeUnit;
+package ru.boomearo.board.tasks;
 
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PlayerBoard;
 
-public class BoardUpdater extends AbstractTimer {
+public class BoardUpdateTask implements Runnable {
 
     private final BoardManager boardManager;
 
-    //Если будет работать плохо из-за асинхронного обновления скорборда, то сделаем в основном потоке..
-    public BoardUpdater(BoardManager boardManager) {
-        super("BoardUpdater", TimeUnit.SECONDS, 1);
+    public BoardUpdateTask(BoardManager boardManager) {
         this.boardManager = boardManager;
     }
 
     @Override
-    public void task() {
+    public void run() {
         update();
     }
 

@@ -47,7 +47,7 @@ public class CmdExecutorBoard extends AbstractExecutor implements TabCompleter {
 
     @Override
     public String getPrefix() {
-        return BoardManager.prefix;
+        return BoardManager.PREFIX;
     }
 
     @Override
