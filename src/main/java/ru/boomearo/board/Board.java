@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ru.boomearo.board.commands.board.CmdExecutorBoard;
+import ru.boomearo.board.commands.CommandBoardExecutor;
 import ru.boomearo.board.listeners.PlayerListener;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.tasks.BoardUpdateTask;
@@ -32,7 +32,7 @@ public class Board extends JavaPlugin {
         this.boardManager = new BoardManager();
         this.boardManager.load();
 
-        getCommand("board").setExecutor(new CmdExecutorBoard(this.boardManager));
+        getCommand("board").setExecutor(new CommandBoardExecutor(this.boardManager));
 
         getServer().getPluginManager().registerEvents(new PlayerListener(this.boardManager), this);
 
@@ -45,7 +45,6 @@ public class Board extends JavaPlugin {
 
         getLogger().info("Плагин успешно выгружен.");
     }
-
 
     public static Board getInstance() {
         return instance;
