@@ -25,7 +25,7 @@ public class DefaultMainPage extends AbstractPage {
 
     @Override
     protected String getTitle() {
-        return "§cПустой борд";
+        return "§cEmpty board";
     }
 
     @Override
@@ -35,7 +35,7 @@ public class DefaultMainPage extends AbstractPage {
 
             @Override
             public String getText() {
-                return "§cЗдесь что то должно быть";
+                return "§cJust test";
             }
 
         });
@@ -43,7 +43,7 @@ public class DefaultMainPage extends AbstractPage {
 
             @Override
             public String getText() {
-                return "§cНо почему то этого нет.";
+                return "§cTest2";
             }
 
         });
@@ -51,13 +51,14 @@ public class DefaultMainPage extends AbstractPage {
 
             @Override
             public String getText() {
-                double h = getPageList().getPlayerBoard().getPlayer().getHealth();
-                if (h > 10) {
-                    return "У вас больше 10 хп!1";
-                }
-                else {
-                    return "";
-                }
+                return "§aCurrent HP " + this.playerBoard.getPlayer().getHealth();
+            }
+        });
+        tmpLines.add(new AbstractHolder(this) {
+
+            @Override
+            public String getText() {
+                return "§6Current hunger " + this.playerBoard.getPlayer().getFoodLevel();
             }
         });
 

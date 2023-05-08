@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
 import ru.boomearo.board.Board;
 import ru.boomearo.board.exceptions.BoardException;
 import ru.boomearo.board.objects.DefaultPageListFactory;
-import ru.boomearo.board.objects.IPageListFactory;
+import ru.boomearo.board.objects.PageListFactory;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.PlayerToggle;
 import ru.boomearo.board.tasks.BoardUpdateTask;
@@ -31,7 +31,8 @@ public final class BoardManager {
     private final ConcurrentMap<String, PlayerBoard> playerBoards = new ConcurrentHashMap<>();
     private ConcurrentMap<String, PlayerToggle> playersToggle = new ConcurrentHashMap<>();
 
-    private IPageListFactory factory = new DefaultPageListFactory();
+    private PageListFactory factory = new DefaultPageListFactory();
+
     private boolean defaultToggle = true;
     private boolean enabledToggle = true;
 
@@ -161,11 +162,11 @@ public final class BoardManager {
         this.scheduler = null;
     }
 
-    public IPageListFactory getPageListFactory() {
+    public PageListFactory getPageListFactory() {
         return this.factory;
     }
 
-    public void setPageListFactory(IPageListFactory factory) {
+    public void setPageListFactory(PageListFactory factory) {
         this.factory = factory;
 
         forceApplyPageListToPlayers();
@@ -219,7 +220,7 @@ public final class BoardManager {
      * @param name Ник игрока
      * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
      */
-    public void sendBoardToPlayer(String name, IPageListFactory factory) {
+    public void sendBoardToPlayer(String name, PageListFactory factory) {
         PlayerBoard pb = getPlayerBoard(name);
         if (pb == null) {
             return;

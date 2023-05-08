@@ -23,12 +23,16 @@ public class PlayerListener implements Listener {
         Player pl = e.getPlayer();
 
         PlayerToggle pt = this.boardManager.getOrCreatePlayerToggle(pl.getName());
-        if (pt.isToggle()) {
-            PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
-            if (pb == null) {
-                this.boardManager.addPlayerBoard(new PlayerBoard(pl));
-            }
+        if (!pt.isToggle()) {
+            return;
         }
+
+        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
+        if (pb != null) {
+            return;
+        }
+
+        this.boardManager.addPlayerBoard(new PlayerBoard(pl));
     }
 
     @EventHandler
@@ -36,9 +40,11 @@ public class PlayerListener implements Listener {
         Player pl = e.getPlayer();
 
         PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
-        if (pb != null) {
-            this.boardManager.removePlayerBoard(pl.getName());
+        if (pb == null) {
+            return;
         }
+
+        this.boardManager.removePlayerBoard(pl.getName());
     }
 
 }

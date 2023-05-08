@@ -2,22 +2,29 @@ package ru.boomearo.board.objects.boards;
 
 import ru.boomearo.board.exceptions.BoardException;
 import ru.boomearo.board.managers.BoardManager;
+import ru.boomearo.board.objects.PlayerBoard;
 
 import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractPage {
 
-    private final AbstractPageList pageList;
+    protected final AbstractPageList pageList;
+    protected final PlayerBoard playerBoard;
 
     private List<AbstractHolder> loadedHolders = Collections.emptyList();
 
     public AbstractPage(AbstractPageList pageList) {
         this.pageList = pageList;
+        this.playerBoard = this.pageList.playerBoard;
     }
 
     public AbstractPageList getPageList() {
         return this.pageList;
+    }
+
+    public PlayerBoard getPlayerBoard() {
+        return this.playerBoard;
     }
 
     public List<AbstractHolder> getReadyHolders() {
@@ -54,27 +61,28 @@ public abstract class AbstractPage {
 
     //Обрабатываем возможные ошибки при попытке узнать видимость страницы
     public boolean isVisibleToPlayer() {
-        boolean visible = false;
         try {
-            visible = isVisible();
+            return isVisible();
         }
         catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return visible;
     }
 
     //Учитываем возможные ошибки, а так же проверяем на null
     public String getBoardTitle() {
-        String title = "NoTitle";
+        String title;
         try {
-            String tmp = getTitle();
-            if (tmp != null) {
-                title = tmp;
-            }
+            title = getTitle();
         }
         catch (Exception e) {
+            title = "error";
             e.printStackTrace();
+        }
+
+        if (title == null) {
+            title = "empty";
         }
 
         return title;
@@ -82,14 +90,13 @@ public abstract class AbstractPage {
 
     //Учитываем возможные ошибки
     public int getTimeToChangePage() {
-        int time = 1;
         try {
-            time = getTimeToChange();
+            return getTimeToChange();
         }
         catch (Exception e) {
             e.printStackTrace();
+            return 1;
         }
-        return time;
     }
 
     //Абстракции

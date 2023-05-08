@@ -14,6 +14,7 @@ import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
 import ru.boomearo.board.objects.boards.AbstractHolder;
+import ru.boomearo.board.objects.boards.HolderResult;
 
 public class PlayerBoard {
 
@@ -32,7 +33,7 @@ public class PlayerBoard {
 
     private final Object lock = new Object();
 
-    private static final String teamPrefix = "BoardT_";
+    private static final String TEAM_PREFIX = "BoardT_";
 
     public PlayerBoard(Player player) {
         this.player = player;
@@ -150,18 +151,17 @@ public class PlayerBoard {
         this.objective.setDisplayName(page.getBoardTitle());
 
         for (AbstractHolder holder : page.getReadyHolders()) {
-            Team team = this.scoreboard.registerNewTeam(teamPrefix + index);
+            Team team = this.scoreboard.registerNewTeam(TEAM_PREFIX + index);
             String sc = BoardManager.getColor(index);
             team.addEntry(sc);
-            String[] text = holder.getResult();
-            setPrefix(team, text[0]);
-            setSuffix(team, text[1]);
+            HolderResult result = holder.getHolderResult();
+            setPrefix(team, result.getPrefix());
+            setSuffix(team, result.getSuffix());
             this.objective.getScore(sc).setScore(index);
             this.teams.add(new TeamInfo(team, holder));
             index--;
         }
     }
-
 
     public void toPage(int indexTo, AbstractPage toPage) {
         synchronized (this.lock) {
@@ -178,17 +178,10 @@ public class PlayerBoard {
         synchronized (this.lock) {
             //Обновляем инфу согласно кастомным холдерам
             for (TeamInfo team : this.teams) {
-                //long start = System.nanoTime();
-                String[] text = team.getHolder().getResult();
-                //long end = System.nanoTime();
-                //Board.getContext().getLogger().info("'" + text[0] + text[1] + "' -- " +(end - start));
+                HolderResult result = team.getHolder().getHolderResult();
 
-                //Board.getContext().getLogger().info("test " + test[0] + "§r<->" + test[1]);
-                setPrefix(team.getTeam(), text[0]);
-
-                setSuffix(team.getTeam(), text[1]);
-
-                //Board.getContext().getLogger().info("test " + test[0] + " " + test[1]);
+                setPrefix(team.getTeam(), result.getPrefix());
+                setSuffix(team.getTeam(), result.getSuffix());
             }
         }
     }
@@ -222,7 +215,7 @@ public class PlayerBoard {
         if (teams != null) {
             for (Team t : teams) {
                 //Очищаем только те тимы которые мы создали.
-                if (t.getName().contains(teamPrefix)) {
+                if (t.getName().contains(TEAM_PREFIX)) {
                     t.unregister();
                 }
             }

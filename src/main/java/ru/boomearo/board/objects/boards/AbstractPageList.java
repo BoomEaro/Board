@@ -8,16 +8,16 @@ import ru.boomearo.board.objects.PlayerBoard;
 
 public abstract class AbstractPageList {
 
-    private final PlayerBoard player;
+    protected final PlayerBoard playerBoard;
 
     private List<AbstractPage> pages = Collections.emptyList();
 
-    public AbstractPageList(PlayerBoard player) {
-        this.player = player;
+    public AbstractPageList(PlayerBoard playerBoard) {
+        this.playerBoard = playerBoard;
     }
 
     public PlayerBoard getPlayerBoard() {
-        return this.player;
+        return this.playerBoard;
     }
 
     //Возвращает актуальное состояние страниц для этого игрока
