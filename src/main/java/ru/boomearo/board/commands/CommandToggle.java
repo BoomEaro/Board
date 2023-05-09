@@ -39,16 +39,16 @@ public class CommandToggle extends CommandNodeBukkit {
             return;
         }
 
-        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
-        PlayerToggle pt = this.boardManager.getOrCreatePlayerToggle(pl.getName());
+        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getUniqueId());
+        PlayerToggle pt = this.boardManager.getOrCreatePlayerToggle(pl);
         if (pb != null) {
-            this.boardManager.removePlayerBoard(pl.getName());
+            this.boardManager.removePlayerBoard(pl);
             pt.setToggle(false);
             pl.sendMessage(BoardManager.PREFIX + "Вы успешно §cвыключили §fотображение.");
             return;
         }
 
-        this.boardManager.addPlayerBoard(new PlayerBoard(pl));
+        this.boardManager.addPlayerBoard(pl);
         pt.setToggle(true);
         pl.sendMessage(BoardManager.PREFIX + "Вы успешно §aвключили §fотображение.");
         return;

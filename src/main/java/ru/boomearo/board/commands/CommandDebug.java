@@ -33,7 +33,7 @@ public class CommandDebug extends CommandNodeBukkit {
             return;
         }
 
-        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getName());
+        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getUniqueId());
         if (pb == null) {
             pl.sendMessage(BoardManager.PREFIX + "Сперва включите отображение командой §6/board toggle");
             return;

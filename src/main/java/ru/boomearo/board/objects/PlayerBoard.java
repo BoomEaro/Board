@@ -3,6 +3,7 @@ package ru.boomearo.board.objects;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,7 +19,9 @@ import ru.boomearo.board.objects.boards.HolderResult;
 
 public class PlayerBoard {
 
+    private final UUID uuid;
     private final Player player;
+    private final BoardManager boardManager;
 
     private Scoreboard scoreboard;
     private Objective objective;
@@ -35,30 +38,44 @@ public class PlayerBoard {
 
     private static final String TEAM_PREFIX = "BoardT_";
 
-    public PlayerBoard(Player player) {
+    public PlayerBoard(UUID uuid, Player player, BoardManager boardManager) {
+        this.uuid = uuid;
         this.player = player;
-        //Инициализируем панель
-        try {
-            //Удаляем панель если была
-            removeBoardIfExists();
-            //Строим ее заново
-            buildScoreboard();
-
-            //Устанавливаем список страниц по умолчанию
-            setNewPageList(Board.getInstance().getBoardManager().getPageListFactory().createPageList(this));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        this.boardManager = boardManager;
     }
 
-    private void removeBoardIfExists() {
-        Objective ob = this.player.getScoreboard().getObjective(DisplaySlot.SIDEBAR);
-        if (ob != null) {
-            ob.unregister();
-            this.player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+    public UUID getUuid() {
+        return this.uuid;
+    }
+
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    public BoardManager getBoardManager() {
+        return this.boardManager;
+    }
+
+    public void init() throws BoardException {
+        //Удаляем панель если была
+        removeBoardIfExists();
+        //Строим ее заново
+        buildScoreboard();
+
+        //Устанавливаем список страниц по умолчанию
+        setNewPageList(this.boardManager.getPageListFactory().createPageList(this));
+    }
+
+    private void buildScoreboard() throws BoardException {
+        if (!Bukkit.isPrimaryThread()) {
+            throw new BoardException("Scoreboard должен быть создан в основном потоке!");
         }
+
+        this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        this.objective = this.scoreboard.registerNewObjective("Board", "dummy");
+        this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        this.player.setScoreboard(this.scoreboard);
     }
 
     public void setNewPageList(AbstractPageList pageList) throws BoardException {
@@ -70,6 +87,14 @@ public class PlayerBoard {
             this.pagesList.loadPages();
 
             toPage(0, getCurrentPage());
+        }
+    }
+
+    private void removeBoardIfExists() {
+        Objective ob = this.player.getScoreboard().getObjective(DisplaySlot.SIDEBAR);
+        if (ob != null) {
+            ob.unregister();
+            this.player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
         }
     }
 
@@ -130,18 +155,6 @@ public class PlayerBoard {
 
     public void setUpdatePageCount(int time) {
         this.updatePageCount = time;
-    }
-
-    private void buildScoreboard() throws BoardException {
-        if (!Bukkit.isPrimaryThread()) {
-            throw new BoardException("Scoreboard должен быть создан в основном потоке!");
-        }
-
-        this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        this.objective = this.scoreboard.registerNewObjective("Board", "dummy");
-        this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-
-        this.player.setScoreboard(this.scoreboard);
     }
 
     private void setUpPage(AbstractPage page) {
@@ -277,10 +290,6 @@ public class PlayerBoard {
         catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public Player getPlayer() {
-        return this.player;
     }
 
     public int getPageIndex() {

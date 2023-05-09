@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Executors;
@@ -28,8 +29,8 @@ import ru.boomearo.board.tasks.BoardUpdateTask;
 
 public final class BoardManager {
 
-    private final ConcurrentMap<String, PlayerBoard> playerBoards = new ConcurrentHashMap<>();
-    private ConcurrentMap<String, PlayerToggle> playersToggle = new ConcurrentHashMap<>();
+    private final ConcurrentMap<UUID, PlayerBoard> playerBoards = new ConcurrentHashMap<>();
+    private ConcurrentMap<UUID, PlayerToggle> playersToggle = new ConcurrentHashMap<>();
 
     private PageListFactory factory = new DefaultPageListFactory();
 
@@ -72,7 +73,7 @@ public final class BoardManager {
         FileConfiguration playersConfig = new YamlConfiguration();
 
         for (PlayerToggle pt : this.playersToggle.values()) {
-            playersConfig.set("players." + pt.getName() + ".toggle", pt.isToggle());
+            playersConfig.set("players." + pt.getUuid().toString() + ".toggle", pt.isToggle());
         }
 
         try {
@@ -111,13 +112,15 @@ public final class BoardManager {
         try {
             playersConfig.load(playersConfigFile);
 
-            ConcurrentMap<String, PlayerToggle> tmp = new ConcurrentHashMap<>();
+            ConcurrentMap<UUID, PlayerToggle> tmp = new ConcurrentHashMap<>();
 
             ConfigurationSection cs = playersConfig.getConfigurationSection("players");
             if (cs != null) {
-                for (String name : cs.getKeys(false)) {
-                    boolean toggle = playersConfig.getBoolean("players." + name + ".toggle");
-                    tmp.put(name, new PlayerToggle(name, toggle));
+                for (String uuidString : cs.getKeys(false)) {
+                    boolean toggle = playersConfig.getBoolean("players." + uuidString + ".toggle");
+                    UUID uuid = UUID.fromString(uuidString);
+
+                    tmp.put(uuid, new PlayerToggle(uuid, toggle));
                 }
             }
 
@@ -133,9 +136,9 @@ public final class BoardManager {
             return;
         }
         for (Player pl : Bukkit.getOnlinePlayers()) {
-            PlayerToggle pt = getOrCreatePlayerToggle(pl.getName());
+            PlayerToggle pt = getOrCreatePlayerToggle(pl);
             if (pt.isToggle()) {
-                addPlayerBoard(new PlayerBoard(pl));
+                addPlayerBoard(pl);
             }
         }
     }
@@ -189,20 +192,36 @@ public final class BoardManager {
         }
     }
 
-    public PlayerBoard getPlayerBoard(String player) {
-        return this.playerBoards.get(player);
+    public PlayerBoard getPlayerBoard(UUID uuid) {
+        return this.playerBoards.get(uuid);
     }
 
-    public void addPlayerBoard(PlayerBoard board) {
-        this.playerBoards.put(board.getPlayer().getName(), board);
-    }
-
-    public void removePlayerBoard(String player) {
-        PlayerBoard pb = this.playerBoards.get(player);
+    public void addPlayerBoard(Player player) {
+        PlayerBoard pb = this.playerBoards.get(player.getUniqueId());
         if (pb != null) {
-            this.playerBoards.remove(player);
-            pb.remove();
+            return;
         }
+
+        PlayerBoard playerBoard = new PlayerBoard(player.getUniqueId(), player, this);
+
+        this.playerBoards.put(player.getUniqueId(), playerBoard);
+
+        try {
+            playerBoard.init();
+        }
+        catch (BoardException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void removePlayerBoard(Player player) {
+        PlayerBoard pb = this.playerBoards.get(player.getUniqueId());
+        if (pb == null) {
+            return;
+        }
+
+        this.playerBoards.remove(player.getUniqueId());
+        pb.remove();
     }
 
     public Collection<PlayerBoard> getAllPlayerBoards() {
@@ -210,18 +229,18 @@ public final class BoardManager {
     }
 
 
-    public PlayerToggle getOrCreatePlayerToggle(String name) {
-        return this.playersToggle.computeIfAbsent(name, (value) -> new PlayerToggle(value, this.defaultToggle));
+    public PlayerToggle getOrCreatePlayerToggle(Player player) {
+        return this.playersToggle.computeIfAbsent(player.getUniqueId(), (value) -> new PlayerToggle(value, this.defaultToggle));
     }
 
     /**
      * Устанавливает скорборд указанному игроку с указанной фабрикой страниц.
      * Если указанный игрок не был онлайн или скорборд был выключен, ничего не произойдет.
-     * @param name Ник игрока
+     * @param uuid uuid игрока
      * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
      */
-    public void sendBoardToPlayer(String name, PageListFactory factory) {
-        PlayerBoard pb = getPlayerBoard(name);
+    public void sendBoardToPlayer(UUID uuid, PageListFactory factory) {
+        PlayerBoard pb = this.playerBoards.get(uuid);
         if (pb == null) {
             return;
         }

@@ -1,19 +1,20 @@
 package ru.boomearo.board.objects;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class PlayerToggle {
 
-    private final String name;
+    private final UUID uuid;
     private boolean toggle;
 
-    public PlayerToggle(String name, boolean toggle) {
-        this.name = name;
+    public PlayerToggle(UUID uuid, boolean toggle) {
+        this.uuid = uuid;
         this.toggle = toggle;
     }
 
-    public String getName() {
-        return this.name;
+    public UUID getUuid() {
+        return this.uuid;
     }
 
     public boolean isToggle() {
@@ -29,18 +30,18 @@ public class PlayerToggle {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlayerToggle that = (PlayerToggle) o;
-        return Objects.equals(name, that.name);
+        return toggle == that.toggle && Objects.equals(uuid, that.uuid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(uuid, toggle);
     }
 
     @Override
     public String toString() {
         return "PlayerToggle{" +
-                "name='" + name + '\'' +
+                "uuid=" + uuid +
                 ", toggle=" + toggle +
                 '}';
     }
