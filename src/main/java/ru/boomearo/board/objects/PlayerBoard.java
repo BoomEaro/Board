@@ -15,7 +15,6 @@ import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
 import ru.boomearo.board.objects.boards.AbstractHolder;
-import ru.boomearo.board.objects.boards.HolderResult;
 
 public class PlayerBoard {
 
@@ -165,13 +164,12 @@ public class PlayerBoard {
 
         for (AbstractHolder holder : page.getReadyHolders()) {
             Team team = this.scoreboard.registerNewTeam(TEAM_PREFIX + index);
+            TeamInfo teamInfo = new TeamInfo(team, holder, index);
+            this.teams.add(teamInfo);
+
             String sc = BoardManager.getColor(index);
             team.addEntry(sc);
-            HolderResult result = holder.getHolderResult();
-            setPrefix(team, result.getPrefix());
-            setSuffix(team, result.getSuffix());
             this.objective.getScore(sc).setScore(index);
-            this.teams.add(new TeamInfo(team, holder));
             index--;
         }
     }
@@ -190,21 +188,10 @@ public class PlayerBoard {
     public void update() {
         synchronized (this.lock) {
             //Обновляем инфу согласно кастомным холдерам
-            for (TeamInfo team : this.teams) {
-                HolderResult result = team.getHolder().getHolderResult();
-
-                setPrefix(team.getTeam(), result.getPrefix());
-                setSuffix(team.getTeam(), result.getSuffix());
+            for (TeamInfo teamInfo : this.teams) {
+                teamInfo.update();
             }
         }
-    }
-
-    private void setPrefix(Team team, String text) {
-        team.setPrefix(text);
-    }
-
-    private void setSuffix(Team team, String text) {
-        team.setSuffix(text);
     }
 
     public void remove() {

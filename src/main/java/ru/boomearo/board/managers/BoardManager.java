@@ -153,7 +153,7 @@ public final class BoardManager {
                 .setPriority(Thread.MIN_PRIORITY)
                 .build());
 
-        this.scheduler.scheduleAtFixedRate(new BoardUpdateTask(this), 1, 1, TimeUnit.SECONDS);
+        this.scheduler.scheduleAtFixedRate(new BoardUpdateTask(this), 200, 200, TimeUnit.MILLISECONDS);
     }
 
     private void unloadScheduler() {
