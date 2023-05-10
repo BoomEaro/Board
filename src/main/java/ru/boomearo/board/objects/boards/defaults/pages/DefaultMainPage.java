@@ -3,7 +3,8 @@ package ru.boomearo.board.objects.boards.defaults.pages;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.boomearo.board.objects.boards.AbstractHolder;
+import ru.boomearo.board.objects.boards.AbstractTitleHolder;
+import ru.boomearo.board.objects.boards.AbstractValueHolder;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
 
@@ -24,14 +25,24 @@ public class DefaultMainPage extends AbstractPage {
     }
 
     @Override
-    protected String getTitle() {
-        return "§cEmpty board";
+    protected AbstractTitleHolder createTitleHolder() {
+        return new AbstractTitleHolder(this) {
+
+            private int test = 1;
+
+            @Override
+            protected String getText() {
+                this.test++;
+                return "§cEmpty board Test " + this.test;
+            }
+
+        };
     }
 
     @Override
-    protected List<AbstractHolder> createHolders() {
-        List<AbstractHolder> tmpLines = new ArrayList<>();
-        tmpLines.add(new AbstractHolder(this) {
+    protected List<AbstractValueHolder> createTeamHolders() {
+        List<AbstractValueHolder> tmpLines = new ArrayList<>();
+        tmpLines.add(new AbstractValueHolder(this) {
 
             @Override
             public String getText() {
@@ -39,7 +50,7 @@ public class DefaultMainPage extends AbstractPage {
             }
 
         });
-        tmpLines.add(new AbstractHolder(this) {
+        tmpLines.add(new AbstractValueHolder(this) {
 
             @Override
             public String getText() {
@@ -47,14 +58,14 @@ public class DefaultMainPage extends AbstractPage {
             }
 
         });
-        tmpLines.add(new AbstractHolder(this) {
+        tmpLines.add(new AbstractValueHolder(this) {
 
             @Override
             public String getText() {
                 return "§aCurrent HP " + this.playerBoard.getPlayer().getHealth();
             }
         });
-        tmpLines.add(new AbstractHolder(this) {
+        tmpLines.add(new AbstractValueHolder(this) {
 
             @Override
             public String getText() {

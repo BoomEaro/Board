@@ -14,7 +14,8 @@ import ru.boomearo.board.exceptions.BoardException;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
-import ru.boomearo.board.objects.boards.AbstractHolder;
+import ru.boomearo.board.objects.boards.AbstractTitleHolder;
+import ru.boomearo.board.objects.boards.AbstractValueHolder;
 
 public class PlayerBoard {
 
@@ -26,7 +27,11 @@ public class PlayerBoard {
     private Objective objective;
 
     private AbstractPageList pagesList = null;
+
+    private AbstractTitleHolder titleHolder = null;
+    private String currentTitleResult = null;
     private final List<TeamInfo> teams = new ArrayList<>();
+
     private volatile int pageIndex = 0;
 
     private volatile int updatePageCount = 0;
@@ -160,9 +165,11 @@ public class PlayerBoard {
         //Устанавливаем страницу и заполняем лист тимами плейсхолдерами
         int index = BoardManager.MAX_ENTRY_SIZE;
 
-        this.objective.setDisplayName(page.getBoardTitle());
+        this.titleHolder = page.getReadyTitleHolder();
 
-        for (AbstractHolder holder : page.getReadyHolders()) {
+        applyTitleResult(this.titleHolder.getHolderResult());
+
+        for (AbstractValueHolder holder : page.getReadyHolders()) {
             Team team = this.scoreboard.registerNewTeam(TEAM_PREFIX + index);
             TeamInfo teamInfo = new TeamInfo(team, holder, index);
             this.teams.add(teamInfo);
@@ -187,11 +194,22 @@ public class PlayerBoard {
 
     public void update() {
         synchronized (this.lock) {
-            //Обновляем инфу согласно кастомным холдерам
+            // Update title holder
+            String newResult = this.titleHolder.getHolderResult();
+            if (!newResult.equals(this.currentTitleResult)) {
+                applyTitleResult(newResult);
+            }
+
+            // Update teams holders
             for (TeamInfo teamInfo : this.teams) {
                 teamInfo.update();
             }
         }
+    }
+
+    private void applyTitleResult(String text) {
+        this.currentTitleResult = text;
+        this.objective.setDisplayName(text);
     }
 
     public void remove() {

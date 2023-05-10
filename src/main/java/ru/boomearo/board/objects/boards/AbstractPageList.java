@@ -46,7 +46,8 @@ public abstract class AbstractPageList {
         //Инициализируем каждую страницу
         //TODO стоит пропускать исключения? loadHolders может вызвать просто это
         for (AbstractPage ap : tmp) {
-            ap.loadHolders();
+            ap.loadTitleHolder();
+            ap.loadTeamHolders();
         }
 
         this.pages = Collections.unmodifiableList(tmp);

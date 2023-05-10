@@ -2,7 +2,7 @@ package ru.boomearo.board.objects;
 
 import org.bukkit.scoreboard.Team;
 
-import ru.boomearo.board.objects.boards.AbstractHolder;
+import ru.boomearo.board.objects.boards.AbstractValueHolder;
 import ru.boomearo.board.objects.boards.HolderResult;
 
 import java.util.Objects;
@@ -10,10 +10,12 @@ import java.util.Objects;
 public class TeamInfo {
 
     private final Team team;
-    private final AbstractHolder holder;
+    private final AbstractValueHolder holder;
     private final int index;
 
-    public TeamInfo(Team team, AbstractHolder holder, int index) {
+    private HolderResult currentResult = null;
+
+    public TeamInfo(Team team, AbstractValueHolder holder, int index) {
         this.team = team;
         this.holder = holder;
         this.index = index;
@@ -23,7 +25,7 @@ public class TeamInfo {
         return this.team;
     }
 
-    public AbstractHolder getHolder() {
+    public AbstractValueHolder getHolder() {
         return this.holder;
     }
 
@@ -32,8 +34,15 @@ public class TeamInfo {
     }
 
     public void update() {
-        HolderResult result = this.holder.getHolderResult();
+        HolderResult newResult = this.holder.getHolderResult();
 
+        if (!newResult.equals(this.currentResult)) {
+            applyResult(newResult);
+        }
+    }
+
+    private void applyResult(HolderResult result) {
+        this.currentResult = result;
         this.team.setPrefix(result.getPrefix());
         this.team.setSuffix(result.getSuffix());
     }

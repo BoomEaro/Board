@@ -5,32 +5,47 @@ import ru.boomearo.board.Board;
 
 public final class StringLength {
 
-    private static int MAX_STRING_LENGTH = 16;
+    private static DataLength MAX_DATA_LENGTH = new DataLength(16, 32);
 
     public static void init(Board board) {
         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
 
-        MAX_STRING_LENGTH = calculateLength(version);
+        MAX_DATA_LENGTH = calculateLength(version);
 
-        board.getLogger().info("Используем максимальную длину строки в " + MAX_STRING_LENGTH + " символа. Определена версия: " + version);
+        board.getLogger().info("Используем максимальную длину строки в " + MAX_DATA_LENGTH + " символа. Определена версия: " + version);
     }
 
-    private static int calculateLength(String version) {
+    private static DataLength calculateLength(String version) {
         switch (version) {
             case "1_16_R3":
             case "1_17_R1": {
-                return 64;
-            }
-            case "1_19_R3": {
-                return Integer.MAX_VALUE;
+                return new DataLength(64, 128);
             }
             default: {
-                return 16;
+                return new DataLength(16, 32);
             }
         }
     }
 
-    public static int getMaxSupportedStringLength() {
-        return MAX_STRING_LENGTH;
+    public static DataLength getMaxDataLength() {
+        return MAX_DATA_LENGTH;
+    }
+
+    public static class DataLength {
+        private final int maxValueLength;
+        private final int maxTitleLength;
+
+        public DataLength(int maxValueLength, int maxTitleLength) {
+            this.maxValueLength = maxValueLength;
+            this.maxTitleLength = maxTitleLength;
+        }
+
+        public int getMaxValueLength() {
+            return this.maxValueLength;
+        }
+
+        public int getMaxTitleLength() {
+            return this.maxTitleLength;
+        }
     }
 }

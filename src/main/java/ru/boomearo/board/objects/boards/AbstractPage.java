@@ -12,7 +12,8 @@ public abstract class AbstractPage {
     protected final AbstractPageList pageList;
     protected final PlayerBoard playerBoard;
 
-    private List<AbstractHolder> loadedHolders = Collections.emptyList();
+    private AbstractTitleHolder loadedTitleHolder = null;
+    private List<AbstractValueHolder> loadedTeamHolders = Collections.emptyList();
 
     public AbstractPage(AbstractPageList pageList) {
         this.pageList = pageList;
@@ -27,15 +28,19 @@ public abstract class AbstractPage {
         return this.playerBoard;
     }
 
-    public List<AbstractHolder> getReadyHolders() {
-        return this.loadedHolders;
+    public AbstractTitleHolder getReadyTitleHolder() {
+        return this.loadedTitleHolder;
+    }
+
+    public List<AbstractValueHolder> getReadyHolders() {
+        return this.loadedTeamHolders;
     }
 
     //Проверяем список холдеров на исключения и размеры при загрузке.
-    public void loadHolders() throws BoardException {
-        List<AbstractHolder> holders = null;
+    public void loadTeamHolders() throws BoardException {
+        List<AbstractValueHolder> holders = null;
         try {
-            holders = createHolders();
+            holders = createTeamHolders();
         }
         catch (Exception e) {
             throw new BoardException(e.getMessage());
@@ -56,7 +61,23 @@ public abstract class AbstractPage {
             throw new BoardException("Количество холдеров превышает максимальное количество в " + BoardManager.MAX_ENTRY_SIZE + " (" + holders.size() + ")");
         }
 
-        this.loadedHolders = Collections.unmodifiableList(holders);
+        this.loadedTeamHolders = Collections.unmodifiableList(holders);
+    }
+
+    public void loadTitleHolder() throws BoardException {
+        AbstractTitleHolder holder;
+        try {
+            holder = createTitleHolder();
+        }
+        catch (Exception e) {
+            throw new BoardException(e.getMessage());
+        }
+
+        if (holder == null) {
+            throw new BoardException("Холдер тайлта нулевой!");
+        }
+
+        this.loadedTitleHolder = holder;
     }
 
     //Обрабатываем возможные ошибки при попытке узнать видимость страницы
@@ -68,24 +89,6 @@ public abstract class AbstractPage {
             e.printStackTrace();
             return false;
         }
-    }
-
-    //Учитываем возможные ошибки, а так же проверяем на null
-    public String getBoardTitle() {
-        String title;
-        try {
-            title = getTitle();
-        }
-        catch (Exception e) {
-            title = "error";
-            e.printStackTrace();
-        }
-
-        if (title == null) {
-            title = "empty";
-        }
-
-        return title;
     }
 
     //Учитываем возможные ошибки
@@ -104,7 +107,7 @@ public abstract class AbstractPage {
 
     protected abstract boolean isVisible();
 
-    protected abstract String getTitle();
+    protected abstract AbstractTitleHolder createTitleHolder();
 
-    protected abstract List<AbstractHolder> createHolders();
+    protected abstract List<AbstractValueHolder> createTeamHolders();
 }
