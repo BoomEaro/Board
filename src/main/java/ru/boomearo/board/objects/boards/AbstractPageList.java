@@ -10,7 +10,7 @@ public abstract class AbstractPageList {
 
     protected final PlayerBoard playerBoard;
 
-    private List<AbstractPage> pages = Collections.emptyList();
+    private List<AbstractPage> pages;
 
     public AbstractPageList(PlayerBoard playerBoard) {
         this.playerBoard = playerBoard;
@@ -20,12 +20,10 @@ public abstract class AbstractPageList {
         return this.playerBoard;
     }
 
-    //Возвращает актуальное состояние страниц для этого игрока
     public List<AbstractPage> getPages() {
         return this.pages;
     }
 
-    //Инициализирует страницы, то какие страницы были созданы, зависит от реализации этого класса
     public void loadPages() throws BoardException {
         List<AbstractPage> tmp;
         try {
@@ -36,15 +34,13 @@ public abstract class AbstractPageList {
         }
 
         if (tmp == null) {
-            throw new BoardException("Список страниц не должен быть нулевым!");
+            throw new BoardException("Page list can not be null!");
         }
 
         if (tmp.isEmpty()) {
-            throw new BoardException("Список страниц пустой!");
+            throw new BoardException("Page list can not be empty!");
         }
 
-        //Инициализируем каждую страницу
-        //TODO стоит пропускать исключения? loadHolders может вызвать просто это
         for (AbstractPage ap : tmp) {
             ap.loadTitleHolder();
             ap.loadTeamHolders();

@@ -34,7 +34,7 @@ public class PlayerBoard {
 
     private volatile int pageIndex = 0;
 
-    private volatile int updatePageCount = 0;
+    private long pageCreateTime = 0;
     private boolean permanentView = false;
     private boolean debugMode = false;
 
@@ -149,18 +149,6 @@ public class PlayerBoard {
         }
     }
 
-    public int getUpdatePageCount() {
-        return this.updatePageCount;
-    }
-
-    public void addUpdatePageCount(int time) {
-        this.updatePageCount = this.updatePageCount + time;
-    }
-
-    public void setUpdatePageCount(int time) {
-        this.updatePageCount = time;
-    }
-
     private void setUpPage(AbstractPage page) {
         //Устанавливаем страницу и заполняем лист тимами плейсхолдерами
         int index = BoardManager.MAX_ENTRY_SIZE;
@@ -172,6 +160,7 @@ public class PlayerBoard {
         for (AbstractValueHolder holder : page.getReadyHolders()) {
             Team team = this.scoreboard.registerNewTeam(TEAM_PREFIX + index);
             TeamInfo teamInfo = new TeamInfo(team, holder, index);
+            teamInfo.update();
             this.teams.add(teamInfo);
 
             String sc = BoardManager.getColor(index);
@@ -183,11 +172,10 @@ public class PlayerBoard {
 
     public void toPage(int indexTo, AbstractPage toPage) {
         synchronized (this.lock) {
-            this.updatePageCount = 0;
+            this.pageCreateTime = System.currentTimeMillis();
             this.pageIndex = indexTo;
 
             loadPage(toPage);
-
             update();
         }
     }
@@ -270,7 +258,7 @@ public class PlayerBoard {
                 }
 
                 //Сменяем страницу только если прошло время, иначе просто обновляем ее
-                if (getUpdatePageCount() >= thisPage.getTimeToChangePage()) {
+                if ((System.currentTimeMillis() - this.pageCreateTime) > thisPage.getTimeToChangePage()) {
 
                     //Убеждаемся что текущая страница не является следующей
                     //Board.getInstance().getLogger().info(pb.getPlayer().getDisplayName() + " -> " + nextPageIndex + " " + pb.getUpdatePageCount() + " " + (thisPage.getTimeToChange() / this.updateTime) + " " + (pb.getUpdatePageCount() >= (thisPage.getTimeToChange() / this.updateTime)) + " " + (pb.getPageIndex() != nextPageIndex) + " " + !thisPage.isVisible() + " " + !pb.isPermanentView());
@@ -290,7 +278,6 @@ public class PlayerBoard {
                 }
                 update();
             }
-            addUpdatePageCount(1);
         }
         catch (Exception e) {
             e.printStackTrace();

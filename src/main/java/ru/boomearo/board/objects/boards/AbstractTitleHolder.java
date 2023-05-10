@@ -10,6 +10,9 @@ public abstract class AbstractTitleHolder extends AbstractHolder<String> {
 
     @Override
     public String createHolderData(String text) {
+        if (text == null) {
+            text = "null";
+        }
         return fixColors(text, StringLength.getMaxDataLength().getMaxTitleLength()).getFirst();
     }
 }

@@ -8,15 +8,15 @@ import ru.boomearo.board.objects.boards.AbstractValueHolder;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
 
-public class DefaultMainPage extends AbstractPage {
+public class DefaultFirstPage extends AbstractPage {
 
-    public DefaultMainPage(AbstractPageList pageList) {
+    public DefaultFirstPage(AbstractPageList pageList) {
         super(pageList);
     }
 
     @Override
-    protected int getTimeToChange() {
-        return 10;
+    protected long getTimeToChange() {
+        return 1000 * 5;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class DefaultMainPage extends AbstractPage {
             @Override
             protected String getText() {
                 this.test++;
-                return "§cEmpty board Test " + this.test;
+                return "§cFirst test page " + this.test;
             }
 
         };
@@ -45,30 +45,38 @@ public class DefaultMainPage extends AbstractPage {
         tmpLines.add(new AbstractValueHolder(this) {
 
             @Override
-            public String getText() {
+            protected String getText() {
                 return "§cTest board";
             }
 
         });
         tmpLines.add(new AbstractValueHolder(this) {
 
+            private boolean test = false;
+
             @Override
-            public String getText() {
-                return "§cTest2";
+            protected String getText() {
+                this.test = !this.test;
+                return (this.test ? "§aFirst" : "§cSecond");
+            }
+
+            @Override
+            protected long getMaxCacheTime() {
+                return 500;
             }
 
         });
         tmpLines.add(new AbstractValueHolder(this) {
 
             @Override
-            public String getText() {
+            protected String getText() {
                 return "§aCurrent HP " + this.playerBoard.getPlayer().getHealth();
             }
         });
         tmpLines.add(new AbstractValueHolder(this) {
 
             @Override
-            public String getText() {
+            protected String getText() {
                 return "§6Current hunger " + this.playerBoard.getPlayer().getFoodLevel();
             }
         });

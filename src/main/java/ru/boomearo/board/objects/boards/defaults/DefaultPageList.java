@@ -6,7 +6,8 @@ import java.util.List;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
-import ru.boomearo.board.objects.boards.defaults.pages.DefaultMainPage;
+import ru.boomearo.board.objects.boards.defaults.pages.DefaultFirstPage;
+import ru.boomearo.board.objects.boards.defaults.pages.DefaultSecondPage;
 
 public class DefaultPageList extends AbstractPageList {
 
@@ -18,7 +19,8 @@ public class DefaultPageList extends AbstractPageList {
     protected List<AbstractPage> createPages() {
         List<AbstractPage> pages = new ArrayList<>();
 
-        pages.add(new DefaultMainPage(this));
+        pages.add(new DefaultFirstPage(this));
+        pages.add(new DefaultSecondPage(this));
 
         return pages;
     }

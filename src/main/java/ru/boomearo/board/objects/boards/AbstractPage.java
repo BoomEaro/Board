@@ -12,8 +12,8 @@ public abstract class AbstractPage {
     protected final AbstractPageList pageList;
     protected final PlayerBoard playerBoard;
 
-    private AbstractTitleHolder loadedTitleHolder = null;
-    private List<AbstractValueHolder> loadedTeamHolders = Collections.emptyList();
+    private AbstractTitleHolder loadedTitleHolder;
+    private List<AbstractValueHolder> loadedTeamHolders;
 
     public AbstractPage(AbstractPageList pageList) {
         this.pageList = pageList;
@@ -36,7 +36,6 @@ public abstract class AbstractPage {
         return this.loadedTeamHolders;
     }
 
-    //Проверяем список холдеров на исключения и размеры при загрузке.
     public void loadTeamHolders() throws BoardException {
         List<AbstractValueHolder> holders = null;
         try {
@@ -47,18 +46,17 @@ public abstract class AbstractPage {
         }
 
         if (holders == null) {
-            throw new BoardException("Список холдеров нулевой!");
+            throw new BoardException("Holders list can not be null!");
         }
 
         int size = holders.size();
 
         if (size < 1) {
-            throw new BoardException("Минимальное количество холдеров должно быть 1!");
+            throw new BoardException("At least 1 holder requited!");
         }
 
-        //TODO может быть обрезать их и не вызывать исключение?
         if (size > BoardManager.MAX_ENTRY_SIZE) {
-            throw new BoardException("Количество холдеров превышает максимальное количество в " + BoardManager.MAX_ENTRY_SIZE + " (" + holders.size() + ")");
+            throw new BoardException("Exceded maximum elements size " + BoardManager.MAX_ENTRY_SIZE + " (" + holders.size() + ")");
         }
 
         this.loadedTeamHolders = Collections.unmodifiableList(holders);
@@ -74,13 +72,12 @@ public abstract class AbstractPage {
         }
 
         if (holder == null) {
-            throw new BoardException("Холдер тайлта нулевой!");
+            throw new BoardException("Title holder can not be null!");
         }
 
         this.loadedTitleHolder = holder;
     }
 
-    //Обрабатываем возможные ошибки при попытке узнать видимость страницы
     public boolean isVisibleToPlayer() {
         try {
             return isVisible();
@@ -91,8 +88,7 @@ public abstract class AbstractPage {
         }
     }
 
-    //Учитываем возможные ошибки
-    public int getTimeToChangePage() {
+    public long getTimeToChangePage() {
         try {
             return getTimeToChange();
         }
@@ -102,8 +98,7 @@ public abstract class AbstractPage {
         }
     }
 
-    //Абстракции
-    protected abstract int getTimeToChange();
+    protected abstract long getTimeToChange();
 
     protected abstract boolean isVisible();
 

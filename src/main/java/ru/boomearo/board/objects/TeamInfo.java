@@ -36,15 +36,15 @@ public class TeamInfo {
     public void update() {
         HolderResult newResult = this.holder.getHolderResult();
 
-        if (!newResult.equals(this.currentResult)) {
+        if (!Objects.equals(newResult, this.currentResult)) {
             applyResult(newResult);
         }
     }
 
-    private void applyResult(HolderResult result) {
-        this.currentResult = result;
-        this.team.setPrefix(result.getPrefix());
-        this.team.setSuffix(result.getSuffix());
+    private void applyResult(HolderResult newResult) {
+        this.currentResult = newResult;
+        this.team.setPrefix(newResult.getPrefix());
+        this.team.setSuffix(newResult.getSuffix());
     }
 
     @Override

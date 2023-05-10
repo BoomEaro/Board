@@ -10,6 +10,10 @@ public abstract class AbstractValueHolder extends AbstractHolder<HolderResult> {
 
     @Override
     protected HolderResult createHolderData(String text) {
+        if (text == null) {
+            return new HolderResult("null", "");
+        }
+
         int maxLength = StringLength.getMaxDataLength().getMaxValueLength();
 
         FixedStrings fixedFirst = fixColors(text, maxLength);
