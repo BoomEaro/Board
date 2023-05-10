@@ -1,7 +1,5 @@
 package ru.boomearo.board.objects.boards;
 
-import org.bukkit.ChatColor;
-
 import ru.boomearo.board.utils.StringLength;
 
 public abstract class AbstractValueHolder extends AbstractHolder<HolderResult> {
@@ -14,25 +12,17 @@ public abstract class AbstractValueHolder extends AbstractHolder<HolderResult> {
     protected HolderResult createHolderData(String text) {
         int maxLength = StringLength.getMaxDataLength().getMaxValueLength();
 
-        StringBuilder prefix = new StringBuilder(text.substring(0, text.length() >= maxLength ? maxLength : text.length()));
-        StringBuilder suffix = new StringBuilder(text.length() > maxLength ? text.substring(maxLength) : "");
+        FixedStrings fixedFirst = fixColors(text, maxLength);
+        String prefix = fixedFirst.getFirst();
 
-        if (prefix.length() > 1 && prefix.charAt(prefix.length() - 1) == '§') {
-
-            prefix.deleteCharAt(prefix.length() - 1);
-            suffix.insert(0, '§');
-        }
-        if (text.length() > maxLength) {
-            suffix.insert(0, ChatColor.getLastColors(prefix.toString()));
+        if (fixedFirst.getSecond() == null) {
+            return new HolderResult(prefix, "");
         }
 
-        String suf = suffix.toString();
+        FixedStrings fixedSecond = fixColors(fixedFirst.getSecond(), maxLength);
+        String suffix = fixedSecond.getFirst();
 
-        if (suf.length() > maxLength) {
-            suf = suf.substring(0, maxLength);
-        }
-
-        return new HolderResult(prefix.length() > maxLength ? prefix.toString().substring(0, maxLength) : prefix.toString(), suf);
+        return new HolderResult(prefix, suffix);
     }
 
 }

@@ -46,7 +46,7 @@ public class DefaultMainPage extends AbstractPage {
 
             @Override
             public String getText() {
-                return "§cJust test";
+                return "§cTest board";
             }
 
         });
