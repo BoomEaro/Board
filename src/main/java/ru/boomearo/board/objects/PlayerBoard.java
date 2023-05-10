@@ -16,6 +16,7 @@ import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
 import ru.boomearo.board.objects.boards.AbstractTitleHolder;
 import ru.boomearo.board.objects.boards.AbstractValueHolder;
+import ru.boomearo.board.objects.boards.ScoreSequence;
 
 public class PlayerBoard {
 
@@ -150,14 +151,15 @@ public class PlayerBoard {
     }
 
     private void setUpPage(AbstractPage page) {
-        //Устанавливаем страницу и заполняем лист тимами плейсхолдерами
         int index = BoardManager.MAX_ENTRY_SIZE;
+        ScoreSequence scoreSequence = page.getScoreSequence().create();
 
         this.titleHolder = page.getReadyTitleHolder();
 
         applyTitleResult(this.titleHolder.getHolderResult());
 
         for (AbstractValueHolder holder : page.getReadyHolders()) {
+            int scoreIndex = scoreSequence.getCurrentScore();
             Team team = this.scoreboard.registerNewTeam(TEAM_PREFIX + index);
             TeamInfo teamInfo = new TeamInfo(team, holder, index);
             teamInfo.update();
@@ -165,7 +167,8 @@ public class PlayerBoard {
 
             String sc = BoardManager.getColor(index);
             team.addEntry(sc);
-            this.objective.getScore(sc).setScore(index);
+            this.objective.getScore(sc).setScore(scoreIndex);
+            scoreSequence.next();
             index--;
         }
     }

@@ -98,6 +98,25 @@ public abstract class AbstractPage {
         }
     }
 
+    public ScoreSequenceFactory getScoreSequence() {
+        ScoreSequenceFactory scoreSequenceFactory;
+        try {
+            scoreSequenceFactory = getScoreSequenceFactory();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            scoreSequenceFactory = DefaultScoreSequenceFactory.TO_ZERO;
+        }
+
+        if (scoreSequenceFactory == null) {
+            scoreSequenceFactory = DefaultScoreSequenceFactory.TO_ZERO;
+        }
+
+        return scoreSequenceFactory;
+    }
+
+    protected abstract ScoreSequenceFactory getScoreSequenceFactory();
+
     protected abstract long getTimeToChange();
 
     protected abstract boolean isVisible();

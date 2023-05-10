@@ -4,6 +4,8 @@ import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
 import ru.boomearo.board.objects.boards.AbstractTitleHolder;
 import ru.boomearo.board.objects.boards.AbstractValueHolder;
+import ru.boomearo.board.objects.boards.DefaultScoreSequenceFactory;
+import ru.boomearo.board.objects.boards.ScoreSequenceFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,12 @@ public class DefaultSecondPage extends AbstractPage {
     public DefaultSecondPage(AbstractPageList pageList) {
         super(pageList);
     }
+
+    @Override
+    protected ScoreSequenceFactory getScoreSequenceFactory() {
+        return DefaultScoreSequenceFactory.TO_NEGATIVE_ZERO;
+    }
+
 
     @Override
     protected long getTimeToChange() {

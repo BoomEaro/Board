@@ -7,11 +7,18 @@ import ru.boomearo.board.objects.boards.AbstractTitleHolder;
 import ru.boomearo.board.objects.boards.AbstractValueHolder;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
+import ru.boomearo.board.objects.boards.DefaultScoreSequenceFactory;
+import ru.boomearo.board.objects.boards.ScoreSequenceFactory;
 
 public class DefaultFirstPage extends AbstractPage {
 
     public DefaultFirstPage(AbstractPageList pageList) {
         super(pageList);
+    }
+
+    @Override
+    protected ScoreSequenceFactory getScoreSequenceFactory() {
+        return DefaultScoreSequenceFactory.FROM_NEGATIVE_ZERO;
     }
 
     @Override
