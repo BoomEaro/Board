@@ -1,9 +1,7 @@
 package ru.boomearo.board.managers;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -41,14 +39,17 @@ public final class BoardManager {
 
     public static final String PREFIX = "§8[§6Board§8]: §f";
     public static final int MAX_ENTRY_SIZE = 15;
+    public static final String TEAM_PREFIX = "BoardT_";
 
-    private static final List<String> ENTRY_NAMES = new ArrayList<>();
+    private static final String[] ENTRY_NAMES;
 
     static {
-        //Инициализируем сразу же при создании класса названия
-        for (ChatColor color : ChatColor.values()) {
-            ENTRY_NAMES.add("" + color + ChatColor.RESET);
+        ChatColor[] chatColors = ChatColor.values();
+        String[] entryNames = new String[chatColors.length];
+        for (int i = 0; i < chatColors.length; i++) {
+            entryNames[i] = "" + chatColors[i] + ChatColor.RESET;
         }
+        ENTRY_NAMES = entryNames;
     }
 
     public void load() {
@@ -265,7 +266,7 @@ public final class BoardManager {
     }
 
     public static String getColor(int index) {
-        return ENTRY_NAMES.get(index);
+        return ENTRY_NAMES[index];
     }
 
 }

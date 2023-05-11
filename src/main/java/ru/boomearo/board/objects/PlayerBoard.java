@@ -33,15 +33,13 @@ public class PlayerBoard {
     private String currentTitleResult = null;
     private final List<TeamInfo> teams = new ArrayList<>();
 
-    private volatile int pageIndex = 0;
+    private int pageIndex = 0;
 
     private long pageCreateTime = 0;
     private boolean permanentView = false;
     private boolean debugMode = false;
 
     private final Object lock = new Object();
-
-    private static final String TEAM_PREFIX = "BoardT_";
 
     public PlayerBoard(UUID uuid, Player player, BoardManager boardManager) {
         this.uuid = uuid;
@@ -160,16 +158,15 @@ public class PlayerBoard {
 
         for (AbstractValueHolder holder : page.getReadyHolders()) {
             int scoreIndex = scoreSequence.getCurrentScore();
-            Team team = this.scoreboard.registerNewTeam(TEAM_PREFIX + index);
-            TeamInfo teamInfo = new TeamInfo(team, holder, index);
-            teamInfo.update();
+            Team team = this.scoreboard.registerNewTeam(BoardManager.TEAM_PREFIX + index);
+            String entryNameColor = BoardManager.getColor(index);
+            TeamInfo teamInfo = new TeamInfo(this.scoreboard, this.objective, team, holder, entryNameColor, scoreIndex);
             this.teams.add(teamInfo);
 
-            String sc = BoardManager.getColor(index);
-            team.addEntry(sc);
-            this.objective.getScore(sc).setScore(scoreIndex);
             scoreSequence.next();
             index--;
+
+            teamInfo.update();
         }
     }
 
@@ -223,8 +220,7 @@ public class PlayerBoard {
         Set<Team> teams = this.scoreboard.getTeams();
         if (teams != null) {
             for (Team t : teams) {
-                //Очищаем только те тимы которые мы создали.
-                if (t.getName().contains(TEAM_PREFIX)) {
+                if (t.getName().contains(BoardManager.TEAM_PREFIX)) {
                     t.unregister();
                 }
             }
@@ -264,7 +260,6 @@ public class PlayerBoard {
                 if ((System.currentTimeMillis() - this.pageCreateTime) > thisPage.getTimeToChangePage()) {
 
                     //Убеждаемся что текущая страница не является следующей
-                    //Board.getInstance().getLogger().info(pb.getPlayer().getDisplayName() + " -> " + nextPageIndex + " " + pb.getUpdatePageCount() + " " + (thisPage.getTimeToChange() / this.updateTime) + " " + (pb.getUpdatePageCount() >= (thisPage.getTimeToChange() / this.updateTime)) + " " + (pb.getPageIndex() != nextPageIndex) + " " + !thisPage.isVisible() + " " + !pb.isPermanentView());
                     if (getPageIndex() != nextPageIndex) {
                         //Если оказывается что в настройках игрока отключен авто скролл, то просто обновляем страницу.
                         //Иначе пытаемся открыть следующую страницу.

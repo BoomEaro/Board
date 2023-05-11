@@ -115,7 +115,9 @@ public abstract class AbstractPage {
         return scoreSequenceFactory;
     }
 
-    protected abstract ScoreSequenceFactory getScoreSequenceFactory();
+    protected ScoreSequenceFactory getScoreSequenceFactory() {
+        return DefaultScoreSequenceFactory.TO_ZERO;
+    }
 
     protected abstract long getTimeToChange();
 

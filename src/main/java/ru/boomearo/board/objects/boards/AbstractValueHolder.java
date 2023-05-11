@@ -11,7 +11,7 @@ public abstract class AbstractValueHolder extends AbstractHolder<HolderResult> {
     @Override
     protected HolderResult createHolderData(String text) {
         if (text == null) {
-            return new HolderResult("null", "");
+            return null;
         }
 
         int maxLength = StringLength.getMaxDataLength().getMaxValueLength();

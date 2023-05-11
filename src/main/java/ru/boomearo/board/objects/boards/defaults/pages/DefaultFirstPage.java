@@ -7,8 +7,6 @@ import ru.boomearo.board.objects.boards.AbstractTitleHolder;
 import ru.boomearo.board.objects.boards.AbstractValueHolder;
 import ru.boomearo.board.objects.boards.AbstractPage;
 import ru.boomearo.board.objects.boards.AbstractPageList;
-import ru.boomearo.board.objects.boards.DefaultScoreSequenceFactory;
-import ru.boomearo.board.objects.boards.ScoreSequenceFactory;
 
 public class DefaultFirstPage extends AbstractPage {
 
@@ -17,13 +15,8 @@ public class DefaultFirstPage extends AbstractPage {
     }
 
     @Override
-    protected ScoreSequenceFactory getScoreSequenceFactory() {
-        return DefaultScoreSequenceFactory.FROM_NEGATIVE_ZERO;
-    }
-
-    @Override
     protected long getTimeToChange() {
-        return 1000 * 5;
+        return 1000 * 15;
     }
 
     @Override
@@ -59,32 +52,24 @@ public class DefaultFirstPage extends AbstractPage {
         });
         tmpLines.add(new AbstractValueHolder(this) {
 
-            private boolean test = false;
-
             @Override
             protected String getText() {
-                this.test = !this.test;
-                return (this.test ? "§aFirst" : "§cSecond");
-            }
-
-            @Override
-            protected long getMaxCacheTime() {
-                return 500;
-            }
-
-        });
-        tmpLines.add(new AbstractValueHolder(this) {
-
-            @Override
-            protected String getText() {
-                return "§aCurrent HP " + this.playerBoard.getPlayer().getHealth();
+                double health = this.playerBoard.getPlayer().getHealth();
+                if (health < 20) {
+                    return "§aCurrent HP " + health;
+                }
+                return null;
             }
         });
         tmpLines.add(new AbstractValueHolder(this) {
 
             @Override
             protected String getText() {
-                return "§6Current hunger " + this.playerBoard.getPlayer().getFoodLevel();
+                double food = this.playerBoard.getPlayer().getFoodLevel();
+                if (food < 20) {
+                    return "§6Current hunger " + food;
+                }
+                return null;
             }
         });
 
