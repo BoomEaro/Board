@@ -12,7 +12,7 @@ public final class StringLength {
 
         MAX_DATA_LENGTH = calculateLength(version);
 
-        board.getLogger().info("Используем максимальную длину строки в " + MAX_DATA_LENGTH + " символа. Определена версия: " + version);
+        board.getLogger().info("Используем максимальную длину строки " + MAX_DATA_LENGTH + ". Определена версия: " + version);
     }
 
     private static DataLength calculateLength(String version) {
@@ -46,6 +46,14 @@ public final class StringLength {
 
         public int getMaxTitleLength() {
             return this.maxTitleLength;
+        }
+
+        @Override
+        public String toString() {
+            return "DataLength{" +
+                    "maxValueLength=" + maxValueLength +
+                    ", maxTitleLength=" + maxTitleLength +
+                    '}';
         }
     }
 }
