@@ -54,6 +54,19 @@ public class DefaultFirstPage extends AbstractPage {
 
             @Override
             protected String getText() {
+                return "§ctest3 " + this.playerBoard.getPlayer().getInventory().getHeldItemSlot();
+            }
+
+            @Override
+            protected long getMaxCacheTime() {
+                return 0;
+            }
+
+        });
+        tmpLines.add(new AbstractValueHolder(this) {
+
+            @Override
+            protected String getText() {
                 double health = this.playerBoard.getPlayer().getHealth();
                 if (health < 20) {
                     return "§aCurrent HP " + health;

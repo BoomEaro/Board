@@ -55,4 +55,16 @@ public class TeamInfo {
         }
     }
 
+    @Override
+    public String toString() {
+        return "TeamInfo{" +
+                "scoreboard=" + scoreboard +
+                ", objective=" + objective +
+                ", team=" + team +
+                ", holder=" + holder +
+                ", teamEntryName='" + teamEntryName + '\'' +
+                ", scoreIndex=" + scoreIndex +
+                ", currentResult=" + currentResult +
+                '}';
+    }
 }

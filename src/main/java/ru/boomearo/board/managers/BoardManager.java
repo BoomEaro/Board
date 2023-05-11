@@ -209,6 +209,7 @@ public final class BoardManager {
 
         try {
             playerBoard.init();
+            sendBoardToPlayer(playerBoard, null);
         }
         catch (BoardException e) {
             throw new RuntimeException(e);
@@ -237,20 +238,49 @@ public final class BoardManager {
     /**
      * Устанавливает скорборд указанному игроку с указанной фабрикой страниц.
      * Если указанный игрок не был онлайн или скорборд был выключен, ничего не произойдет.
+     * @param Player Игрок
+     * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
+     */
+    public void sendBoardToPlayer(Player player, PageListFactory factory) {
+        if (player == null) {
+            throw new IllegalStateException("Player can not be null!");
+        }
+        sendBoardToPlayer(player.getUniqueId(), factory);
+    }
+
+    /**
+     * Устанавливает скорборд указанному игроку с указанной фабрикой страниц.
+     * Если указанный игрок не был онлайн или скорборд был выключен, ничего не произойдет.
      * @param uuid uuid игрока
      * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
      */
     public void sendBoardToPlayer(UUID uuid, PageListFactory factory) {
+        if (uuid == null) {
+            throw new IllegalStateException("UUID can not be null!");
+        }
         PlayerBoard pb = this.playerBoards.get(uuid);
         if (pb == null) {
-            return;
+            throw new IllegalStateException("Player with uuid '" + uuid + "' does not exists!");
+        }
+        sendBoardToPlayer(pb, factory);
+    }
+
+    /**
+     * Устанавливает скорборд указанному игроку с указанной фабрикой страниц.
+     * Если указанный игрок не был онлайн или скорборд был выключен, ничего не произойдет.
+     * @param PlayerBoard PlayerBoard игрока
+     * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
+     */
+    public void sendBoardToPlayer(PlayerBoard playerBoard, PageListFactory factory) {
+        if (playerBoard == null) {
+            throw new IllegalStateException("PlayerBoard can not be null!");
         }
         try {
             if (factory == null) {
                 factory = getPageListFactory();
             }
 
-            pb.setNewPageList(factory.createPageList(pb));
+            playerBoard.setNewPageList(factory.createPageList(playerBoard));
         }
         catch (BoardException e) {
             e.printStackTrace();

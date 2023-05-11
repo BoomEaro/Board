@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,8 +40,9 @@ public class PlayerBoard {
     private long pageCreateTime = 0;
     private boolean permanentView = false;
     private boolean debugMode = false;
+    private boolean init = false;
 
-    private final Object lock = new Object();
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     public PlayerBoard(UUID uuid, Player player, BoardManager boardManager) {
         this.uuid = uuid;
@@ -60,18 +63,19 @@ public class PlayerBoard {
     }
 
     public void init() throws BoardException {
+        if (this.init) {
+            return;
+        }
         //Удаляем панель если была
         removeBoardIfExists();
         //Строим ее заново
         buildScoreboard();
-
-        //Устанавливаем список страниц по умолчанию
-        setNewPageList(this.boardManager.getPageListFactory().createPageList(this));
+        this.init = true;
     }
 
     private void buildScoreboard() throws BoardException {
         if (!Bukkit.isPrimaryThread()) {
-            throw new BoardException("Scoreboard должен быть создан в основном потоке!");
+            throw new BoardException("Scoreboard must be create in the main thread!");
         }
 
         this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
@@ -79,18 +83,6 @@ public class PlayerBoard {
         this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         this.player.setScoreboard(this.scoreboard);
-    }
-
-    public void setNewPageList(AbstractPageList pageList) throws BoardException {
-        synchronized (this.lock) {
-            this.pageIndex = 0;
-
-            this.pagesList = pageList;
-
-            this.pagesList.loadPages();
-
-            toPage(0, getCurrentPage());
-        }
     }
 
     private void removeBoardIfExists() {
@@ -101,13 +93,33 @@ public class PlayerBoard {
         }
     }
 
+    public void setNewPageList(AbstractPageList pageList) throws BoardException {
+        this.readWriteLock.writeLock().lock();
+        try {
+            this.pageIndex = 0;
+
+            this.pagesList = pageList;
+
+            this.pagesList.loadPages();
+
+            toPage(0, getCurrentPage());
+        }
+        finally {
+            this.readWriteLock.writeLock().unlock();
+        }
+    }
+
     public AbstractPageList getPageList() {
         return this.pagesList;
     }
 
     public AbstractPage getCurrentPage() {
-        synchronized (this.lock) {
+        this.readWriteLock.readLock().lock();
+        try {
             return this.pagesList.getPages().get(this.pageIndex);
+        }
+        finally {
+            this.readWriteLock.readLock().unlock();
         }
     }
 
@@ -116,23 +128,32 @@ public class PlayerBoard {
             return null;
         }
 
-        synchronized (this.lock) {
+        this.readWriteLock.readLock().lock();
+        try {
             if (index > getMaxPageIndex()) {
                 return null;
             }
 
             return this.pagesList.getPages().get(index);
         }
+        finally {
+            this.readWriteLock.readLock().unlock();
+        }
     }
 
     public int getMaxPageIndex() {
-        synchronized (this.lock) {
+        this.readWriteLock.readLock().lock();
+        try {
             return this.pagesList.getPages().size() - 1;
+        }
+        finally {
+            this.readWriteLock.readLock().unlock();
         }
     }
 
     public int getNextPageNumber() {
-        synchronized (this.lock) {
+        this.readWriteLock.readLock().lock();
+        try {
             int maxPage = getMaxPageIndex();
             for (int i = this.pageIndex; i <= maxPage; i++) {
                 int next = i + 1;
@@ -145,6 +166,9 @@ public class PlayerBoard {
                 }
             }
             return 0;
+        }
+        finally {
+            this.readWriteLock.readLock().unlock();
         }
     }
 
@@ -171,17 +195,22 @@ public class PlayerBoard {
     }
 
     public void toPage(int indexTo, AbstractPage toPage) {
-        synchronized (this.lock) {
+        this.readWriteLock.writeLock().lock();
+        try {
             this.pageCreateTime = System.currentTimeMillis();
             this.pageIndex = indexTo;
 
             loadPage(toPage);
             update();
         }
+        finally {
+            this.readWriteLock.writeLock().unlock();
+        }
     }
 
     public void update() {
-        synchronized (this.lock) {
+        this.readWriteLock.writeLock().lock();
+        try {
             // Update title holder
             String newResult = this.titleHolder.getHolderResult();
             if (!newResult.equals(this.currentTitleResult)) {
@@ -193,6 +222,9 @@ public class PlayerBoard {
                 teamInfo.update();
             }
         }
+        finally {
+            this.readWriteLock.writeLock().unlock();
+        }
     }
 
     private void applyTitleResult(String text) {
@@ -201,13 +233,16 @@ public class PlayerBoard {
     }
 
     public void remove() {
-        synchronized (this.lock) {
+        this.readWriteLock.writeLock().lock();
+        try {
             if (Bukkit.isPrimaryThread()) {
                 this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                return;
             }
-            else {
-                Bukkit.getScheduler().runTask(Board.getInstance(), () -> this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard()));
-            }
+            Bukkit.getScheduler().runTask(Board.getInstance(), () -> this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard()));
+        }
+        finally {
+            this.readWriteLock.writeLock().unlock();
         }
     }
 
@@ -238,6 +273,10 @@ public class PlayerBoard {
 
     public void handleBoard() {
         try {
+            if (!this.init) {
+                return;
+            }
+
             int maxPage = getMaxPageIndex();
             if (getPageIndex() <= maxPage) {
                 AbstractPage thisPage = getCurrentPage();
@@ -304,5 +343,9 @@ public class PlayerBoard {
 
     public boolean isDebugMode() {
         return this.debugMode;
+    }
+
+    public boolean isInit() {
+        return this.init;
     }
 }
