@@ -281,6 +281,8 @@ public class PlayerBoard {
             if (getPageIndex() <= maxPage) {
                 AbstractPage thisPage = getCurrentPage();
 
+                thisPage.performUpdate();
+
                 int nextPageIndex = getNextPageNumber();
                 AbstractPage nextPage = getPageByIndex(nextPageIndex);
 

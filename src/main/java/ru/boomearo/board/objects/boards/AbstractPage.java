@@ -119,6 +119,19 @@ public abstract class AbstractPage {
         return DefaultScoreSequenceFactory.TO_ZERO;
     }
 
+    public void performUpdate() {
+        try {
+            onUpdate();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void onUpdate() {
+
+    }
+
     protected abstract long getTimeToChange();
 
     protected abstract boolean isVisible();
