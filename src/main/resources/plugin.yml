@@ -4,6 +4,7 @@ version: ${project.version}
 author: BoomEaro
 description: advanced board
 api-version: 1.13
+softdepend: [ PlaceholderAPI ]
 commands:
   board:
     usage: /board

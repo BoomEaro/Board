@@ -3,6 +3,11 @@ settings:
   defaultToggle: true
   # Можно ли переключать скорборд командой /board toggle?
   enabledToggle: true
+  default_board:
+    title: "&dDefault title"
+    teams:
+      - "&cFirst team"
+      - "&6Second team"
 messages:
   command_main: "&a/board &7- &fЭта команда"
   command_reload: "&a/board reload &7- &fПерезагрузить конфигураци."

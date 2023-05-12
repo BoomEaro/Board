@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 
 import ru.boomearo.board.Board;
 import ru.boomearo.board.exceptions.BoardException;
+import ru.boomearo.board.hooks.PlaceHolderAPIHook;
 import ru.boomearo.board.objects.DefaultPageListFactory;
 import ru.boomearo.board.objects.PageListFactory;
 import ru.boomearo.board.objects.PlayerBoard;
@@ -28,22 +29,24 @@ import ru.boomearo.board.tasks.BoardUpdateTask;
 public final class BoardManager {
 
     private final ConfigManager configManager;
+    private final PlaceHolderAPIHook placeHolderAPIHook;
 
     private final ConcurrentMap<UUID, PlayerBoard> playerBoards = new ConcurrentHashMap<>();
     private ConcurrentMap<UUID, PlayerToggle> playersToggle = new ConcurrentHashMap<>();
 
-    private PageListFactory factory = new DefaultPageListFactory();
+    private PageListFactory factory;
 
     private ScheduledExecutorService scheduler = null;
 
-    public static final String PREFIX = "§8[§6Board§8]: §f";
     public static final int MAX_ENTRY_SIZE = 15;
     public static final String TEAM_PREFIX = "BoardT_";
 
     private static final String[] ENTRY_NAMES;
 
-    public BoardManager(ConfigManager configManager) {
+    public BoardManager(ConfigManager configManager, PlaceHolderAPIHook placeHolderAPIHook) {
         this.configManager = configManager;
+        this.placeHolderAPIHook = placeHolderAPIHook;
+        this.factory = createDefaultPageListFactory();
     }
 
     static {
@@ -172,7 +175,7 @@ public final class BoardManager {
     }
 
     public void resetPageListFactory() {
-        this.factory = new DefaultPageListFactory();
+        this.factory = createDefaultPageListFactory();
 
         forceApplyPageListToPlayers();
     }
@@ -279,6 +282,10 @@ public final class BoardManager {
         catch (BoardException e) {
             e.printStackTrace();
         }
+    }
+
+    private PageListFactory createDefaultPageListFactory() {
+        return new DefaultPageListFactory(this.configManager.getBoardTitle(), this.configManager.getBoardTeams(), this.placeHolderAPIHook);
     }
 
     public static String getColor(int index) {
