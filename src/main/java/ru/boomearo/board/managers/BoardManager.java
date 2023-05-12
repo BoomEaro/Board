@@ -46,7 +46,7 @@ public final class BoardManager {
     public BoardManager(ConfigManager configManager, PlaceHolderAPIHook placeHolderAPIHook) {
         this.configManager = configManager;
         this.placeHolderAPIHook = placeHolderAPIHook;
-        this.factory = createDefaultPageListFactory();
+        this.factory = getDefaultPageListFactory();
     }
 
     static {
@@ -101,7 +101,7 @@ public final class BoardManager {
         FileConfiguration playersConfig;
         playersConfigFile = new File(Board.getInstance().getDataFolder(), "players.yml");
         if (!playersConfigFile.exists()) {
-            Board.getInstance().getLogger().info("Конфигурация игроков не найдена, создаем новую..");
+            Board.getInstance().getLogger().info("Player configuration not found, creating a new one...");
             playersConfigFile.getParentFile().mkdirs();
             Board.getInstance().saveResource("players.yml", false);
         }
@@ -169,13 +169,19 @@ public final class BoardManager {
     }
 
     public void setPageListFactory(PageListFactory factory) {
+        setPageListFactory(factory, true);
+    }
+
+    public void setPageListFactory(PageListFactory factory, boolean force) {
         this.factory = factory;
 
-        forceApplyPageListToPlayers();
+        if (force) {
+            forceApplyPageListToPlayers();
+        }
     }
 
     public void resetPageListFactory() {
-        this.factory = createDefaultPageListFactory();
+        this.factory = getDefaultPageListFactory();
 
         forceApplyPageListToPlayers();
     }
@@ -284,7 +290,7 @@ public final class BoardManager {
         }
     }
 
-    private PageListFactory createDefaultPageListFactory() {
+    public PageListFactory getDefaultPageListFactory() {
         return new DefaultPageListFactory(this.configManager.getBoardTitle(), this.configManager.getBoardTeams(), this.placeHolderAPIHook);
     }
 
