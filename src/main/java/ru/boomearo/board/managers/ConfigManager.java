@@ -12,6 +12,7 @@ public class ConfigManager {
 
     private boolean defaultToggle = true;
     private boolean enabledToggle = true;
+    private int updateFreq = 50;
 
     private String boardTitle = "Title";
     private List<String> boardTeams = new ArrayList<>();
@@ -31,6 +32,7 @@ public class ConfigManager {
 
         this.defaultToggle = configuration.getBoolean("settings.defaultToggle");
         this.enabledToggle = configuration.getBoolean("settings.enabledToggle");
+        this.updateFreq = configuration.getInt("settings.update_freq");
 
         this.boardTitle = colorize(configuration.getString("settings.default_board.title"));
         List<String> boardTeams = configuration.getStringList("settings.default_board.teams");
@@ -67,6 +69,10 @@ public class ConfigManager {
 
     public boolean isEnabledToggle() {
         return this.enabledToggle;
+    }
+
+    public int getUpdateFreq() {
+        return this.updateFreq;
     }
 
     public String getBoardTitle() {
