@@ -18,7 +18,6 @@ public class BoardUpdateTask implements Runnable {
 
     public void update() {
         try {
-            //Получаем все скорборды игроков и обрабатываем их
             for (PlayerBoard pb : this.boardManager.getAllPlayerBoards()) {
                 pb.handleBoard();
             }

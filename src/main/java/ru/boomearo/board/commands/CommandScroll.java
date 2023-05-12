@@ -3,6 +3,7 @@ package ru.boomearo.board.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.boomearo.board.managers.BoardManager;
+import ru.boomearo.board.managers.ConfigManager;
 import ru.boomearo.board.objects.PlayerBoard;
 
 import java.util.Arrays;
@@ -12,14 +13,14 @@ public class CommandScroll extends CommandNodeBukkit {
 
     private final BoardManager boardManager;
 
-    public CommandScroll(CommandNodeBukkit root, BoardManager boardManager) {
-        super(root, "scroll", "board.command.scroll");
+    public CommandScroll(ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
+        super(configManager, root, "scroll", "board.command.scroll");
         this.boardManager = boardManager;
     }
 
     @Override
     public List<String> getDescription() {
-        return Arrays.asList("§6/board scroll §8-§a Переключить автоматические прокручивание страниц.");
+        return Arrays.asList(this.configManager.getMessage("command_scroll"));
     }
 
     @Override
@@ -35,12 +36,12 @@ public class CommandScroll extends CommandNodeBukkit {
 
         PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getUniqueId());
         if (pb == null) {
-            pl.sendMessage(BoardManager.PREFIX + "Сперва включите отображение командой §6/board toggle");
+            pl.sendMessage(this.configManager.getMessage("board_should_be_enabled"));
             return;
         }
 
         pb.setPermanentView(!pb.isPermanentView());
-        pl.sendMessage(BoardManager.PREFIX + "Автоматическая прокрутка успешно " + (!pb.isPermanentView() ? "§aвключена" : "§cвыключена"));
+        pl.sendMessage((!pb.isPermanentView() ? this.configManager.getMessage("successfully_scroll_on") : this.configManager.getMessage("successfully_scroll_off")));
         return;
     }
 }

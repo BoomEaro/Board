@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import ru.boomearo.board.managers.BoardManager;
+import ru.boomearo.board.managers.ConfigManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +14,14 @@ public class CommandBoardExecutor implements CommandExecutor, TabCompleter {
 
     private final CommandNodeBukkit node;
 
-    public CommandBoardExecutor(BoardManager boardManager) {
-        CommandMain root = new CommandMain();
-        root.addNode(new CommandToggle(root, boardManager));
-        root.addNode(new CommandPage(root, boardManager));
-        root.addNode(new CommandScroll(root, boardManager));
-        root.addNode(new CommandDebug(root, boardManager));
-        root.addNode(new CommandSave(root, boardManager));
-        root.addNode(new CommandReload(root, boardManager));
+    public CommandBoardExecutor(ConfigManager configManager, BoardManager boardManager) {
+        CommandMain root = new CommandMain(configManager);
+        root.addNode(new CommandToggle(configManager, root, boardManager));
+        root.addNode(new CommandPage(configManager, root, boardManager));
+        root.addNode(new CommandScroll(configManager, root, boardManager));
+        root.addNode(new CommandDebug(configManager, root, boardManager));
+        root.addNode(new CommandSave(configManager, root, boardManager));
+        root.addNode(new CommandReload(configManager, root));
 
         this.node = root;
     }

@@ -1,6 +1,7 @@
 package ru.boomearo.board.commands;
 
 import org.bukkit.command.CommandSender;
+import ru.boomearo.board.managers.ConfigManager;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -8,23 +9,25 @@ import java.util.List;
 
 public abstract class CommandNodeBukkit extends CommandNode<CommandSender> {
 
+    protected final ConfigManager configManager;
     protected final String permission;
 
-    public CommandNodeBukkit(CommandNodeBukkit root, String name, List<String> aliases, String permission) {
+    public CommandNodeBukkit(ConfigManager configManager, CommandNodeBukkit root, String name, List<String> aliases, String permission) {
         super(root, name, aliases);
+        this.configManager = configManager;
         this.permission = permission;
     }
 
-    public CommandNodeBukkit(CommandNodeBukkit root, String name, String permission) {
-        this(root, name, Collections.emptyList(), permission);
+    public CommandNodeBukkit(ConfigManager configManager, CommandNodeBukkit root, String name, String permission) {
+        this(configManager, root, name, Collections.emptyList(), permission);
     }
 
-    public CommandNodeBukkit(CommandNodeBukkit root, String name, List<String> aliases) {
-        this(root, name, aliases, null);
+    public CommandNodeBukkit(ConfigManager configManager, CommandNodeBukkit root, String name, List<String> aliases) {
+        this(configManager, root, name, aliases, null);
     }
 
-    public CommandNodeBukkit(CommandNodeBukkit root, String name) {
-        this(root, name, Collections.emptyList());
+    public CommandNodeBukkit(ConfigManager configManager, CommandNodeBukkit root, String name) {
+        this(configManager, root, name, Collections.emptyList());
     }
 
     @Override

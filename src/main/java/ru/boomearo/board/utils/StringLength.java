@@ -12,7 +12,7 @@ public final class StringLength {
 
         MAX_DATA_LENGTH = calculateLength(version);
 
-        board.getLogger().info("Используем максимальную длину строки " + MAX_DATA_LENGTH + ". Определена версия: " + version);
+        board.getLogger().info("Use the maximum string length " + MAX_DATA_LENGTH + ". Detected version: " + version);
     }
 
     private static DataLength calculateLength(String version) {

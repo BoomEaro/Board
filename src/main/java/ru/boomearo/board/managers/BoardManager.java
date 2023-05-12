@@ -27,13 +27,12 @@ import ru.boomearo.board.tasks.BoardUpdateTask;
 
 public final class BoardManager {
 
+    private final ConfigManager configManager;
+
     private final ConcurrentMap<UUID, PlayerBoard> playerBoards = new ConcurrentHashMap<>();
     private ConcurrentMap<UUID, PlayerToggle> playersToggle = new ConcurrentHashMap<>();
 
     private PageListFactory factory = new DefaultPageListFactory();
-
-    private boolean defaultToggle = true;
-    private boolean enabledToggle = true;
 
     private ScheduledExecutorService scheduler = null;
 
@@ -43,17 +42,20 @@ public final class BoardManager {
 
     private static final String[] ENTRY_NAMES;
 
+    public BoardManager(ConfigManager configManager) {
+        this.configManager = configManager;
+    }
+
     static {
         ChatColor[] chatColors = ChatColor.values();
         String[] entryNames = new String[chatColors.length];
         for (int i = 0; i < chatColors.length; i++) {
-            entryNames[i] = "" + chatColors[i] + ChatColor.RESET;
+            entryNames[i] = String.valueOf(chatColors[i]) + ChatColor.RESET;
         }
         ENTRY_NAMES = entryNames;
     }
 
     public void load() {
-        loadConfig();
         loadPlayersConfig();
         loadPlayerBoards();
         loadScheduler();
@@ -67,7 +69,7 @@ public final class BoardManager {
 
     public void savePlayersConfig() {
         //Если переключение выключено значит не сохраняем конфиг
-        if (!this.isEnabledToggle()) {
+        if (!this.configManager.isEnabledToggle()) {
             return;
         }
         File playersConfigFile = new File(Board.getInstance().getDataFolder(), "players.yml");
@@ -89,13 +91,6 @@ public final class BoardManager {
         for (PlayerBoard pb : this.playerBoards.values()) {
             pb.remove();
         }
-    }
-
-    public void loadConfig() {
-        Board.getInstance().reloadConfig();
-        FileConfiguration fc = Board.getInstance().getConfig();
-        this.defaultToggle = fc.getBoolean("defaultToggle");
-        this.enabledToggle = fc.getBoolean("enabledToggle");
     }
 
     private void loadPlayersConfig() {
@@ -133,7 +128,7 @@ public final class BoardManager {
     }
 
     private void loadPlayerBoards() {
-        if (!this.defaultToggle) {
+        if (!this.configManager.isDefaultToggle()) {
             return;
         }
         for (Player pl : Bukkit.getOnlinePlayers()) {
@@ -230,9 +225,8 @@ public final class BoardManager {
         return this.playerBoards.values();
     }
 
-
     public PlayerToggle getOrCreatePlayerToggle(Player player) {
-        return this.playersToggle.computeIfAbsent(player.getUniqueId(), (value) -> new PlayerToggle(value, this.defaultToggle));
+        return this.playersToggle.computeIfAbsent(player.getUniqueId(), (value) -> new PlayerToggle(value, this.configManager.isDefaultToggle()));
     }
 
     /**
@@ -285,14 +279,6 @@ public final class BoardManager {
         catch (BoardException e) {
             e.printStackTrace();
         }
-    }
-
-    public boolean isDefaultToggle() {
-        return this.defaultToggle;
-    }
-
-    public boolean isEnabledToggle() {
-        return this.enabledToggle;
     }
 
     public static String getColor(int index) {

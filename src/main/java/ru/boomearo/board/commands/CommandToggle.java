@@ -3,6 +3,7 @@ package ru.boomearo.board.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.boomearo.board.managers.BoardManager;
+import ru.boomearo.board.managers.ConfigManager;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.PlayerToggle;
 
@@ -13,14 +14,14 @@ public class CommandToggle extends CommandNodeBukkit {
 
     private final BoardManager boardManager;
 
-    public CommandToggle(CommandNodeBukkit root, BoardManager boardManager) {
-        super(root, "toggle", "board.command.toggle");
+    public CommandToggle(ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
+        super(configManager, root, "toggle", "board.command.toggle");
         this.boardManager = boardManager;
     }
 
     @Override
     public List<String> getDescription() {
-        return Arrays.asList("§6/board toggle §8-§a Переключить отображение.");
+        return Arrays.asList(this.configManager.getMessage("command_toggle"));
     }
 
     @Override
@@ -34,8 +35,8 @@ public class CommandToggle extends CommandNodeBukkit {
             return;
         }
 
-        if (!this.boardManager.isEnabledToggle()) {
-            pl.sendMessage(BoardManager.PREFIX + "Вы не можете переключить отображение.");
+        if (!this.configManager.isEnabledToggle()) {
+            pl.sendMessage(this.configManager.getMessage("can_not_toggle"));
             return;
         }
 
@@ -44,13 +45,13 @@ public class CommandToggle extends CommandNodeBukkit {
         if (pb != null) {
             this.boardManager.removePlayerBoard(pl);
             pt.setToggle(false);
-            pl.sendMessage(BoardManager.PREFIX + "Вы успешно §cвыключили §fотображение.");
+            pl.sendMessage(this.configManager.getMessage("successfully_toggled_off"));
             return;
         }
 
         this.boardManager.addPlayerBoard(pl);
         pt.setToggle(true);
-        pl.sendMessage(BoardManager.PREFIX + "Вы успешно §aвключили §fотображение.");
+        pl.sendMessage(this.configManager.getMessage("successfully_toggled_on"));
         return;
     }
 }

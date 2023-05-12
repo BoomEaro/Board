@@ -1,23 +1,21 @@
 package ru.boomearo.board.commands;
 
 import org.bukkit.command.CommandSender;
-import ru.boomearo.board.managers.BoardManager;
+import ru.boomearo.board.Board;
+import ru.boomearo.board.managers.ConfigManager;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class CommandReload extends CommandNodeBukkit {
 
-    private final BoardManager boardManager;
-
-    public CommandReload(CommandNodeBukkit root, BoardManager boardManager) {
-        super(root, "reload", "board.command.reload");
-        this.boardManager = boardManager;
+    public CommandReload(ConfigManager configManager, CommandNodeBukkit root) {
+        super(configManager, root, "reload", "board.command.reload");
     }
 
     @Override
     public List<String> getDescription() {
-        return Arrays.asList("§6/board reload §8-§a- Перезагрузить конфигурацию");
+        return Arrays.asList(this.configManager.getMessage("command_reload"));
     }
 
     @Override
@@ -27,8 +25,8 @@ public class CommandReload extends CommandNodeBukkit {
             return;
         }
 
-        this.boardManager.loadConfig();
+        this.configManager.load(Board.getInstance());
 
-        sender.sendMessage("§aКонфигурация успешно перезагружена!");
+        sender.sendMessage(this.configManager.getMessage("configuration_reloaded"));
     }
 }

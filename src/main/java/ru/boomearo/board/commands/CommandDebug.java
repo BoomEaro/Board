@@ -3,6 +3,7 @@ package ru.boomearo.board.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.boomearo.board.managers.BoardManager;
+import ru.boomearo.board.managers.ConfigManager;
 import ru.boomearo.board.objects.PlayerBoard;
 
 import java.util.Arrays;
@@ -12,14 +13,14 @@ public class CommandDebug extends CommandNodeBukkit {
 
     private final BoardManager boardManager;
 
-    public CommandDebug(CommandNodeBukkit root, BoardManager boardManager) {
-        super(root, "debug", "board.command.debug");
+    public CommandDebug(ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
+        super(configManager, root, "debug", "board.command.debug");
         this.boardManager = boardManager;
     }
 
     @Override
     public List<String> getDescription() {
-        return Arrays.asList("§6/board debug §8-§a Переключить дебаг режим.");
+        return Arrays.asList(this.configManager.getMessage("command_debug"));
     }
 
     @Override
@@ -35,12 +36,12 @@ public class CommandDebug extends CommandNodeBukkit {
 
         PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getUniqueId());
         if (pb == null) {
-            pl.sendMessage(BoardManager.PREFIX + "Сперва включите отображение командой §6/board toggle");
+            pl.sendMessage(this.configManager.getMessage("board_should_be_enabled"));
             return;
         }
 
         pb.setDebugMode(!pb.isDebugMode());
-        pl.sendMessage(BoardManager.PREFIX + "Дебаг режим " + (pb.isDebugMode() ? "§aвключен" : "§cвыключен"));
+        pl.sendMessage((pb.isDebugMode() ? this.configManager.getMessage("successfully_debug_on") : this.configManager.getMessage("successfully_debug_off")));
         return;
     }
 }

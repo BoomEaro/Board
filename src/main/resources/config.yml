@@ -1,4 +1,29 @@
-#Отображается ли по умолчанию табло для новых игроков
-defaultToggle: true
-#Можно ли переключать табло командой /board toggle
-enabledToggle: true
+settings:
+  # Отображается ли по умолчанию скорборд для новых игроков?
+  defaultToggle: true
+  # Можно ли переключать скорборд командой /board toggle?
+  enabledToggle: true
+messages:
+  command_main: "&a/board &7- &fЭта команда"
+  command_reload: "&a/board reload &7- &fПерезагрузить конфигураци."
+  command_toggle: "&a/board toggle &7- &fПереключить отображение скорборда"
+  command_scroll: "&a/board scroll &7- &fПереключить автопрокрытивания страниц"
+  command_page: "&a/board page <страница> &7- &fПереключить отображение на указанную страницу"
+  command_debug: "&a/board debug &7- &fПереключить дебаг режим"
+  command_save: "&a/board save &7- &fСохранить всех игроков в конфиг"
+  do_not_have_permissions: "&cУ вас не достаточно прав!"
+  only_player: "&cТолько игрок может это сделать!"
+  configuration_reloaded: "&aКонфигурация успешно перезагружена!"
+  can_not_toggle: "&cВы не можете переключить отображение!"
+  successfully_toggled_off: "&6Вы успешно §cвыключили §fотображение."
+  successfully_toggled_on: "&6Вы успешно §aвключили §fотображение."
+  board_should_be_enabled: "&cСперва включите отображение скорборда командой &6/board toggle&c!"
+  successfully_scroll_off: "&6Автоматическая прокрутка успешно &cвыключена"
+  successfully_scroll_on: "&6Автоматическая прокрутка успешно &aвключена"
+  successfully_saved: "&aКонфигурация игроков успешно сохранена!"
+  successfully_debug_off: "&6Дебаг режим успешно &cвыключен"
+  successfully_debug_on: "&6Дебаг режим успешно &aвключен"
+  argument_should_be_a_number: "&cАргумент должен содержать цифры!"
+  page_not_found: "&6Страница &c%page% &6не найдена!"
+  page_is_empty: "&6Данная страница либо пуста либо у вас нет прав на ее отображение."
+  page_successfully_changed: "Страница &6%page% &fуспешно отображена."
