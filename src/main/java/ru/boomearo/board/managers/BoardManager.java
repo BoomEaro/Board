@@ -142,13 +142,13 @@ public final class BoardManager {
         }
     }
 
-    private void loadScheduler() {
+    public void loadScheduler() {
         if (this.scheduler != null) {
             return;
         }
 
         this.scheduler = Executors.newScheduledThreadPool(1, new ThreadFactoryBuilder()
-                .setNameFormat("Board-%d")
+                .setNameFormat("Board-Thread-%d")
                 .setPriority(Thread.MIN_PRIORITY)
                 .build());
 
@@ -160,7 +160,7 @@ public final class BoardManager {
         this.scheduler.scheduleAtFixedRate(new BoardUpdateTask(this), update, update, TimeUnit.MILLISECONDS);
     }
 
-    private void unloadScheduler() {
+    public void unloadScheduler() {
         if (this.scheduler == null) {
             return;
         }
