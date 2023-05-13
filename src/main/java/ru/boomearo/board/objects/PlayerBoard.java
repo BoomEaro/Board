@@ -70,7 +70,6 @@ public class PlayerBoard {
         removeBoardIfExists();
         //Строим ее заново
         buildScoreboard();
-        this.init = true;
     }
 
     private void buildScoreboard() throws BoardException {
@@ -103,6 +102,8 @@ public class PlayerBoard {
             this.pagesList.loadPages();
 
             toPage(0, getCurrentPage());
+
+            this.init = true;
         }
         finally {
             this.readWriteLock.writeLock().unlock();
@@ -278,7 +279,7 @@ public class PlayerBoard {
             }
 
             int maxPage = getMaxPageIndex();
-            if (getPageIndex() <= maxPage) {
+            if (this.pageIndex <= maxPage) {
                 AbstractPage thisPage = getCurrentPage();
 
                 thisPage.performUpdate();
@@ -290,7 +291,7 @@ public class PlayerBoard {
                 if (!thisPage.isVisibleToPlayer()) {
 
                     //Убеждаемся что текущая страница не является следующей страницей (в противном случае ничего не делаем)
-                    if (getPageIndex() != nextPageIndex) {
+                    if (this.pageIndex != nextPageIndex) {
                         toPage(nextPageIndex, nextPage);
                     }
 
@@ -301,7 +302,7 @@ public class PlayerBoard {
                 if ((System.currentTimeMillis() - this.pageCreateTime) > thisPage.getTimeToChangePage()) {
 
                     //Убеждаемся что текущая страница не является следующей
-                    if (getPageIndex() != nextPageIndex) {
+                    if (this.pageIndex != nextPageIndex) {
                         //Если оказывается что в настройках игрока отключен авто скролл, то просто обновляем страницу.
                         //Иначе пытаемся открыть следующую страницу.
                         if (isPermanentView()) {
