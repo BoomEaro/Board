@@ -9,6 +9,7 @@ settings:
       - "&cFirst team"
       - "&6Second team"
   update_freq: 50
+  thread_pool: 2
 messages:
   command_main: "&a/board &7- &fЭта команда"
   command_reload: "&a/board reload &7- &fПерезагрузить конфигураци."

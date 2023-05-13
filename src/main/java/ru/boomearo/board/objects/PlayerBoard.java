@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -42,6 +43,8 @@ public class PlayerBoard {
     private boolean debugMode = false;
     private boolean init = false;
 
+    private ScheduledFuture<?> scheduledFuture = null;
+
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     public PlayerBoard(UUID uuid, Player player, BoardManager boardManager) {
@@ -56,6 +59,14 @@ public class PlayerBoard {
 
     public Player getPlayer() {
         return this.player;
+    }
+
+    public ScheduledFuture<?> getScheduledFuture() {
+        return this.scheduledFuture;
+    }
+
+    public void setScheduledFuture(ScheduledFuture<?> scheduledFuture) {
+        this.scheduledFuture = scheduledFuture;
     }
 
     public BoardManager getBoardManager() {
@@ -237,13 +248,21 @@ public class PlayerBoard {
         this.readWriteLock.writeLock().lock();
         try {
             if (Bukkit.isPrimaryThread()) {
-                this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                cancelScoreboard();
                 return;
             }
-            Bukkit.getScheduler().runTask(Board.getInstance(), () -> this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard()));
+            Bukkit.getScheduler().runTask(Board.getInstance(), () -> cancelScoreboard());
         }
         finally {
             this.readWriteLock.writeLock().unlock();
+        }
+    }
+
+    private void cancelScoreboard() {
+        this.player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+        ScheduledFuture<?> future = this.scheduledFuture;
+        if (future != null) {
+            future.cancel(false);
         }
     }
 
@@ -273,54 +292,49 @@ public class PlayerBoard {
     }
 
     public void handleBoard() {
-        try {
-            if (!this.init) {
+        if (!this.init) {
+            return;
+        }
+
+        int maxPage = getMaxPageIndex();
+        if (this.pageIndex <= maxPage) {
+            AbstractPage thisPage = getCurrentPage();
+
+            thisPage.performUpdate();
+
+            int nextPageIndex = getNextPageNumber();
+            AbstractPage nextPage = getPageByIndex(nextPageIndex);
+
+            //Если текущая страница не видна игроку
+            if (!thisPage.isVisibleToPlayer()) {
+
+                //Убеждаемся что текущая страница не является следующей страницей (в противном случае ничего не делаем)
+                if (this.pageIndex != nextPageIndex) {
+                    toPage(nextPageIndex, nextPage);
+                }
+
                 return;
             }
 
-            int maxPage = getMaxPageIndex();
-            if (this.pageIndex <= maxPage) {
-                AbstractPage thisPage = getCurrentPage();
+            //Сменяем страницу только если прошло время, иначе просто обновляем ее
+            if ((System.currentTimeMillis() - this.pageCreateTime) > thisPage.getTimeToChangePage()) {
 
-                thisPage.performUpdate();
-
-                int nextPageIndex = getNextPageNumber();
-                AbstractPage nextPage = getPageByIndex(nextPageIndex);
-
-                //Если текущая страница не видна игроку
-                if (!thisPage.isVisibleToPlayer()) {
-
-                    //Убеждаемся что текущая страница не является следующей страницей (в противном случае ничего не делаем)
-                    if (this.pageIndex != nextPageIndex) {
-                        toPage(nextPageIndex, nextPage);
-                    }
-
-                    return;
-                }
-
-                //Сменяем страницу только если прошло время, иначе просто обновляем ее
-                if ((System.currentTimeMillis() - this.pageCreateTime) > thisPage.getTimeToChangePage()) {
-
-                    //Убеждаемся что текущая страница не является следующей
-                    if (this.pageIndex != nextPageIndex) {
-                        //Если оказывается что в настройках игрока отключен авто скролл, то просто обновляем страницу.
-                        //Иначе пытаемся открыть следующую страницу.
-                        if (isPermanentView()) {
-                            update();
-                            return;
-                        }
-
-                        toPage(nextPageIndex, nextPage);
-
+                //Убеждаемся что текущая страница не является следующей
+                if (this.pageIndex != nextPageIndex) {
+                    //Если оказывается что в настройках игрока отключен авто скролл, то просто обновляем страницу.
+                    //Иначе пытаемся открыть следующую страницу.
+                    if (isPermanentView()) {
                         update();
                         return;
                     }
+
+                    toPage(nextPageIndex, nextPage);
+
+                    update();
+                    return;
                 }
-                update();
             }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+            update();
         }
     }
 

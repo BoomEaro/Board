@@ -3,11 +3,7 @@ package ru.boomearo.board.managers;
 import java.io.File;
 import java.util.Collection;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.bukkit.Bukkit;
@@ -24,7 +20,7 @@ import ru.boomearo.board.objects.DefaultPageListFactory;
 import ru.boomearo.board.objects.PageListFactory;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.PlayerToggle;
-import ru.boomearo.board.tasks.BoardUpdateTask;
+import ru.boomearo.board.tasks.PlayerBoardTask;
 
 public final class BoardManager {
 
@@ -36,7 +32,7 @@ public final class BoardManager {
 
     private PageListFactory factory;
 
-    private ScheduledExecutorService scheduler = null;
+    private ScheduledThreadPoolExecutor scheduler = null;
 
     public static final int MAX_ENTRY_SIZE = 15;
     public static final String TEAM_PREFIX = "BoardT_";
@@ -90,10 +86,11 @@ public final class BoardManager {
         }
     }
 
-    private void unloadPlayerBoards() {
+    public void unloadPlayerBoards() {
         for (PlayerBoard pb : this.playerBoards.values()) {
             pb.remove();
         }
+        this.playerBoards.clear();
     }
 
     private void loadPlayersConfig() {
@@ -130,7 +127,7 @@ public final class BoardManager {
         }
     }
 
-    private void loadPlayerBoards() {
+    public void loadPlayerBoards() {
         if (!this.configManager.isDefaultToggle()) {
             return;
         }
@@ -147,17 +144,16 @@ public final class BoardManager {
             return;
         }
 
-        this.scheduler = Executors.newScheduledThreadPool(1, new ThreadFactoryBuilder()
+        int threads = this.configManager.getThreadPool();
+        if (threads < 1) {
+            threads = 1;
+        }
+
+        this.scheduler = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(threads, new ThreadFactoryBuilder()
                 .setNameFormat("Board-Thread-%d")
                 .setPriority(Thread.MIN_PRIORITY)
                 .build());
-
-        int update = this.configManager.getUpdateFreq();
-        if (update < 1) {
-            update = 1;
-        }
-
-        this.scheduler.scheduleAtFixedRate(new BoardUpdateTask(this), update, update, TimeUnit.MILLISECONDS);
+        this.scheduler.setRemoveOnCancelPolicy(true);
     }
 
     public void unloadScheduler() {
@@ -219,6 +215,13 @@ public final class BoardManager {
         try {
             playerBoard.init();
             sendBoardToPlayer(playerBoard, null);
+
+            int update = this.configManager.getUpdateFreq();
+            if (update < 1) {
+                update = 1;
+            }
+
+            playerBoard.setScheduledFuture(this.scheduler.scheduleAtFixedRate(new PlayerBoardTask(playerBoard), update, update, TimeUnit.MILLISECONDS));
         }
         catch (BoardException e) {
             throw new RuntimeException(e);
