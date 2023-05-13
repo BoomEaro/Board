@@ -296,45 +296,54 @@ public class PlayerBoard {
             return;
         }
 
-        int maxPage = getMaxPageIndex();
-        if (this.pageIndex <= maxPage) {
-            AbstractPage thisPage = getCurrentPage();
+        if (!this.readWriteLock.writeLock().tryLock()) {
+            return;
+        }
 
-            thisPage.performUpdate();
+        try {
+            int maxPage = getMaxPageIndex();
+            if (this.pageIndex <= maxPage) {
+                AbstractPage thisPage = getCurrentPage();
 
-            int nextPageIndex = getNextPageNumber();
-            AbstractPage nextPage = getPageByIndex(nextPageIndex);
+                thisPage.performUpdate();
 
-            //Если текущая страница не видна игроку
-            if (!thisPage.isVisibleToPlayer()) {
+                int nextPageIndex = getNextPageNumber();
+                AbstractPage nextPage = getPageByIndex(nextPageIndex);
 
-                //Убеждаемся что текущая страница не является следующей страницей (в противном случае ничего не делаем)
-                if (this.pageIndex != nextPageIndex) {
-                    toPage(nextPageIndex, nextPage);
+                //Если текущая страница не видна игроку
+                if (!thisPage.isVisibleToPlayer()) {
+
+                    //Убеждаемся что текущая страница не является следующей страницей (в противном случае ничего не делаем)
+                    if (this.pageIndex != nextPageIndex) {
+                        toPage(nextPageIndex, nextPage);
+                    }
+
+                    return;
                 }
 
-                return;
-            }
+                //Сменяем страницу только если прошло время, иначе просто обновляем ее
+                if ((System.currentTimeMillis() - this.pageCreateTime) > thisPage.getTimeToChangePage()) {
 
-            //Сменяем страницу только если прошло время, иначе просто обновляем ее
-            if ((System.currentTimeMillis() - this.pageCreateTime) > thisPage.getTimeToChangePage()) {
+                    //Убеждаемся что текущая страница не является следующей
+                    if (this.pageIndex != nextPageIndex) {
+                        //Если оказывается что в настройках игрока отключен авто скролл, то просто обновляем страницу.
+                        //Иначе пытаемся открыть следующую страницу.
+                        if (isPermanentView()) {
+                            update();
+                            return;
+                        }
 
-                //Убеждаемся что текущая страница не является следующей
-                if (this.pageIndex != nextPageIndex) {
-                    //Если оказывается что в настройках игрока отключен авто скролл, то просто обновляем страницу.
-                    //Иначе пытаемся открыть следующую страницу.
-                    if (isPermanentView()) {
+                        toPage(nextPageIndex, nextPage);
+
                         update();
                         return;
                     }
-
-                    toPage(nextPageIndex, nextPage);
-
-                    update();
-                    return;
                 }
+                update();
             }
-            update();
+        }
+        finally {
+            this.readWriteLock.writeLock().unlock();
         }
     }
 
