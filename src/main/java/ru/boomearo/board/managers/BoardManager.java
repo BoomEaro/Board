@@ -238,6 +238,14 @@ public final class BoardManager {
         pb.remove();
     }
 
+    public void submitUpdate(PlayerBoard playerBoard) {
+        if (playerBoard == null) {
+            return;
+        }
+
+        this.scheduler.execute(new PlayerBoardTask(playerBoard));
+    }
+
     public Collection<PlayerBoard> getAllPlayerBoards() {
         return this.playerBoards.values();
     }
