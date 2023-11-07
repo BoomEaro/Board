@@ -21,7 +21,7 @@ public final class StringLength {
             case "1_17_R1":
             case "1_18_R1":
             case "1_19_R3":
-            case "1_20_R1": {
+            case "1_20_R2": {
                 return new DataLength(64, 128);
             }
             default: {
