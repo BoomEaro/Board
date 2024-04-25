@@ -256,6 +256,8 @@ public class PlayerBoard {
     }
 
     public void remove() {
+        this.init = false;
+
         if (this.scheduledFuture != null) {
             this.scheduledFuture.cancel(false);
             this.scheduledFuture = null;
