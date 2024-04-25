@@ -1,5 +1,6 @@
 package ru.boomearo.board.commands.board;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -7,10 +8,11 @@ import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.managers.ConfigManager;
 import ru.boomearo.board.objects.PlayerBoard;
-import ru.boomearo.board.objects.PlayerToggle;
+import ru.boomearo.board.objects.PlayerBoardData;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class CommandToggle extends CommandNodeBukkit {
 
@@ -28,7 +30,7 @@ public class CommandToggle extends CommandNodeBukkit {
 
     @Override
     public void onExecute(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player pl)) {
+        if (!(sender instanceof Player player)) {
             return;
         }
 
@@ -38,21 +40,29 @@ public class CommandToggle extends CommandNodeBukkit {
         }
 
         if (!this.configManager.isEnabledToggle()) {
-            pl.sendMessage(this.configManager.getMessage("can_not_toggle"));
+            player.sendMessage(this.configManager.getMessage("can_not_toggle"));
             return;
         }
 
-        PlayerBoard pb = this.boardManager.getPlayerBoard(pl.getUniqueId());
-        PlayerToggle pt = this.boardManager.getOrCreatePlayerToggle(pl);
-        if (pb != null) {
-            this.boardManager.removePlayerBoard(pl);
-            pt.setToggle(false);
-            pl.sendMessage(this.configManager.getMessage("successfully_toggled_off"));
-            return;
-        }
+        PlayerBoard playerBoard = this.boardManager.getPlayerBoard(player.getUniqueId());
+        CompletableFuture<PlayerBoardData> future = this.boardManager.getPlayerBoardData(player.getUniqueId());
+        future.whenComplete((playerBoardData, exception) -> Bukkit.getScheduler().runTask(this.plugin, () -> {
+            if (!player.isOnline()) {
+                return;
+            }
 
-        this.boardManager.addPlayerBoard(pl);
-        pt.setToggle(true);
-        pl.sendMessage(this.configManager.getMessage("successfully_toggled_on"));
+            if (playerBoard != null) {
+                this.boardManager.removePlayerBoard(player);
+                playerBoardData.setToggled(false);
+                this.boardManager.savePlayerBoardData(playerBoardData);
+                player.sendMessage(this.configManager.getMessage("successfully_toggled_off"));
+                return;
+            }
+
+            this.boardManager.addPlayerBoard(player);
+            playerBoardData.setToggled(true);
+            this.boardManager.savePlayerBoardData(playerBoardData);
+            player.sendMessage(this.configManager.getMessage("successfully_toggled_on"));
+        }));
     }
 }

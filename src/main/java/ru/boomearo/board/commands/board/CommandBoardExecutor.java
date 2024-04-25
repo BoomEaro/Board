@@ -22,7 +22,6 @@ public class CommandBoardExecutor implements CommandExecutor, TabCompleter {
         root.addNode(new CommandPage(plugin, configManager, root, boardManager));
         root.addNode(new CommandScroll(plugin, configManager, root, boardManager));
         root.addNode(new CommandDebug(plugin, configManager, root, boardManager));
-        root.addNode(new CommandSave(plugin, configManager, root, boardManager));
         root.addNode(new CommandReload(plugin, configManager, root, boardManager));
 
         this.node = root;

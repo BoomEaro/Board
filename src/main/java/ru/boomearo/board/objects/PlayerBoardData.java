@@ -4,13 +4,13 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class PlayerToggle {
+public class PlayerBoardData {
 
     private final UUID uuid;
-    private boolean toggle;
+    private boolean toggled;
 
-    public PlayerToggle(UUID uuid, boolean toggle) {
+    public PlayerBoardData(UUID uuid, boolean toggled) {
         this.uuid = uuid;
-        this.toggle = toggle;
+        this.toggled = toggled;
     }
 }

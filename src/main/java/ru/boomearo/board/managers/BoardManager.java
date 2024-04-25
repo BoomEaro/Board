@@ -2,43 +2,42 @@ package ru.boomearo.board.managers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import ru.boomearo.board.database.DatabaseRepository;
 import ru.boomearo.board.hooks.PlaceHolderAPIHook;
 import ru.boomearo.board.objects.*;
 import ru.boomearo.board.tasks.BalancedThreadPool;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 
 public final class BoardManager {
 
-    private final Plugin plugin;
-    private final ConfigManager configManager;
-    private final PlaceHolderAPIHook placeHolderAPIHook;
-
-    private final ConcurrentMap<UUID, PlayerBoard> playerBoards = new ConcurrentHashMap<>();
-    private ConcurrentMap<UUID, PlayerToggle> playersToggle = new ConcurrentHashMap<>();
-
-    private PageListFactory factory;
-
-    private BalancedThreadPool balancedThreadPool = null;
-
     public static final int MAX_ENTRY_SIZE = 15;
     public static final String TEAM_PREFIX = "BoardT_";
 
     private static final String[] ENTRY_NAMES;
 
-    public BoardManager(Plugin plugin, ConfigManager configManager, PlaceHolderAPIHook placeHolderAPIHook) {
+    private final Plugin plugin;
+    private final ConfigManager configManager;
+    private final DatabaseRepository databaseRepository;
+    private final PlaceHolderAPIHook placeHolderAPIHook;
+
+    private final ConcurrentMap<UUID, PlayerBoard> playerBoards = new ConcurrentHashMap<>();
+    private final ConcurrentMap<UUID, PlayerBoardData> playerBoardData = new ConcurrentHashMap<>();
+
+    private PageListFactory factory = null;
+    private BalancedThreadPool balancedThreadPool = null;
+
+    public BoardManager(Plugin plugin, ConfigManager configManager, DatabaseRepository databaseRepository, PlaceHolderAPIHook placeHolderAPIHook) {
         this.plugin = plugin;
         this.configManager = configManager;
+        this.databaseRepository = databaseRepository;
         this.placeHolderAPIHook = placeHolderAPIHook;
         this.factory = getDefaultPageListFactory();
     }
@@ -53,34 +52,39 @@ public final class BoardManager {
     }
 
     public void load() {
-        loadPlayersConfig();
         loadPlayerBoards();
         loadExecutor();
     }
 
     public void unload() {
         unloadPlayerBoards();
-        savePlayersConfig();
         unloadExecutor();
     }
 
-    public void savePlayersConfig() {
-        // Если переключение выключено значит не сохраняем конфиг
-        if (!this.configManager.isEnabledToggle()) {
-            return;
-        }
-        File playersConfigFile = new File(this.plugin.getDataFolder(), "players.yml");
-        FileConfiguration playersConfig = new YamlConfiguration();
-
-        for (PlayerToggle pt : this.playersToggle.values()) {
-            playersConfig.set("players." + pt.getUuid().toString() + ".toggle", pt.isToggle());
+    public CompletableFuture<PlayerBoardData> getPlayerBoardData(UUID uuid) {
+        PlayerBoardData data = this.playerBoardData.get(uuid);
+        if (data != null) {
+            return CompletableFuture.completedFuture(data);
         }
 
-        try {
-            playersConfig.save(playersConfigFile);
-        } catch (Exception e) {
-            this.plugin.getLogger().log(Level.SEVERE, "Failed to save players config", e);
-        }
+        CompletableFuture<PlayerBoardData> future = new CompletableFuture<>();
+        this.databaseRepository.getPlayerBoardData(uuid, (player) -> {
+            if (player == null) {
+                PlayerBoardData newData = new PlayerBoardData(uuid, this.configManager.isDefaultToggle());
+                this.playerBoardData.put(uuid, newData);
+                this.databaseRepository.insertOrUpdatePlayer(newData);
+                future.complete(newData);
+                return;
+            }
+
+            this.playerBoardData.put(uuid, player);
+            future.complete(player);
+        });
+        return future;
+    }
+
+    public void savePlayerBoardData(PlayerBoardData playerBoardData) {
+        this.databaseRepository.insertOrUpdatePlayer(playerBoardData);
     }
 
     public void unloadPlayerBoards() {
@@ -90,48 +94,21 @@ public final class BoardManager {
         this.playerBoards.clear();
     }
 
-    private void loadPlayersConfig() {
-        File playersConfigFile;
-        FileConfiguration playersConfig;
-        playersConfigFile = new File(this.plugin.getDataFolder(), "players.yml");
-        if (!playersConfigFile.exists()) {
-            this.plugin.getLogger().info("Player configuration not found, creating a new one...");
-            playersConfigFile.getParentFile().mkdirs();
-            this.plugin.saveResource("players.yml", false);
-        }
-
-        playersConfig = new YamlConfiguration();
-
-        try {
-            playersConfig.load(playersConfigFile);
-
-            ConcurrentMap<UUID, PlayerToggle> tmp = new ConcurrentHashMap<>();
-
-            ConfigurationSection cs = playersConfig.getConfigurationSection("players");
-            if (cs != null) {
-                for (String uuidString : cs.getKeys(false)) {
-                    boolean toggle = playersConfig.getBoolean("players." + uuidString + ".toggle");
-                    UUID uuid = UUID.fromString(uuidString);
-
-                    tmp.put(uuid, new PlayerToggle(uuid, toggle));
-                }
-            }
-
-            this.playersToggle = tmp;
-        } catch (Exception e) {
-            this.plugin.getLogger().log(Level.SEVERE, "Failed to load players config", e);
-        }
-    }
-
     public void loadPlayerBoards() {
         if (!this.configManager.isDefaultToggle()) {
             return;
         }
-        for (Player pl : Bukkit.getOnlinePlayers()) {
-            PlayerToggle pt = getOrCreatePlayerToggle(pl);
-            if (pt.isToggle()) {
-                addPlayerBoard(pl);
-            }
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            CompletableFuture<PlayerBoardData> pt = getPlayerBoardData(player.getUniqueId());
+            pt.whenComplete((playerBoardData, exception) -> Bukkit.getScheduler().runTask(this.plugin, () -> {
+                if (!player.isOnline()) {
+                    return;
+                }
+                if (!playerBoardData.isToggled()) {
+                    return;
+                }
+                addPlayerBoard(player);
+            }));
         }
     }
 
@@ -232,16 +209,12 @@ public final class BoardManager {
         return this.playerBoards.values();
     }
 
-    public PlayerToggle getOrCreatePlayerToggle(Player player) {
-        return this.playersToggle.computeIfAbsent(player.getUniqueId(), (value) -> new PlayerToggle(value, this.configManager.isDefaultToggle()));
-    }
-
     /**
      * Устанавливает скорборд указанному игроку с указанной фабрикой страниц.
      * Если указанный игрок не был онлайн или скорборд был выключен, ничего не произойдет.
      *
      * @param player  Игрок
-     * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
+     * @param factory Фабрика страниц. Null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
      */
     public void sendBoardToPlayer(Player player, PageListFactory factory) {
         if (player == null) {
@@ -255,7 +228,7 @@ public final class BoardManager {
      * Если указанный игрок не был онлайн или скорборд был выключен, ничего не произойдет.
      *
      * @param uuid    uuid игрока
-     * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
+     * @param factory Фабрика страниц. Null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
      */
     public void sendBoardToPlayer(UUID uuid, PageListFactory factory) {
         if (uuid == null) {

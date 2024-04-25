@@ -5,6 +5,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.boomearo.board.commands.board.CommandBoardExecutor;
+import ru.boomearo.board.database.DatabaseRepository;
 import ru.boomearo.board.hooks.PlaceHolderAPIHook;
 import ru.boomearo.board.listeners.PlayerListener;
 import ru.boomearo.board.managers.BoardManager;
@@ -15,6 +16,7 @@ import ru.boomearo.board.utils.StringLength;
 public class Board extends JavaPlugin {
 
     private ConfigManager configManager;
+    private DatabaseRepository databaseRepository;
     private BoardManager boardManager;
 
     @Getter
@@ -38,18 +40,22 @@ public class Board extends JavaPlugin {
         this.configManager = new ConfigManager();
         this.configManager.load(this);
 
-        this.boardManager = new BoardManager(this, this.configManager, placeHolderAPIHook);
+        this.databaseRepository = new DatabaseRepository(this);
+        this.databaseRepository.load();
+
+        this.boardManager = new BoardManager(this, this.configManager, this.databaseRepository, placeHolderAPIHook);
         this.boardManager.load();
 
         getCommand("board").setExecutor(new CommandBoardExecutor(this, this.configManager, this.boardManager));
 
-        getServer().getPluginManager().registerEvents(new PlayerListener(this.boardManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(this, this.boardManager), this);
 
         getLogger().info("Plugin successfully enabled.");
     }
 
     @Override
     public void onDisable() {
+        this.databaseRepository.unload();
         this.boardManager.unload();
 
         getLogger().info("Plugin successfully disabled.");
