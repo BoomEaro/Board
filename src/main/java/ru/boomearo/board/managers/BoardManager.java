@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.*;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -20,7 +19,7 @@ import ru.boomearo.board.objects.DefaultPageListFactory;
 import ru.boomearo.board.objects.PageListFactory;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.PlayerToggle;
-import ru.boomearo.board.tasks.PlayerBoardTask;
+import ru.boomearo.board.tasks.BalancedThreadPool;
 
 public final class BoardManager {
 
@@ -32,7 +31,7 @@ public final class BoardManager {
 
     private PageListFactory factory;
 
-    private ScheduledThreadPoolExecutor scheduler = null;
+    private BalancedThreadPool balancedThreadPool = null;
 
     public static final int MAX_ENTRY_SIZE = 15;
     public static final String TEAM_PREFIX = "BoardT_";
@@ -57,17 +56,17 @@ public final class BoardManager {
     public void load() {
         loadPlayersConfig();
         loadPlayerBoards();
-        loadScheduler();
+        loadExecutor();
     }
 
     public void unload() {
         unloadPlayerBoards();
         savePlayersConfig();
-        unloadScheduler();
+        unloadExecutor();
     }
 
     public void savePlayersConfig() {
-        //Если переключение выключено значит не сохраняем конфиг
+        // Если переключение выключено значит не сохраняем конфиг
         if (!this.configManager.isEnabledToggle()) {
             return;
         }
@@ -139,8 +138,8 @@ public final class BoardManager {
         }
     }
 
-    public void loadScheduler() {
-        if (this.scheduler != null) {
+    public void loadExecutor() {
+        if (this.balancedThreadPool != null) {
             return;
         }
 
@@ -149,20 +148,16 @@ public final class BoardManager {
             threads = 1;
         }
 
-        this.scheduler = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(threads, new ThreadFactoryBuilder()
-                .setNameFormat("Board-Thread-%d")
-                .setPriority(Thread.MIN_PRIORITY)
-                .build());
-        this.scheduler.setRemoveOnCancelPolicy(true);
+        this.balancedThreadPool = new BalancedThreadPool("Board", threads);
     }
 
-    public void unloadScheduler() {
-        if (this.scheduler == null) {
+    public void unloadExecutor() {
+        if (this.balancedThreadPool == null) {
             return;
         }
 
-        this.scheduler.shutdownNow();
-        this.scheduler = null;
+        this.balancedThreadPool.shutdown();
+        this.balancedThreadPool = null;
     }
 
     public PageListFactory getPageListFactory() {
@@ -192,7 +187,7 @@ public final class BoardManager {
             try {
                 pb.setNewPageList(this.factory.createPageList(pb));
             }
-            catch (BoardException e) {
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -221,7 +216,7 @@ public final class BoardManager {
                 update = 1;
             }
 
-            playerBoard.setScheduledFuture(this.scheduler.scheduleAtFixedRate(new PlayerBoardTask(playerBoard), update, update, TimeUnit.MILLISECONDS));
+            playerBoard.bindUsedExecutor(update, this.balancedThreadPool.getFreeExecutor());
         }
         catch (BoardException e) {
             throw new RuntimeException(e);
@@ -236,14 +231,6 @@ public final class BoardManager {
 
         this.playerBoards.remove(player.getUniqueId());
         pb.remove();
-    }
-
-    public void submitUpdate(PlayerBoard playerBoard) {
-        if (playerBoard == null) {
-            return;
-        }
-
-        this.scheduler.execute(new PlayerBoardTask(playerBoard));
     }
 
     public Collection<PlayerBoard> getAllPlayerBoards() {
@@ -301,7 +288,7 @@ public final class BoardManager {
 
             playerBoard.setNewPageList(factory.createPageList(playerBoard));
         }
-        catch (BoardException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }

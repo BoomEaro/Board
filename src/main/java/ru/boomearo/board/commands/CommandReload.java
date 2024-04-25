@@ -31,8 +31,8 @@ public class CommandReload extends CommandNodeBukkit {
 
         this.configManager.load(Board.getInstance());
         this.boardManager.setPageListFactory(this.boardManager.getPageListFactory());
-        this.boardManager.unloadScheduler();
-        this.boardManager.loadScheduler();
+        this.boardManager.unloadExecutor();
+        this.boardManager.loadExecutor();
         this.boardManager.unloadPlayerBoards();
         this.boardManager.loadPlayerBoards();
 

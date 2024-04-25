@@ -9,6 +9,7 @@ import ru.boomearo.board.objects.boards.AbstractPage;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class CommandPage extends CommandNodeBukkit {
 
@@ -38,8 +39,7 @@ public class CommandPage extends CommandNodeBukkit {
         Integer page;
         try {
             page = Integer.parseInt(args[0]);
-        }
-        catch (Exception ignored) {
+        } catch (Exception ignored) {
             pl.sendMessage(this.configManager.getMessage("argument_should_be_a_number"));
             return;
         }
@@ -50,25 +50,28 @@ public class CommandPage extends CommandNodeBukkit {
             return;
         }
 
-        int maxSize = pb.getMaxPageIndex();
-        int fixedPage = page - 1;
-        if (fixedPage > maxSize) {
-            pl.sendMessage(this.configManager.getMessage("page_not_found").replace("%page%", String.valueOf(page)));
-            return;
-        }
-        if (fixedPage < 0) {
-            pl.sendMessage(this.configManager.getMessage("page_not_found").replace("%page%", String.valueOf(page)));
-            return;
-        }
+        CompletableFuture<Integer> maxSizeFuture = pb.getMaxPageIndex();
+        maxSizeFuture.whenComplete((maxSize, exception) -> {
+            int fixedPage = page - 1;
+            if (fixedPage > maxSize) {
+                pl.sendMessage(this.configManager.getMessage("page_not_found").replace("%page%", String.valueOf(page)));
+                return;
+            }
+            if (fixedPage < 0) {
+                pl.sendMessage(this.configManager.getMessage("page_not_found").replace("%page%", String.valueOf(page)));
+                return;
+            }
 
-        AbstractPage pageTo = pb.getPageByIndex(fixedPage);
-        if (!pageTo.isVisibleToPlayer()) {
-            pl.sendMessage(this.configManager.getMessage("page_is_empty"));
-            return;
-        }
+            CompletableFuture<AbstractPage> pageToFuture = pb.getPageByIndex(fixedPage);
+            pageToFuture.whenComplete((pageTo, exception2) -> {
+                if (!pageTo.isVisibleToPlayer()) {
+                    pl.sendMessage(this.configManager.getMessage("page_is_empty"));
+                    return;
+                }
 
-        pb.toPage(fixedPage, pageTo);
-        pl.sendMessage(this.configManager.getMessage("page_successfully_changed").replace("%page%", String.valueOf(page)));
-        return;
+                pb.toPage(fixedPage, pageTo);
+                pl.sendMessage(this.configManager.getMessage("page_successfully_changed").replace("%page%", String.valueOf(page)));
+            });
+        });
     }
 }

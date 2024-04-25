@@ -36,43 +36,31 @@ public abstract class AbstractPage {
         return this.loadedTeamHolders;
     }
 
-    public void loadTeamHolders() throws BoardException {
-        List<AbstractValueHolder> holders = null;
-        try {
-            holders = createTeamHolders();
-        }
-        catch (Exception e) {
-            throw new BoardException(e.getMessage());
-        }
+    public void loadTeamHolders() {
+        List<AbstractValueHolder> holders = createTeamHolders();
 
         if (holders == null) {
-            throw new BoardException("Holders list can not be null!");
+            throw new IllegalStateException("Holders list can not be null!");
         }
 
         int size = holders.size();
 
         if (size < 1) {
-            throw new BoardException("At least 1 holder requited!");
+            throw new IllegalStateException("At least 1 holder requited!");
         }
 
         if (size > BoardManager.MAX_ENTRY_SIZE) {
-            throw new BoardException("Exceded maximum elements size " + BoardManager.MAX_ENTRY_SIZE + " (" + holders.size() + ")");
+            throw new IllegalStateException("Exceded maximum elements size " + BoardManager.MAX_ENTRY_SIZE + " (" + holders.size() + ")");
         }
 
         this.loadedTeamHolders = Collections.unmodifiableList(holders);
     }
 
-    public void loadTitleHolder() throws BoardException {
-        AbstractTitleHolder holder;
-        try {
-            holder = createTitleHolder();
-        }
-        catch (Exception e) {
-            throw new BoardException(e.getMessage());
-        }
+    public void loadTitleHolder() {
+        AbstractTitleHolder holder = createTitleHolder();
 
         if (holder == null) {
-            throw new BoardException("Title holder can not be null!");
+            throw new IllegalStateException("Title holder can not be null!");
         }
 
         this.loadedTitleHolder = holder;
@@ -81,8 +69,7 @@ public abstract class AbstractPage {
     public boolean isVisibleToPlayer() {
         try {
             return isVisible();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -91,8 +78,7 @@ public abstract class AbstractPage {
     public long getTimeToChangePage() {
         try {
             return getTimeToChange();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return 1;
         }
@@ -102,8 +88,7 @@ public abstract class AbstractPage {
         ScoreSequenceFactory scoreSequenceFactory;
         try {
             scoreSequenceFactory = getScoreSequenceFactory();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             scoreSequenceFactory = DefaultScoreSequenceFactory.TO_ZERO;
         }
@@ -122,8 +107,7 @@ public abstract class AbstractPage {
     public void performUpdate() {
         try {
             onUpdate();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

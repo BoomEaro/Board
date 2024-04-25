@@ -2,7 +2,6 @@ package ru.boomearo.board;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import ru.boomearo.board.commands.CommandBoardExecutor;
 import ru.boomearo.board.hooks.PlaceHolderAPIHook;
 import ru.boomearo.board.listeners.PlayerListener;
@@ -28,8 +27,7 @@ public class Board extends JavaPlugin {
         if (placeHolderApiPlugin != null) {
             this.placeHolderAPIHook = (player, text) -> me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, text);
             getLogger().info("Successfully hooked with PlaceHolderAPI!");
-        }
-        else {
+        } else {
             this.placeHolderAPIHook = (player, text) -> text;
         }
 

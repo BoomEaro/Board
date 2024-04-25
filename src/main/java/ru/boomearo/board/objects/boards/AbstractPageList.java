@@ -1,10 +1,9 @@
 package ru.boomearo.board.objects.boards;
 
+import ru.boomearo.board.objects.PlayerBoard;
+
 import java.util.Collections;
 import java.util.List;
-
-import ru.boomearo.board.exceptions.BoardException;
-import ru.boomearo.board.objects.PlayerBoard;
 
 public abstract class AbstractPageList {
 
@@ -24,21 +23,20 @@ public abstract class AbstractPageList {
         return this.pages;
     }
 
-    public void loadPages() throws BoardException {
+    public void loadPages() {
         List<AbstractPage> tmp;
         try {
             tmp = createPages();
-        }
-        catch (Exception e) {
-            throw new BoardException(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
 
         if (tmp == null) {
-            throw new BoardException("Page list can not be null!");
+            throw new IllegalStateException("Page list can not be null!");
         }
 
         if (tmp.isEmpty()) {
-            throw new BoardException("Page list can not be empty!");
+            throw new IllegalStateException("Page list can not be empty!");
         }
 
         for (AbstractPage ap : tmp) {
