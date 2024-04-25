@@ -1,10 +1,12 @@
 package ru.boomearo.board.objects.boards;
 
+import lombok.Getter;
 import ru.boomearo.board.objects.PlayerBoard;
 
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public abstract class AbstractPageList {
 
     protected final PlayerBoard playerBoard;
@@ -13,14 +15,6 @@ public abstract class AbstractPageList {
 
     public AbstractPageList(PlayerBoard playerBoard) {
         this.playerBoard = playerBoard;
-    }
-
-    public PlayerBoard getPlayerBoard() {
-        return this.playerBoard;
-    }
-
-    public List<AbstractPage> getPages() {
-        return this.pages;
     }
 
     public void loadPages() {

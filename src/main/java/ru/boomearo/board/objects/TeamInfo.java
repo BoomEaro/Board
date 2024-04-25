@@ -1,5 +1,6 @@
 package ru.boomearo.board.objects;
 
+import lombok.ToString;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -9,6 +10,7 @@ import ru.boomearo.board.objects.boards.HolderResult;
 
 import java.util.Objects;
 
+@ToString
 public class TeamInfo {
 
     private final Scoreboard scoreboard;
@@ -55,16 +57,4 @@ public class TeamInfo {
         }
     }
 
-    @Override
-    public String toString() {
-        return "TeamInfo{" +
-                "scoreboard=" + scoreboard +
-                ", objective=" + objective +
-                ", team=" + team +
-                ", holder=" + holder +
-                ", teamEntryName='" + teamEntryName + '\'' +
-                ", scoreIndex=" + scoreIndex +
-                ", currentResult=" + currentResult +
-                '}';
-    }
 }

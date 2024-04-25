@@ -1,5 +1,6 @@
 package ru.boomearo.board.managers;
 
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -8,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.*;
 
+@Getter
 public class ConfigManager {
 
     private boolean defaultToggle = true;
@@ -63,30 +65,6 @@ public class ConfigManager {
         }
 
         return message;
-    }
-
-    public boolean isDefaultToggle() {
-        return this.defaultToggle;
-    }
-
-    public boolean isEnabledToggle() {
-        return this.enabledToggle;
-    }
-
-    public int getUpdateFreq() {
-        return this.updateFreq;
-    }
-
-    public int getThreadPool() {
-        return this.threadPool;
-    }
-
-    public String getBoardTitle() {
-        return this.boardTitle;
-    }
-
-    public List<String> getBoardTeams() {
-        return this.boardTeams;
     }
 
     private static String colorize(String text) {

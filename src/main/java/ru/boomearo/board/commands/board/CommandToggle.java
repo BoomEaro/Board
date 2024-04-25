@@ -1,13 +1,14 @@
-package ru.boomearo.board.commands;
+package ru.boomearo.board.commands.board;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.managers.ConfigManager;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.PlayerToggle;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CommandToggle extends CommandNodeBukkit {
@@ -21,7 +22,7 @@ public class CommandToggle extends CommandNodeBukkit {
 
     @Override
     public List<String> getDescription() {
-        return Arrays.asList(this.configManager.getMessage("command_toggle"));
+        return Collections.singletonList(this.configManager.getMessage("command_toggle"));
     }
 
     @Override
@@ -52,6 +53,5 @@ public class CommandToggle extends CommandNodeBukkit {
         this.boardManager.addPlayerBoard(pl);
         pt.setToggle(true);
         pl.sendMessage(this.configManager.getMessage("successfully_toggled_on"));
-        return;
     }
 }

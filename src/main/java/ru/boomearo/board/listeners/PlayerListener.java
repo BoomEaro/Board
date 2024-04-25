@@ -1,5 +1,6 @@
 package ru.boomearo.board.listeners;
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,13 +10,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PlayerToggle;
 
+@RequiredArgsConstructor
 public class PlayerListener implements Listener {
 
     private final BoardManager boardManager;
-
-    public PlayerListener(BoardManager boardManager) {
-        this.boardManager = boardManager;
-    }
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent e) {

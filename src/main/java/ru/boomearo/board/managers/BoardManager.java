@@ -13,7 +13,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import ru.boomearo.board.Board;
-import ru.boomearo.board.exceptions.BoardException;
 import ru.boomearo.board.hooks.PlaceHolderAPIHook;
 import ru.boomearo.board.objects.DefaultPageListFactory;
 import ru.boomearo.board.objects.PageListFactory;
@@ -218,7 +217,7 @@ public final class BoardManager {
 
             playerBoard.bindUsedExecutor(update, this.balancedThreadPool.getFreeExecutor());
         }
-        catch (BoardException e) {
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

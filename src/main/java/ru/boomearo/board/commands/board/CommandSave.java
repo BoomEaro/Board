@@ -1,11 +1,12 @@
-package ru.boomearo.board.commands;
+package ru.boomearo.board.commands.board;
 
 import org.bukkit.command.CommandSender;
 
+import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.managers.ConfigManager;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CommandSave extends CommandNodeBukkit {
@@ -19,7 +20,7 @@ public class CommandSave extends CommandNodeBukkit {
 
     @Override
     public List<String> getDescription() {
-        return Arrays.asList(this.configManager.getMessage("command_save"));
+        return Collections.singletonList(this.configManager.getMessage("command_save"));
     }
 
     @Override
@@ -32,6 +33,5 @@ public class CommandSave extends CommandNodeBukkit {
         this.boardManager.savePlayersConfig();
 
         sender.sendMessage(this.configManager.getMessage("successfully_saved"));
-        return;
     }
 }

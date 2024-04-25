@@ -4,7 +4,6 @@ import ru.boomearo.board.managers.BoardManager;
 
 public enum DefaultScoreSequenceFactory implements ScoreSequenceFactory {
 
-
     FROM_ZERO {
 
         @Override

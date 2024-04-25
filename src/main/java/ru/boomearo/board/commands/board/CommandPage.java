@@ -1,13 +1,14 @@
-package ru.boomearo.board.commands;
+package ru.boomearo.board.commands.board;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.managers.ConfigManager;
 import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.boards.AbstractPage;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -22,7 +23,7 @@ public class CommandPage extends CommandNodeBukkit {
 
     @Override
     public List<String> getDescription() {
-        return Arrays.asList(this.configManager.getMessage("command_page"));
+        return Collections.singletonList(this.configManager.getMessage("command_page"));
     }
 
     @Override

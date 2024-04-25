@@ -1,26 +1,27 @@
-package ru.boomearo.board.commands;
+package ru.boomearo.board.commands.board;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.managers.ConfigManager;
 import ru.boomearo.board.objects.PlayerBoard;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-public class CommandScroll extends CommandNodeBukkit {
+public class CommandDebug extends CommandNodeBukkit {
 
     private final BoardManager boardManager;
 
-    public CommandScroll(ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
-        super(configManager, root, "scroll", "board.command.scroll");
+    public CommandDebug(ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
+        super(configManager, root, "debug", "board.command.debug");
         this.boardManager = boardManager;
     }
 
     @Override
     public List<String> getDescription() {
-        return Arrays.asList(this.configManager.getMessage("command_scroll"));
+        return Collections.singletonList(this.configManager.getMessage("command_debug"));
     }
 
     @Override
@@ -40,8 +41,7 @@ public class CommandScroll extends CommandNodeBukkit {
             return;
         }
 
-        pb.setPermanentView(!pb.isPermanentView());
-        pl.sendMessage((!pb.isPermanentView() ? this.configManager.getMessage("successfully_scroll_on") : this.configManager.getMessage("successfully_scroll_off")));
-        return;
+        pb.setDebugMode(!pb.isDebugMode());
+        pl.sendMessage((pb.isDebugMode() ? this.configManager.getMessage("successfully_debug_on") : this.configManager.getMessage("successfully_debug_off")));
     }
 }

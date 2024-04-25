@@ -1,8 +1,11 @@
 package ru.boomearo.board.objects.boards;
 
+import lombok.Getter;
+import lombok.Value;
 import org.bukkit.ChatColor;
 import ru.boomearo.board.objects.PlayerBoard;
 
+@Getter
 public abstract class AbstractHolder<T> {
 
     protected final AbstractPage page;
@@ -14,14 +17,6 @@ public abstract class AbstractHolder<T> {
     public AbstractHolder(AbstractPage page) {
         this.page = page;
         this.playerBoard = this.page.getPlayerBoard();
-    }
-
-    public AbstractPage getPage() {
-        return this.page;
-    }
-
-    public PlayerBoard getPlayerBoard() {
-        return this.playerBoard;
     }
 
     public T getHolderResult() {
@@ -57,7 +52,7 @@ public abstract class AbstractHolder<T> {
         }
 
         StringBuilder first = new StringBuilder(text.substring(0, maxLength));
-        StringBuilder second = new StringBuilder(text.substring(maxLength, text.length()));
+        StringBuilder second = new StringBuilder(text.substring(maxLength));
 
         if (first.charAt(first.length() - 1) == '§') {
             first.deleteCharAt(first.length() - 1);
@@ -69,21 +64,14 @@ public abstract class AbstractHolder<T> {
         return new FixedStrings(first.toString(), second.toString());
     }
 
+    @Value
     public static class FixedStrings {
-        private final String first;
-        private final String second;
+        String first;
+        String second;
 
         public FixedStrings(String first, String second) {
             this.first = first;
             this.second = second;
-        }
-
-        public String getFirst() {
-            return this.first;
-        }
-
-        public String getSecond() {
-            return this.second;
         }
     }
 }

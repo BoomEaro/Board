@@ -1,5 +1,7 @@
 package ru.boomearo.board.objects;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -7,7 +9,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import ru.boomearo.board.Board;
-import ru.boomearo.board.exceptions.BoardException;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.boards.*;
 import ru.boomearo.board.tasks.UsedExecutor;
@@ -20,6 +21,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+@Setter
+@Getter
 public class PlayerBoard {
 
     private final UUID uuid;
@@ -51,46 +54,6 @@ public class PlayerBoard {
         this.boardManager = boardManager;
     }
 
-    public UUID getUuid() {
-        return this.uuid;
-    }
-
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    public BoardManager getBoardManager() {
-        return this.boardManager;
-    }
-
-    public int getPageIndex() {
-        return this.pageIndex;
-    }
-
-    public void setPageIndex(int index) {
-        this.pageIndex = index;
-    }
-
-    public void setPermanentView(boolean view) {
-        this.permanentView = view;
-    }
-
-    public boolean isPermanentView() {
-        return this.permanentView;
-    }
-
-    public void setDebugMode(boolean mode) {
-        this.debugMode = mode;
-    }
-
-    public boolean isDebugMode() {
-        return this.debugMode;
-    }
-
-    public boolean isInit() {
-        return this.init;
-    }
-
     public void bindUsedExecutor(int update, UsedExecutor usedExecutor) {
         if (this.usedExecutor != null) {
             throw new IllegalArgumentException("UsedExecutor is already bind!");
@@ -99,10 +62,10 @@ public class PlayerBoard {
         this.usedExecutor = usedExecutor;
         this.usedExecutor.takeExecutor();
 
-        this.scheduledFuture = this.usedExecutor.schedule(() -> handleBoard(), update, update, TimeUnit.MILLISECONDS);
+        this.scheduledFuture = this.usedExecutor.schedule(this::handleBoard, update, update, TimeUnit.MILLISECONDS);
     }
 
-    public void init() throws BoardException {
+    public void init() {
         if (this.init) {
             return;
         }
@@ -163,7 +126,7 @@ public class PlayerBoard {
             throw new IllegalArgumentException("UsedExecutor is not bind!");
         }
 
-        return this.usedExecutor.submit(() -> getCurrentPage0());
+        return this.usedExecutor.submit(this::getCurrentPage0);
     }
 
     public AbstractPage getCurrentPage0() {
@@ -195,7 +158,7 @@ public class PlayerBoard {
             throw new IllegalArgumentException("UsedExecutor is not bind!");
         }
 
-        return this.usedExecutor.submit(() -> getMaxPageIndex0());
+        return this.usedExecutor.submit(this::getMaxPageIndex0);
     }
 
     private int getMaxPageIndex0() {
@@ -207,7 +170,7 @@ public class PlayerBoard {
             throw new IllegalArgumentException("UsedExecutor is not bind!");
         }
 
-        return this.usedExecutor.submit(() -> getNextPageNumber0());
+        return this.usedExecutor.submit(this::getNextPageNumber0);
     }
 
     private int getNextPageNumber0() {
@@ -268,7 +231,7 @@ public class PlayerBoard {
             return;
         }
 
-        this.usedExecutor.execute(() -> handleBoard());
+        this.usedExecutor.execute(this::handleBoard);
     }
 
     private void update() {
@@ -304,7 +267,7 @@ public class PlayerBoard {
             cancelScoreboard();
             return;
         }
-        Bukkit.getScheduler().runTask(Board.getInstance(), () -> cancelScoreboard());
+        Bukkit.getScheduler().runTask(Board.getInstance(), this::cancelScoreboard);
     }
 
     private void cancelScoreboard() {

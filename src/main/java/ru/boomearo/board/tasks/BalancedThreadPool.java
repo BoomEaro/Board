@@ -1,11 +1,13 @@
 package ru.boomearo.board.tasks;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import lombok.Data;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 
+@Data
 public class BalancedThreadPool {
 
     private final UsedExecutor[] usedExecutors;
