@@ -8,10 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import ru.boomearo.board.hooks.PlaceHolderAPIHook;
-import ru.boomearo.board.objects.DefaultPageListFactory;
-import ru.boomearo.board.objects.PageListFactory;
-import ru.boomearo.board.objects.PlayerBoard;
-import ru.boomearo.board.objects.PlayerToggle;
+import ru.boomearo.board.objects.*;
 import ru.boomearo.board.tasks.BalancedThreadPool;
 
 import java.io.File;
@@ -202,7 +199,7 @@ public final class BoardManager {
             return;
         }
 
-        PlayerBoard playerBoard = new PlayerBoard(player.getUniqueId(), player, this.plugin, this);
+        PlayerBoardImpl playerBoard = new PlayerBoardImpl(player.getUniqueId(), player, this.plugin, this);
 
         this.playerBoards.put(player.getUniqueId(), playerBoard);
 
