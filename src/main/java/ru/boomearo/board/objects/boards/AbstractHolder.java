@@ -5,6 +5,8 @@ import lombok.Value;
 import org.bukkit.ChatColor;
 import ru.boomearo.board.objects.PlayerBoard;
 
+import java.util.logging.Level;
+
 @Getter
 public abstract class AbstractHolder<T> {
 
@@ -33,7 +35,7 @@ public abstract class AbstractHolder<T> {
             return getText();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            this.playerBoard.getPlugin().getLogger().log(Level.SEVERE, "Failed to get safe text for player " + this.playerBoard.getPlayer().getName(), e);
             return null;
         }
     }

@@ -38,10 +38,10 @@ public class Board extends JavaPlugin {
         this.configManager = new ConfigManager();
         this.configManager.load(this);
 
-        this.boardManager = new BoardManager(this.configManager, placeHolderAPIHook);
+        this.boardManager = new BoardManager(this, this.configManager, placeHolderAPIHook);
         this.boardManager.load();
 
-        getCommand("board").setExecutor(new CommandBoardExecutor(this.configManager, this.boardManager));
+        getCommand("board").setExecutor(new CommandBoardExecutor(this, this.configManager, this.boardManager));
 
         getServer().getPluginManager().registerEvents(new PlayerListener(this.boardManager), this);
 

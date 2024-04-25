@@ -6,6 +6,7 @@ import ru.boomearo.board.objects.PlayerBoard;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 @Getter
 public abstract class AbstractPage {
@@ -63,7 +64,7 @@ public abstract class AbstractPage {
         try {
             return isVisible();
         } catch (Exception e) {
-            e.printStackTrace();
+            this.playerBoard.getPlugin().getLogger().log(Level.SEVERE, "Failed to check visible for player " + this.playerBoard.getPlayer().getName(), e);
             return false;
         }
     }
@@ -72,7 +73,7 @@ public abstract class AbstractPage {
         try {
             return getTimeToChange();
         } catch (Exception e) {
-            e.printStackTrace();
+            this.playerBoard.getPlugin().getLogger().log(Level.SEVERE, "Failed to get time to change page for player " + this.playerBoard.getPlayer().getName(), e);
             return 1;
         }
     }
@@ -82,7 +83,7 @@ public abstract class AbstractPage {
         try {
             scoreSequenceFactory = getScoreSequenceFactory();
         } catch (Exception e) {
-            e.printStackTrace();
+            this.playerBoard.getPlugin().getLogger().log(Level.SEVERE, "Failed to get score sequence for player " + this.playerBoard.getPlayer().getName(), e);
             scoreSequenceFactory = DefaultScoreSequenceFactory.TO_ZERO;
         }
 
@@ -101,7 +102,7 @@ public abstract class AbstractPage {
         try {
             onUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
+            this.playerBoard.getPlugin().getLogger().log(Level.SEVERE, "Failed to perform update for player " + this.playerBoard.getPlayer().getName(), e);
         }
     }
 

@@ -2,6 +2,7 @@ package ru.boomearo.board.commands.board;
 
 import org.bukkit.command.CommandSender;
 
+import org.bukkit.plugin.Plugin;
 import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.managers.ConfigManager;
@@ -13,8 +14,8 @@ public class CommandSave extends CommandNodeBukkit {
 
     private final BoardManager boardManager;
 
-    public CommandSave(ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
-        super(configManager, root, "save", "board.command.save");
+    public CommandSave(Plugin plugin, ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
+        super(plugin, configManager, root, "save", "board.command.save");
         this.boardManager = boardManager;
     }
 

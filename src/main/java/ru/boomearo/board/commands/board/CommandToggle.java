@@ -2,6 +2,7 @@ package ru.boomearo.board.commands.board;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.managers.ConfigManager;
@@ -15,8 +16,8 @@ public class CommandToggle extends CommandNodeBukkit {
 
     private final BoardManager boardManager;
 
-    public CommandToggle(ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
-        super(configManager, root, "toggle", "board.command.toggle");
+    public CommandToggle(Plugin plugin, ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
+        super(plugin, configManager, root, "toggle", "board.command.toggle");
         this.boardManager = boardManager;
     }
 

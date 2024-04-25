@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.*;
@@ -22,7 +22,7 @@ public class ConfigManager {
 
     private Map<String, String> messages = new HashMap<>();
 
-    public void load(JavaPlugin plugin) {
+    public void load(Plugin plugin) {
         File configFile = new File(plugin.getDataFolder() + File.separator + "config.yml");
         if (!configFile.exists()) {
             plugin.getLogger().info("Configuration not found, creating a new one...");

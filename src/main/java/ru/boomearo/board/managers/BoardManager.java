@@ -1,18 +1,12 @@
 package ru.boomearo.board.managers;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.UUID;
-import java.util.concurrent.*;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-
-import ru.boomearo.board.Board;
+import org.bukkit.plugin.Plugin;
 import ru.boomearo.board.hooks.PlaceHolderAPIHook;
 import ru.boomearo.board.objects.DefaultPageListFactory;
 import ru.boomearo.board.objects.PageListFactory;
@@ -20,8 +14,16 @@ import ru.boomearo.board.objects.PlayerBoard;
 import ru.boomearo.board.objects.PlayerToggle;
 import ru.boomearo.board.tasks.BalancedThreadPool;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
+
 public final class BoardManager {
 
+    private final Plugin plugin;
     private final ConfigManager configManager;
     private final PlaceHolderAPIHook placeHolderAPIHook;
 
@@ -37,7 +39,8 @@ public final class BoardManager {
 
     private static final String[] ENTRY_NAMES;
 
-    public BoardManager(ConfigManager configManager, PlaceHolderAPIHook placeHolderAPIHook) {
+    public BoardManager(Plugin plugin, ConfigManager configManager, PlaceHolderAPIHook placeHolderAPIHook) {
+        this.plugin = plugin;
         this.configManager = configManager;
         this.placeHolderAPIHook = placeHolderAPIHook;
         this.factory = getDefaultPageListFactory();
@@ -69,7 +72,7 @@ public final class BoardManager {
         if (!this.configManager.isEnabledToggle()) {
             return;
         }
-        File playersConfigFile = new File(Board.getInstance().getDataFolder(), "players.yml");
+        File playersConfigFile = new File(this.plugin.getDataFolder(), "players.yml");
         FileConfiguration playersConfig = new YamlConfiguration();
 
         for (PlayerToggle pt : this.playersToggle.values()) {
@@ -78,9 +81,8 @@ public final class BoardManager {
 
         try {
             playersConfig.save(playersConfigFile);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            this.plugin.getLogger().log(Level.SEVERE, "Failed to save players config", e);
         }
     }
 
@@ -94,11 +96,11 @@ public final class BoardManager {
     private void loadPlayersConfig() {
         File playersConfigFile;
         FileConfiguration playersConfig;
-        playersConfigFile = new File(Board.getInstance().getDataFolder(), "players.yml");
+        playersConfigFile = new File(this.plugin.getDataFolder(), "players.yml");
         if (!playersConfigFile.exists()) {
-            Board.getInstance().getLogger().info("Player configuration not found, creating a new one...");
+            this.plugin.getLogger().info("Player configuration not found, creating a new one...");
             playersConfigFile.getParentFile().mkdirs();
-            Board.getInstance().saveResource("players.yml", false);
+            this.plugin.saveResource("players.yml", false);
         }
 
         playersConfig = new YamlConfiguration();
@@ -119,9 +121,8 @@ public final class BoardManager {
             }
 
             this.playersToggle = tmp;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            this.plugin.getLogger().log(Level.SEVERE, "Failed to load players config", e);
         }
     }
 
@@ -185,9 +186,8 @@ public final class BoardManager {
         for (PlayerBoard pb : this.playerBoards.values()) {
             try {
                 pb.setNewPageList(this.factory.createPageList(pb));
-            }
-            catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                this.plugin.getLogger().log(Level.SEVERE, "Failed to force apply page for player " + pb.getPlayer().getName(), e);
             }
         }
     }
@@ -202,7 +202,7 @@ public final class BoardManager {
             return;
         }
 
-        PlayerBoard playerBoard = new PlayerBoard(player.getUniqueId(), player, this);
+        PlayerBoard playerBoard = new PlayerBoard(player.getUniqueId(), player, this.plugin, this);
 
         this.playerBoards.put(player.getUniqueId(), playerBoard);
 
@@ -216,8 +216,7 @@ public final class BoardManager {
             }
 
             playerBoard.bindUsedExecutor(update, this.balancedThreadPool.getFreeExecutor());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -243,7 +242,8 @@ public final class BoardManager {
     /**
      * Устанавливает скорборд указанному игроку с указанной фабрикой страниц.
      * Если указанный игрок не был онлайн или скорборд был выключен, ничего не произойдет.
-     * @param Player Игрок
+     *
+     * @param player  Игрок
      * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
      */
     public void sendBoardToPlayer(Player player, PageListFactory factory) {
@@ -256,7 +256,8 @@ public final class BoardManager {
     /**
      * Устанавливает скорборд указанному игроку с указанной фабрикой страниц.
      * Если указанный игрок не был онлайн или скорборд был выключен, ничего не произойдет.
-     * @param uuid uuid игрока
+     *
+     * @param uuid    uuid игрока
      * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
      */
     public void sendBoardToPlayer(UUID uuid, PageListFactory factory) {
@@ -273,8 +274,9 @@ public final class BoardManager {
     /**
      * Устанавливает скорборд указанному игроку с указанной фабрикой страниц.
      * Если указанный игрок не был онлайн или скорборд был выключен, ничего не произойдет.
-     * @param PlayerBoard PlayerBoard игрока
-     * @param factory Фабрика страниц. null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
+     *
+     * @param playerBoard PlayerBoard игрока
+     * @param factory     Фабрика страниц. Null значение сбросит фабрику страниц до реализации по умолчанию зарегистрированной у Board.
      */
     public void sendBoardToPlayer(PlayerBoard playerBoard, PageListFactory factory) {
         if (playerBoard == null) {
@@ -286,9 +288,8 @@ public final class BoardManager {
             }
 
             playerBoard.setNewPageList(factory.createPageList(playerBoard));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            this.plugin.getLogger().log(Level.SEVERE, "Failed to send board to player " + playerBoard.getPlayer().getName(), e);
         }
     }
 

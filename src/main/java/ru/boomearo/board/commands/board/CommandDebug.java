@@ -2,6 +2,7 @@ package ru.boomearo.board.commands.board;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.managers.ConfigManager;
@@ -14,8 +15,8 @@ public class CommandDebug extends CommandNodeBukkit {
 
     private final BoardManager boardManager;
 
-    public CommandDebug(ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
-        super(configManager, root, "debug", "board.command.debug");
+    public CommandDebug(Plugin plugin, ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
+        super(plugin, configManager, root, "debug", "board.command.debug");
         this.boardManager = boardManager;
     }
 

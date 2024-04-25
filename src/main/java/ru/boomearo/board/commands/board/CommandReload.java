@@ -1,6 +1,7 @@
 package ru.boomearo.board.commands.board;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import ru.boomearo.board.Board;
 import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.BoardManager;
@@ -13,8 +14,8 @@ public class CommandReload extends CommandNodeBukkit {
 
     private final BoardManager boardManager;
 
-    public CommandReload(ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
-        super(configManager, root, "reload", "board.command.reload");
+    public CommandReload(Plugin plugin, ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
+        super(plugin, configManager, root, "reload", "board.command.reload");
         this.boardManager = boardManager;
     }
 
@@ -30,7 +31,7 @@ public class CommandReload extends CommandNodeBukkit {
             return;
         }
 
-        this.configManager.load(Board.getInstance());
+        this.configManager.load(this.plugin);
         this.boardManager.setPageListFactory(this.boardManager.getPageListFactory());
         this.boardManager.unloadExecutor();
         this.boardManager.loadExecutor();

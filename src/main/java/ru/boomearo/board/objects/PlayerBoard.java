@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import ru.boomearo.board.Board;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.boards.*;
 import ru.boomearo.board.tasks.UsedExecutor;
@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 @Setter
 @Getter
@@ -27,6 +28,7 @@ public class PlayerBoard {
 
     private final UUID uuid;
     private final Player player;
+    private final Plugin plugin;
     private final BoardManager boardManager;
 
     private Scoreboard scoreboard;
@@ -48,9 +50,10 @@ public class PlayerBoard {
     private ScheduledFuture<?> scheduledFuture = null;
     private UsedExecutor usedExecutor = null;
 
-    public PlayerBoard(UUID uuid, Player player, BoardManager boardManager) {
+    public PlayerBoard(UUID uuid, Player player, Plugin plugin, BoardManager boardManager) {
         this.uuid = uuid;
         this.player = player;
+        this.plugin = plugin;
         this.boardManager = boardManager;
     }
 
@@ -112,7 +115,7 @@ public class PlayerBoard {
 
                 this.init = true;
             } catch (Exception e) {
-                e.printStackTrace();
+                this.plugin.getLogger().log(Level.SEVERE, "Failed to set new page for player " + this.player.getName(), e);
             }
         });
     }
@@ -267,7 +270,7 @@ public class PlayerBoard {
             cancelScoreboard();
             return;
         }
-        Bukkit.getScheduler().runTask(Board.getInstance(), this::cancelScoreboard);
+        Bukkit.getScheduler().runTask(this.plugin, this::cancelScoreboard);
     }
 
     private void cancelScoreboard() {
@@ -346,7 +349,7 @@ public class PlayerBoard {
                 update();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            this.plugin.getLogger().log(Level.SEVERE, "Failed to handle board for player " + this.player.getName(), e);
         }
     }
 }

@@ -1,6 +1,7 @@
 package ru.boomearo.board.commands.board;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.ConfigManager;
 
@@ -9,8 +10,8 @@ import java.util.List;
 
 public class CommandMain extends CommandNodeBukkit {
 
-    public CommandMain(ConfigManager configManager) {
-        super(configManager, null, "root", "board.command");
+    public CommandMain(Plugin plugin, ConfigManager configManager) {
+        super(plugin, configManager, null, "root", "board.command");
     }
 
     @Override

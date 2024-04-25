@@ -1,43 +1,47 @@
 package ru.boomearo.board.commands;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 import ru.boomearo.board.managers.ConfigManager;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 public abstract class CommandNodeBukkit extends CommandNode<CommandSender> {
 
+    protected final Plugin plugin;
     protected final ConfigManager configManager;
     protected final String permission;
 
-    public CommandNodeBukkit(ConfigManager configManager, CommandNodeBukkit root, String name, List<String> aliases, String permission) {
+    public CommandNodeBukkit(Plugin plugin, ConfigManager configManager, CommandNodeBukkit root, String name, List<String> aliases, String permission) {
         super(root, name, aliases);
+        this.plugin = plugin;
         this.configManager = configManager;
         this.permission = permission;
     }
 
-    public CommandNodeBukkit(ConfigManager configManager, CommandNodeBukkit root, String name, String permission) {
-        this(configManager, root, name, Collections.emptyList(), permission);
+    public CommandNodeBukkit(Plugin plugin, ConfigManager configManager, CommandNodeBukkit root, String name, String permission) {
+        this(plugin, configManager, root, name, Collections.emptyList(), permission);
     }
 
-    public CommandNodeBukkit(ConfigManager configManager, CommandNodeBukkit root, String name, List<String> aliases) {
-        this(configManager, root, name, aliases, null);
+    public CommandNodeBukkit(Plugin plugin, ConfigManager configManager, CommandNodeBukkit root, String name, List<String> aliases) {
+        this(plugin, configManager, root, name, aliases, null);
     }
 
-    public CommandNodeBukkit(ConfigManager configManager, CommandNodeBukkit root, String name) {
-        this(configManager, root, name, Collections.emptyList());
+    public CommandNodeBukkit(Plugin plugin, ConfigManager configManager, CommandNodeBukkit root, String name) {
+        this(plugin, configManager, root, name, Collections.emptyList());
     }
 
     @Override
     public void onExecuteException(CommandSender sender, String[] args, Exception e) {
-        e.printStackTrace();
+        this.plugin.getLogger().log(Level.SEVERE, "Exception on command executing", e);
     }
 
     @Override
     public Collection<String> onSuggestException(CommandSender sender, String[] args, Exception e) {
-        e.printStackTrace();
+        this.plugin.getLogger().log(Level.SEVERE, "Exception on command suggesting", e);
         return Collections.emptyList();
     }
 
@@ -60,9 +64,9 @@ public abstract class CommandNodeBukkit extends CommandNode<CommandSender> {
     }
 
     public void sendCurrentHelp(CommandSender sender) {
-        List<String> descs = getDescription();
-        if (descs != null) {
-            for (String text : descs) {
+        List<String> descriptions = getDescription();
+        if (descriptions != null) {
+            for (String text : descriptions) {
                 sender.sendMessage(text);
             }
         }

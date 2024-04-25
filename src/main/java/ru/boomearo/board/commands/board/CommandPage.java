@@ -2,6 +2,7 @@ package ru.boomearo.board.commands.board;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import ru.boomearo.board.commands.CommandNodeBukkit;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.managers.ConfigManager;
@@ -16,8 +17,8 @@ public class CommandPage extends CommandNodeBukkit {
 
     private final BoardManager boardManager;
 
-    public CommandPage(ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
-        super(configManager, root, "page", "board.command.page");
+    public CommandPage(Plugin plugin, ConfigManager configManager, CommandNodeBukkit root, BoardManager boardManager) {
+        super(plugin, configManager, root, "page", "board.command.page");
         this.boardManager = boardManager;
     }
 
