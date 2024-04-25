@@ -205,14 +205,14 @@ public final class BoardManager {
 
         try {
             playerBoard.init();
-            sendBoardToPlayer(playerBoard, null);
-
             int update = this.configManager.getUpdateFreq();
             if (update < 1) {
                 update = 1;
             }
 
             playerBoard.bindUsedExecutor(update, this.balancedThreadPool.getFreeExecutor());
+
+            sendBoardToPlayer(playerBoard, null);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

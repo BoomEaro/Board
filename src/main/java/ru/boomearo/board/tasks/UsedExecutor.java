@@ -1,6 +1,7 @@
 package ru.boomearo.board.tasks;
 
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -9,6 +10,7 @@ import java.util.function.Supplier;
 @Data
 public class UsedExecutor {
 
+    @ToString.Exclude
     private final ScheduledExecutorService executor;
     private AtomicInteger count = new AtomicInteger(0);
 
