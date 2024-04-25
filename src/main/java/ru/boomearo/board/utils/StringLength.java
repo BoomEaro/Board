@@ -1,10 +1,11 @@
 package ru.boomearo.board.utils;
 
-import lombok.Value;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import ru.boomearo.board.Board;
 
-public final class StringLength {
+@UtilityClass
+public class StringLength {
 
     private static DataLength MAX_DATA_LENGTH = new DataLength(16, 32);
 
@@ -27,14 +28,4 @@ public final class StringLength {
         return MAX_DATA_LENGTH;
     }
 
-    @Value
-    public static class DataLength {
-        int maxValueLength;
-        int maxTitleLength;
-
-        public DataLength(int maxValueLength, int maxTitleLength) {
-            this.maxValueLength = maxValueLength;
-            this.maxTitleLength = maxTitleLength;
-        }
-    }
 }

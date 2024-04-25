@@ -5,6 +5,7 @@ import lombok.Value;
 import org.bukkit.ChatColor;
 import ru.boomearo.board.objects.PlayerBoard;
 
+import java.time.Duration;
 import java.util.logging.Level;
 
 @Getter
@@ -22,7 +23,12 @@ public abstract class AbstractHolder<T> {
     }
 
     public T getHolderResult() {
-        if ((System.currentTimeMillis() - this.cacheTime) > getMaxCacheTime()) {
+        Duration duration = getMaxCacheTime();
+        if (duration == null) {
+            return this.cache;
+        }
+
+        if ((System.currentTimeMillis() - this.cacheTime) > duration.toMillis()) {
             this.cache = createHolderData(getSafeText());
             this.cacheTime = System.currentTimeMillis();
         }
@@ -40,8 +46,8 @@ public abstract class AbstractHolder<T> {
         }
     }
 
-    protected long getMaxCacheTime() {
-        return 1000;
+    protected Duration getMaxCacheTime() {
+        return Duration.ofSeconds(1);
     }
 
     protected abstract T createHolderData(String text);

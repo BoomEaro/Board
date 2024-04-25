@@ -1,5 +1,6 @@
 package ru.boomearo.board.objects.boards.defaults.pages;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +24,8 @@ public class DefaultPage extends AbstractPage {
     }
 
     @Override
-    protected long getTimeToChange() {
-        return Integer.MAX_VALUE;
+    protected Duration getTimeToChange() {
+        return Duration.ofMillis(Long.MAX_VALUE);
     }
 
     @Override

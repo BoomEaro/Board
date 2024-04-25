@@ -4,6 +4,7 @@ import lombok.Getter;
 import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.PlayerBoard;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -69,12 +70,12 @@ public abstract class AbstractPage {
         }
     }
 
-    public long getTimeToChangePage() {
+    public Duration getTimeToChangePage() {
         try {
             return getTimeToChange();
         } catch (Exception e) {
             this.playerBoard.getPlugin().getLogger().log(Level.SEVERE, "Failed to get time to change page for player " + this.playerBoard.getPlayer().getName(), e);
-            return 1;
+            return Duration.ofSeconds(1);
         }
     }
 
@@ -110,7 +111,7 @@ public abstract class AbstractPage {
 
     }
 
-    protected abstract long getTimeToChange();
+    protected abstract Duration getTimeToChange();
 
     protected abstract boolean isVisible();
 

@@ -13,6 +13,7 @@ import ru.boomearo.board.managers.BoardManager;
 import ru.boomearo.board.objects.boards.*;
 import ru.boomearo.board.tasks.UsedExecutor;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -335,21 +336,24 @@ public class PlayerBoardImpl implements PlayerBoard {
                 }
 
                 // Сменяем страницу только если прошло время, иначе просто обновляем ее
-                if ((System.currentTimeMillis() - this.pageCreateTime) > thisPage.getTimeToChangePage()) {
+                Duration duration = thisPage.getTimeToChangePage();
+                if (duration != null) {
+                    if ((System.currentTimeMillis() - this.pageCreateTime) > duration.toMillis()) {
 
-                    // Убеждаемся что текущая страница не является следующей
-                    if (this.pageIndex != nextPageIndex) {
-                        // Если оказывается что в настройках игрока отключен авто скролл, то просто обновляем страницу.
-                        // Иначе пытаемся открыть следующую страницу.
-                        if (this.permanentView) {
+                        // Убеждаемся что текущая страница не является следующей
+                        if (this.pageIndex != nextPageIndex) {
+                            // Если оказывается что в настройках игрока отключен авто скролл, то просто обновляем страницу.
+                            // Иначе пытаемся открыть следующую страницу.
+                            if (this.permanentView) {
+                                update();
+                                return;
+                            }
+
+                            toPage0(nextPageIndex, nextPage);
+
                             update();
                             return;
                         }
-
-                        toPage0(nextPageIndex, nextPage);
-
-                        update();
-                        return;
                     }
                 }
                 update();
